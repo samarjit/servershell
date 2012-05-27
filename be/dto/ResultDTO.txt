@@ -1,0 +1,102 @@
+package com.ycs.fe.dto;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class ResultDTO {
+
+private List<String> messages;
+private List<String> errors;
+private HashMap  data;
+private HashMap<String, PaginationData> pagination; //{currentpage:,totalpage:,pagesize:}
+
+static class PaginationData{
+	
+	public PaginationData(int currentpage, int pagecount, int pagesize) {
+		this.currentpage = currentpage;
+		this.pagecount = pagecount;
+		this.pagesize = pagesize;
+	}
+	int currentpage;
+	int pagecount;
+	int pagesize;
+}
+
+public ResultDTO() {
+	errors = new ArrayList<String>();
+	messages = new ArrayList<String>();
+	pagination = new HashMap<String, PaginationData>();
+	HashMap<String, Integer> hm = new HashMap<String, Integer>();
+	hm.put("currentpage",1);
+	hm.put("pagecount",1);
+	hm.put("pagesize",1);
+	PaginationData pg = new PaginationData(1, 1, 1);
+	pagination.put("formx", pg);
+}
+
+
+public void addError(String e){
+	errors.add(e);
+}
+
+public void addMessage(String m){
+	messages.add(m);
+}
+
+public String toString(){
+	return "MESSAGE: from toString()";//+messages+",ERRORS:"+errors+",DATA:"+data;
+}
+
+
+public void setPageDetails(String panelname,int currentpage, int pagecount, int pagesize) {
+	 if(pagination ==null)pagination = new HashMap<String, PaginationData>();
+	 //PaginationData hm = pagination.get(panelname);
+	 PaginationData pg = new PaginationData(currentpage, pagecount, pagesize);
+//	 if(hm != null ){
+//		 
+//		 hm.put("currentpage",currentpage);
+//		 hm.put("totalrec",pagecount);
+//		 hm.put("pagesize",pagesize);
+//	 }
+	 pagination.put(panelname, pg);
+}
+
+public List<String> getMessages() {
+	return messages;
+}
+public void setMessages(List<String> messages) {
+	this.messages = messages;
+}
+public List<String> getErrors() {
+	return errors;
+}
+public void setErrors(List<String> errors) {
+	this.errors = errors;
+}
+public HashMap  getData() {
+	return data;
+}
+public void setData(HashMap  jobj) {
+	this.data = jobj;
+}
+
+
+public HashMap<String, PaginationData> getPagination() {
+	return pagination;
+}
+
+
+public void setPagination(HashMap<String, PaginationData> pagination) {
+	this.pagination = pagination;
+}
+
+/*public void setPagination(HashMap<String, HashMap<String, Integer>> pagination) {
+	this.pagination = pagination;
+}
+public HashMap<String, HashMap<String, Integer>> getPagination() {
+	return pagination;
+}*/
+
+
+}
