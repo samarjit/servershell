@@ -21,8 +21,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import oracle.jdbc.rowset.OracleCachedRowSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import servershell.be.dto.PrepstmtDTO;
 import servershell.be.dto.PrepstmtDTOArray;
@@ -32,7 +31,7 @@ import servershell.be.dto.PrepstmtDTOArray;
  * 
  */
 public class DBConnector {
-	private Logger logger = LoggerFactory.getLogger(DBConnector.class);
+	private Logger logger = Logger.getLogger(DBConnector.class);
 	private static String DRIVERNAME = "oracle.jdbc.driver.OracleDriver";
 	private static String DBURL = "jdbc:oracle:thin:@localhost:1521:XE";
 	private static String DBUSER = "test";

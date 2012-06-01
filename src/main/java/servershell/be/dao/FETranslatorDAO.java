@@ -12,8 +12,7 @@ import javax.sql.rowset.CachedRowSet;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import servershell.be.dto.PrepstmtDTO.DataType;
 import servershell.be.dto.PrepstmtDTOArray;
@@ -24,7 +23,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 
 public class FETranslatorDAO {
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = Logger.getLogger(this.getClass());
 	/**
 	 * Executes select box query and puts in valueStack 
 	 * 

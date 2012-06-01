@@ -15,15 +15,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oracle.jdbc.rowset.OracleCachedRowSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import servershell.be.dao.BackendException;
 import servershell.be.dao.DBConnector;
 import servershell.be.dto.ResultDTO;
 
 public class QueryExecutor  {
-	private static Logger logger = LoggerFactory.getLogger(QueryExecutor.class);
+	private static Logger logger = Logger.getLogger(QueryExecutor.class);
 	private String globalSQL = "  SELECT *  FROM customer_master";
 	public static String toProperCase(String inputString) {
 
