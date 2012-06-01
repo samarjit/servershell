@@ -26,7 +26,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 	private String password;
 	private InputStream inputStream;
 
-	@Action(value = "monitoring", results = { @Result(name = "success", type = "stream", params = { "contentType", "text/html", "inputName", "inputStream", }) })
+	@Action(value = "monitoring", results = { @Result(name = "success", type = "stream", params = { "contentType", "text/html", "inputName", "inputStream"}) })
 	public String execute() {
 		logger.debug("monitoring action..");
 		String message;
@@ -40,11 +40,14 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 		if (password == null) {
 			addActionError("Password is required");
 		}
+		if (cmd == null) {
+			addActionError("Cmd is required");
+		}
 
 		if (cmd.startsWith("login")) {
 
 		}
-
+		if(cmd != null)
 		if (cmd.startsWith("list")) {
 			String[] path = cmd.split(" ");
 			String relPath = path[1];
@@ -89,7 +92,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 		} else if (cmd.startsWith("upload")) {
 			jobj.put("download", "not implemented");
 		} else if (cmd.startsWith("tail")) {
-
+			
 		} else if (cmd.startsWith("log")) {
 
 		}
