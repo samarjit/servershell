@@ -2,12 +2,15 @@ package servershell.util;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
 public class CompoundResource {
@@ -22,9 +25,19 @@ public class CompoundResource {
 	public static String getString(ResourceBundle rb, String key) {
 		String ret = null;
 		try {
-			Template t = new Template("name", new StringReader(rb.getString(key)), new Configuration());
+			Configuration c = new Configuration();
+			c.setObjectWrapper(new DefaultObjectWrapper());
+//			c.setSharedVariable("USER_HOME", "config.fmpp");
+			
+			//c.
+			Template t = new Template("name", new StringReader(rb.getString(key)), c);
 			StringWriter out = new StringWriter();
-			t.process(rb, out );
+			Map<String,String> ar = new HashMap<String,String>();
+			for (String str: rb.keySet()) {
+				ar.put(str, rb.getString(str));
+			}
+			ar.put("USER_HOME", System.getProperty("user.home").replace("\\","/"));
+			t.process(ar, out );
 			ret = out.toString();
 		} catch (Exception e) {
 			logger.error(" unknown exception in getString() ",e);

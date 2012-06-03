@@ -1,6 +1,8 @@
 package servershell.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 public class CmdRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(CmdRunner.class);
+	private static File opfile;
 	
 	static class StreamGobbler extends Thread
 	{
@@ -26,39 +29,52 @@ public class CmdRunner {
 	    
 	    public void run()
 	    {
-	        try
-	        { 
-	        	logger.debug("in run!");
-	            InputStreamReader isr = new InputStreamReader(is);
-	            BufferedReader br = new BufferedReader(isr);
-	            String line=null;
-	            	while ( (line = br.readLine()) != null){
-		            	if(type.equals("ERROR")){
-		            		logger.error(type + ">" + line);
-		        		}else{
-		        			logger.info(type + ">" + line);
-		            	}
-	        		}
-	            	
+	    	FileWriter fwOp = null;
+			try {
+				logger.debug("in run!");
+				
+				if(opfile !=null) fwOp = new FileWriter(opfile, true);
+				
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					if (type.equals("ERROR")) {
+						logger.error(type + ">" + line);
+						if(opfile !=null) fwOp.write(type + ">" + line);
+					} else {
+						logger.info(type + ">" + line);
+						if(opfile !=null) fwOp.write(type + ">" + line);
+					}
+				}
+
 				final byte[] buffer = new byte[1];
 				for (int length = 0; (length = is.read(buffer)) != -1;) {
 					System.out.write(buffer, 0, length);
-				} 
-				br.close(); 
-	            } catch (IOException ioe)
-	              {
-	                ioe.printStackTrace();  
-	              }
+				}
+				br.close();
+				
+			} catch (IOException ioe) {
+				logger.error("IO exception handled", ioe);
+			} finally {
+				if (fwOp != null)
+					try {
+						fwOp.close();
+					} catch (IOException e) {
+						logger.error("File close error", e);
+					}
+			}
 	    }
 	}
 	
-	public static int process(String cmd){
+	public static int process(String cmd, File dir, File outputfile){
 		int exitVal = 0; 
 		try {
+			opfile = outputfile;
 			Runtime rt = Runtime.getRuntime();
 //			System.out.println("Running cmd:"+cmd); 
 			logger.info("Running cmd:"+cmd); 
-			Process proc = rt.exec(cmd);
+			Process proc = rt.exec(cmd,null,dir);
 			 // any error message?
 			 StreamGobbler errorGobbler = new 
 			     StreamGobbler(proc.getErrorStream(), "ERROR");            
@@ -75,12 +91,12 @@ public class CmdRunner {
 			 errorGobbler.start();
 			 outputGobbler.start();
 			                     
-			 int i =0;
-			 while((i = in.read())!= 'q'){
-				 pr.write(i);
-				 pr.flush();
-				 System.out.print((char)i);
-			 }
+//			 int i =0;
+//			 while((i = in.read())!= 'q'){
+//				 pr.write(i);
+//				 pr.flush();
+//				 System.out.print((char)i);
+//			 }
 			 pr.append("y\r\n");
 			 
 			 // any error???
@@ -100,7 +116,7 @@ public class CmdRunner {
 	 */
 	public static void main(String[] args) {
 			String gzipCmd = "sh";// "gpg.exe --batch --passphrase-file C:/Eclipse/workspace2/EzLinkBE/src/sAtw.passphrase --decrypt --output C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm.gpg";
-			CmdRunner.process(gzipCmd);
+			CmdRunner.process(gzipCmd, null, null);
 	}
 
 }

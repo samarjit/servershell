@@ -25,7 +25,8 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	<table style="width:100%;height:100%">
 		<tr>
 			<td>
-				Query ${pageContext.request.contextPath}<textarea name="query" id="query" cols="30" rows="10" style="width:100%"></textarea>
+				Query ${pageContext.request.contextPath}
+				<textarea name="query" id="query" cols="30" rows="10" style="width:100%"></textarea>
 			</td>
 		</tr>
 		<tr>
