@@ -182,14 +182,14 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 				session.put("pwd", rootPath);
 				jobj.put("pwd", rootPath);
 			} else if (cmd.startsWith("download")) {
-				String rootPath = CompoundResource.getString(rb, "application_home")+"/monitoring";
+				String rootPath = CompoundResource.getString(rb, "application_home");
 				jobj.put("download", "not implemented"+rootPath);
 			} else if (cmd.startsWith("upload")) {
 				jobj.put("download", "not implemented");
 			} else if (cmd.startsWith("tail")) {
 				String rootPath = (String) session.get("pwd");
 				
-				String tempPath = CompoundResource.getString(rb, "application_home")+"/monitoring";
+				String tempPath = CompoundResource.getString(rb, "application_home");
 				name =  (String) session.get("name");
 				File f = new File(tempPath,name);
 				if(!f.exists()){
