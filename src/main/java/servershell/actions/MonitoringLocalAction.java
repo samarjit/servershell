@@ -1,5 +1,6 @@
 package servershell.actions;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -7,8 +8,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,6 +61,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 	private InputStream inputStream;
 	private String pageup;
 	private String pagedown;
+	private String getalluptoend;
 	
 	@Action(value = "monitoring", results = { @Result(name = "success", type = "stream", params = { "contentType", "text/html", "inputName", "inputStream"}) })
 	public String execute() {
@@ -189,13 +196,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 			} else if (cmd.startsWith("tail")) {
 				String rootPath = (String) session.get("pwd");
 				
-				String tempPath = CompoundResource.getString(rb, "application_home");
-				name =  (String) session.get("name");
-				File f = new File(tempPath,name);
-				if(!f.exists()){
-					addActionMessage("creating directory: "+f.getAbsolutePath());
-					f.mkdir();
-				}
+				File f = createUserDir(rb);
 				Pattern p = Pattern.compile("(tail).*?(-\\d*)\\s*?(\\S+)");
 				Matcher m = p.matcher(cmd);
 				m.find();
@@ -235,8 +236,102 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 						}
 					}
 				}
-			} else if (cmd.startsWith("log")) {
-
+			} else if (cmd.startsWith("log ")) {
+				String rootPath = (String) session.get("pwd");
+				
+				File f = createUserDir(rb);
+				Pattern p = Pattern.compile("(log)\\s*?(\\S+)");
+				Matcher m = p.matcher(cmd);
+				m.find();
+				
+				String filename = m.group(2);
+				File logfile = new File(rootPath, filename);
+				if(!logfile.exists()){
+					addActionError("logfile not found "+logfile.getAbsolutePath());
+					throw new BackendException("logfile not found "+ logfile.getAbsolutePath());
+				}
+				
+				RandomAccessFile raf = new RandomAccessFile(logfile, "r");
+				FileChannel fc = raf.getChannel();
+				ArrayList<String> ar = new ArrayList<String>(50);
+				byte str[] = new byte[200];
+				
+				long pos = fc.position();
+				session.put("logposition", pos);
+				
+				long len = raf.length();
+				session.put("loglength", len);
+				//read 20 lines
+				int numlines = 0;
+				long templen = len; 
+				int bytestoread = 200;
+				while(numlines <=20 && templen > 0){
+					if(len > 200 && templen > 0){
+						if(templen > 200){
+							raf.seek(templen - bytestoread);
+							templen = templen - bytestoread;
+						}else{
+							raf.seek(0);
+							bytestoread = (int)templen;
+							templen = 0;
+							
+						}
+						try {
+							raf.readFully(str, 0, bytestoread);
+						} catch (IOException e) {
+							throw e;
+						}
+						for (byte b : str) {
+							if(b == '\n'){
+								numlines++;
+							}
+							
+						}
+						ar.add(new String(str));
+					}
+					
+				}
+				 
+				File logpage = new File(f, "logfile.txt");
+				StringWriter strw = new StringWriter();
+				for (int i = ar.size() -1; i >=0 ; i--) {
+					strw.write(ar.get(i));
+				}
+				
+				BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
+				String tempLine = "";
+				while((tempLine = stringReader.readLine()) != null){
+					message += tempLine +"<br/>";
+				}
+				
+				pos = fc.position();
+				session.put("logposition", pos);
+				addActionMessage("pos: "+pos+" len:"+len);
+				if(pageup == null && pagedown == null && getalluptoend == null){
+					//just open the log
+					
+				}
+				
+			} else if (cmd.startsWith("sh ") && role.equals("ADMIN")) {
+				File f = createUserDir(rb);
+				String tempcmd = cmd;
+				File shfile = new File(f, "shfile.txt");
+				if(shfile.exists()){
+					shfile.delete();
+					try {
+						shfile.createNewFile();
+					} catch (IOException e) {
+						logger.error("shfile.txt creation error "+shfile.getAbsolutePath() , e);
+						addActionError("shfile.txt creation error "+shfile.getAbsolutePath());
+					}
+				}
+				CmdRunner.process(tempcmd,null, shfile);
+				try {
+					jsonString = FileUtils.readFileToString(shfile);
+				} catch (IOException e) {
+					logger.error("shfile read error:",e);
+					addActionError("shfile read error!");
+				}
 			}
 			
 			
@@ -259,6 +354,17 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 		}
 		inputStream = new ByteArrayInputStream(jsonString.getBytes());
 		return SUCCESS;
+	}
+
+	private File createUserDir(ResourceBundle rb) {
+		String tempPath = CompoundResource.getString(rb, "application_home");
+		name =  (String) session.get("name");
+		File f = new File(tempPath,name);
+		if(!f.exists()){
+			addActionMessage("creating directory: "+f.getAbsolutePath());
+			f.mkdir();
+		}
+		return f;
 	}
 
 	@Override
@@ -301,5 +407,29 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 	public InputStream getInputStream() {
 		return inputStream;
 	}
- 
+
+	public String getPageup() {
+		return pageup;
+	}
+
+	public void setPageup(String pageup) {
+		this.pageup = pageup;
+	}
+
+	public String getPagedown() {
+		return pagedown;
+	}
+
+	public void setPagedown(String pagedown) {
+		this.pagedown = pagedown;
+	}
+
+	public String getGetalluptoend() {
+		return getalluptoend;
+	}
+
+	public void setGetalluptoend(String getalluptoend) {
+		this.getalluptoend = getalluptoend;
+	}
+	
 }
