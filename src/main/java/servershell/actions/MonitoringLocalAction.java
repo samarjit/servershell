@@ -239,7 +239,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 			} else if (cmd.startsWith("log ")) {
 				String rootPath = (String) session.get("pwd");
 				
-				File f = createUserDir(rb);
+//				File f = createUserDir(rb);
 				Pattern p = Pattern.compile("(log)\\s*?(\\S+)");
 				Matcher m = p.matcher(cmd);
 				m.find();
@@ -256,47 +256,95 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 				ArrayList<String> ar = new ArrayList<String>(50);
 				byte str[] = new byte[200];
 				
+				String strprevpos = (String)session.get("logposition");
+				long prevpos = (strprevpos == null)? 0: Long.parseLong(strprevpos);
 				long pos = fc.position();
-				session.put("logposition", pos);
+				session.put("logposition", String.valueOf(pos));
 				
 				long len = raf.length();
 				session.put("loglength", len);
 				//read 20 lines
-				int numlines = 0;
-				long templen = len; 
+				int numlines = -1;
+//				File logpage = new File(f, "logfile.txt");
+				StringWriter strw = new StringWriter();
+				
+				int ipageup =  (pageup == null || "".equals(pageup))? 0: Integer.parseInt(pageup);
+				int ipagedown =  (pagedown == null || "".equals(pagedown))? 0: Integer.parseInt(pagedown);
+				
+				long templen = (prevpos == 0|| prevpos > len)? len: prevpos; 
 				int bytestoread = 200;
-				while(numlines <=20 && templen > 0){
-					if(len > 200 && templen > 0){
-						if(templen > 200){
-							raf.seek(templen - bytestoread);
-							templen = templen - bytestoread;
-						}else{
-							raf.seek(0);
-							bytestoread = (int)templen;
-							templen = 0;
-							
-						}
-						try {
-							raf.readFully(str, 0, bytestoread);
-						} catch (IOException e) {
-							throw e;
-						}
-						for (byte b : str) {
-							if(b == '\n'){
-								numlines++;
+				if (pageup != null) {
+					while (numlines <= ipageup && templen > 0) {
+						if (templen > 0) {
+							if (templen > 200) {
+								raf.seek(templen - bytestoread);
+								templen = templen - bytestoread;
+							} else {
+								raf.seek(0);
+								bytestoread = (int) templen;
+								templen = 0;
+
 							}
-							
+							try {
+								raf.readFully(str, 0, bytestoread);
+							} catch (IOException e) {
+								throw e;
+							}
+							for (byte b : str) {
+								if (b == '\n') {
+									numlines++;
+								}
+
+							}
+							ar.add(new String(str));
 						}
-						ar.add(new String(str));
+
+					}
+					for (int i = ar.size() - 1; i >= 0; i--) {
+						strw.write(ar.get(i));
 					}
 					
+				}else if(pagedown != null){
+					
+					while (numlines <= ipagedown && templen < len) {
+						if (templen < len) {
+							if ((len - templen )> 200) {
+								raf.seek(templen + bytestoread);
+								templen = templen + bytestoread;
+							} else {
+								raf.seek(0);
+								bytestoread = (int) templen;
+								templen = 0;
+
+							}
+							try {
+								raf.readFully(str, 0, bytestoread);
+							} catch (IOException e) {
+								throw e;
+							}
+							for (byte b : str) {
+								if (b == '\n') {
+									numlines++;
+								}
+
+							}
+							ar.add(new String(str));
+						}
+
+					}
+					for (int i = 0 ; i < ar.size(); i++) {
+						strw.write(ar.get(i));
+					}
+				}else if(getalluptoend != null){
+					raf.seek(templen);
+					
+					while((raf.read(str))!= -1){
+						strw.write(new String(str));
+					}
+					
+					
 				}
-				 
-				File logpage = new File(f, "logfile.txt");
-				StringWriter strw = new StringWriter();
-				for (int i = ar.size() -1; i >=0 ; i--) {
-					strw.write(ar.get(i));
-				}
+				
 				
 				BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
 				String tempLine = "";
@@ -305,13 +353,46 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 				}
 				
 				pos = fc.position();
-				session.put("logposition", pos);
+				session.put("logposition", String.valueOf(pos));
 				addActionMessage("pos: "+pos+" len:"+len);
 				if(pageup == null && pagedown == null && getalluptoend == null){
 					//just open the log
 					
 				}
+				raf.close();
+			} else if (cmd.startsWith("runlog ") ) {
+String rootPath = (String) session.get("pwd");
 				
+				Pattern p = Pattern.compile("(log)\\s*?(\\S+)");
+				Matcher m = p.matcher(cmd);
+				m.find();
+				
+				String filename = m.group(2);
+				File logfile = new File(rootPath, filename);
+				if(!logfile.exists()){
+					addActionError("logfile not found "+logfile.getAbsolutePath());
+					throw new BackendException("logfile not found "+ logfile.getAbsolutePath());
+				}
+				
+				RandomAccessFile raf = new RandomAccessFile(logfile, "r");
+				FileChannel fc = raf.getChannel();
+				byte str[] = new byte[200];
+				
+				String strprevpos = (String)session.get("logposition");
+				long prevpos = (strprevpos == null)? 0: Long.parseLong(strprevpos);
+				long pos = fc.position();
+				long len = raf.length();
+				long templen = (prevpos == 0|| prevpos > len)? len: prevpos;
+				raf.seek(templen);
+				
+				while((raf.read(str))!= -1){
+					message = (new String(str));
+				}
+				
+				pos = fc.position(); 
+				raf.close();
+				session.put("logposition", String.valueOf( pos));
+				addActionMessage("pos: "+pos+" len:"+len);
 			} else if (cmd.startsWith("sh ") && role.equals("ADMIN")) {
 				File f = createUserDir(rb);
 				String tempcmd = cmd;

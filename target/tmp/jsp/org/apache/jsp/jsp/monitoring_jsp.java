@@ -76,6 +76,9 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
       out.write("\tform{\r\n");
       out.write("\tborder: 1px solid black;\r\n");
       out.write("\t}\r\n");
+      out.write("\t#result{\r\n");
+      out.write("\t\tfont-family: courier;\r\n");
+      out.write("\t}\r\n");
       out.write("\t</style>\r\n");
       out.write("\t");
       if (_jspx_meth_s_head_0(_jspx_page_context))
@@ -111,7 +114,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
       out.write("\t\t\t\t$.post(\"");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.evaluateExpression("${pageContext.request.contextPath}", java.lang.String.class, (PageContext)_jspx_page_context, null));
       out.write("/monitoring.action\",{cmd: $(\"#cmd1\").val()},function (data){\r\n");
-      out.write("\t\t\t\t\t\t$(\"#result\").text(data);\t\t\r\n");
+      out.write("\t\t\t\t\t\t$(\"#result\").html(data);\t\t\r\n");
       out.write("\t\t\t\t});\r\n");
       out.write("\t\t}\r\n");
       out.write("\t\t\r\n");
@@ -341,14 +344,14 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
       }
       do {
         out.write("\r\n");
-        out.write("<button type=\"button\" onclick=\"frmsubmit()\">Submit Query</button>\r\n");
+        out.write("\r\n");
         out.write("\t<table style=\"width:100%;height:100%\">\r\n");
         out.write("\t\t<tr>\r\n");
         out.write("\t\t\t<td width=\"100%\">\r\n");
         out.write("\t\t\t\tQuery ");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.evaluateExpression("${pageContext.request.contextPath}", java.lang.String.class, (PageContext)_jspx_page_context, null));
         out.write("\r\n");
-        out.write("\t\t\t\t<textarea name=\"cmd\" id=\"cmd1\" cols=\"3\" rows=\"2\" style=\"width:100%\"></textarea>\r\n");
+        out.write("\t\t\t\t<textarea name=\"cmd\" id=\"cmd1\" cols=\"3\" rows=\"2\" style=\"width:100%\"></textarea><button type=\"button\" onclick=\"frmsubmit()\">Submit Query</button>\r\n");
         out.write("\t\t        Result\r\n");
         out.write("\t\t\t\t<div name=\"result\" id=\"result\" cols=\"30\" rows=\"10\" style=\"width:100%\"></div>\r\n");
         out.write("\t\t\t</td>\r\n");

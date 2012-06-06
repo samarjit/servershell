@@ -16,10 +16,13 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		function frmsubmit(){
 				$.post("${pageContext.request.contextPath}/monitoring.action",{cmd: $("#cmd").val(),pageup: $("#pageup").val(),pagedown: $("#pagedown").val() },function (data){
 						$("#queryresult").html(data);		
-				})
-	//			.complete(function (){
+				
+					//if(/runlog.*/.test($("#cmd").val())){
+						$("#runlog").append('<div class-"data">'+data+'</div>');
+					//}
 		//			$("#logfile").load(logfilename)
-			//		});
+					});
+				 
 		}
 	</script>
 </head>
@@ -36,6 +39,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 			 
 </form>	
   <pre id="logfile"></pre>
+  <div  id="runlog"></div>
 </body>
 </html>
 
