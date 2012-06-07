@@ -24,6 +24,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
@@ -273,7 +274,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 				
 				long templen = (prevpos == 0|| prevpos > len)? len: prevpos; 
 				int bytestoread = 200;
-				if (pageup != null) {
+				if (ipageup > 0) {
 					while (numlines <= ipageup && templen > 0) {
 						if (templen > 0) {
 							if (templen > 200) {
@@ -304,17 +305,17 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 						strw.write(ar.get(i));
 					}
 					
-				}else if(pagedown != null){
-					
+				}else if(ipagedown > 0){
+					System.out.println("templen:"+templen+" len:"+len);
 					while (numlines <= ipagedown && templen < len) {
 						if (templen < len) {
 							if ((len - templen )> 200) {
-								raf.seek(templen + bytestoread);
+								raf.seek(templen );
 								templen = templen + bytestoread;
 							} else {
-								raf.seek(0);
-								bytestoread = (int) templen;
-								templen = 0;
+								raf.seek(templen);
+								bytestoread = (int) (len - templen);
+								templen = len;
 
 							}
 							try {
@@ -332,6 +333,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 						}
 
 					}
+					System.out.println("2templen:"+templen+" len:"+len);
 					for (int i = 0 ; i < ar.size(); i++) {
 						strw.write(ar.get(i));
 					}
@@ -384,9 +386,15 @@ String rootPath = (String) session.get("pwd");
 				long len = raf.length();
 				long templen = (prevpos == 0|| prevpos > len)? len: prevpos;
 				raf.seek(templen);
-				
+				StringWriter strw = new StringWriter();
 				while((raf.read(str))!= -1){
-					message = (new String(str));
+					strw.write(new String(str));
+				}
+				
+				BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
+				String tempLine = "";
+				while((tempLine = stringReader.readLine()) != null){
+					message += tempLine.trim() +"<br/>";
 				}
 				
 				pos = fc.position(); 
@@ -431,7 +439,11 @@ String rootPath = (String) session.get("pwd");
 		if (getActionErrors().size() > 0) {
 			jsonString = getActionErrors().toString();
 		}else{
-			jsonString = getActionMessages()+"  "+message + " "+jobj.toString(3);
+			JSONArray jar = new JSONArray();
+			jar.addAll(getActionMessages());
+			jobj.put("actionMessages", jar);
+			jobj.put("message", message);
+			jsonString =  jobj.toString(3);
 		}
 		inputStream = new ByteArrayInputStream(jsonString.getBytes());
 		return SUCCESS;
