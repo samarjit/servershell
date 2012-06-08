@@ -63,10 +63,11 @@
 		  <artifactId>jetty-maven-plugin</artifactId>
 		  
 		  <configuration>
-		    <scanIntervalSeconds>10</scanIntervalSeconds>
-		    <webApp>
-		      <contextPath>/servershell</contextPath>
-		    </webApp>
+		    <scanIntervalSeconds>3</scanIntervalSeconds>
+		       <webAppConfig>
+            	<contextPath>/servershell</contextPath>
+			   </webAppConfig>
+		  
 		  </configuration>
 	   </plugin>
     </plugins>

@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 						session.put("role", role);
 						addActionMessage("role is admin");
 					}
-					
+					addActionMessage("Welcome "+name+" "+new Date());
 				} catch (FileNotFoundException e) {
 					logger.error(e);
 				} catch (IOException e) {
@@ -208,9 +209,9 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 				}else{
 					String lines = ""; 
 					if(m.group(2) ==null || "-".equals(m.group(2))){
-						lines = "-10";
+						lines = "-10 ";
 					}else{
-						lines = m.group(2);
+						lines = m.group(2)+" ";
 					}
 					
 					File f2 = new File(rootPath+"/"+m.group(3));
@@ -230,7 +231,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 						}
 						CmdRunner.process(tempcmd,null, tailfile);
 						try {
-							jsonString = FileUtils.readFileToString(tailfile);
+							message = FileUtils.readFileToString(tailfile);
 						} catch (IOException e) {
 							logger.error("tailfile read error:",e);
 							addActionError("tailfile read error!");
@@ -416,7 +417,7 @@ String rootPath = (String) session.get("pwd");
 				}
 				CmdRunner.process(tempcmd,null, shfile);
 				try {
-					jsonString = FileUtils.readFileToString(shfile);
+					message = FileUtils.readFileToString(shfile);
 				} catch (IOException e) {
 					logger.error("shfile read error:",e);
 					addActionError("shfile read error!");

@@ -22,11 +22,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import servershell.be.dao.BackendException;
 
@@ -37,7 +36,7 @@ public class QueryAction extends ActionSupport implements SessionAware{
 	
 	 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(QueryAction.class);
+	private static Logger logger = Logger.getLogger(QueryAction.class);
 	
 	private String query;
 	private InputStream inputStream;
@@ -64,7 +63,11 @@ public class QueryAction extends ActionSupport implements SessionAware{
 					role = (String) session.get("role");
 					name = (String) session.get("name");
 				}
-				
+				if(query != null ){
+					if(query.endsWith(";")){
+						query = query.substring(0, query.length()-1);
+					}
+				}
 				if(query.matches("(?ims:select)[\\S\\s]*(?ims:from)[\\S\\s]*")){
 					jsonString = sendToBE(query, rb);
 				}else if(query.matches("[\\S\\s]*(?ims:insert)[\\S\\s]*(?ims:into)[\\S\\s]*") ){
@@ -97,7 +100,7 @@ public class QueryAction extends ActionSupport implements SessionAware{
 				for (StackTraceElement stElm : stackTrace) {
 					str += stElm.toString()+"<br/>";
 				}
-				addActionError("Unknown Exception "+e.getMessage()+ str);
+				addActionError("Unknown Exception "+e.getMessage()+"  "+ str);
 				logger.error(" Unkown Exception",e);
 			}
 			
@@ -112,7 +115,7 @@ public class QueryAction extends ActionSupport implements SessionAware{
 
 
 
-	private String sendToBE(String qry, ResourceBundle rb) {
+	private String sendToBE(String qry, ResourceBundle rb) throws IOException {
 		String jsonString = "This is test";
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/bequery.action");
@@ -129,10 +132,13 @@ public class QueryAction extends ActionSupport implements SessionAware{
 			jsonString = responseBody.trim();
 		} catch (UnsupportedEncodingException e) {
 			logger.error("",e);
+			throw e;
 		} catch (ClientProtocolException e) {
 			logger.error("",e);
+			throw e;
 		} catch (IOException e) {
 			logger.error("",e);
+			throw e;
 		}
 		return jsonString;
 	}
@@ -160,6 +166,18 @@ public class QueryAction extends ActionSupport implements SessionAware{
 	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
+	}
+
+
+
+	public String getCmd() {
+		return cmd;
+	}
+
+
+
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
 	}
 
 	
