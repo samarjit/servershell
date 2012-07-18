@@ -66,6 +66,7 @@ public class CmdRunner {
 	    }
 	}
 	
+	
 	public static int process(String cmd, File dir, File outputfile){
 		int exitVal = 0; 
 		try {
@@ -116,6 +117,7 @@ public class CmdRunner {
 	public static void main(String[] args) {
 			String gzipCmd = "sh";// "gpg.exe --batch --passphrase-file C:/Eclipse/workspace2/EzLinkBE/src/sAtw.passphrase --decrypt --output C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm.gpg";
 			CmdRunner.process(gzipCmd, null, null);
+			System.out.println(gzipCmd);
 	}
 
 }
