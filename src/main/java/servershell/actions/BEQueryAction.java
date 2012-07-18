@@ -2,10 +2,12 @@ package servershell.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +16,19 @@ import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import servershell.be.dao.DBConnector;
+import servershell.be.dto.PrepstmtDTO;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class BEQueryAction extends ActionSupport{
 	 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(QueryAction.class);
+	private static Logger logger = Logger.getLogger(QueryAction.class);
 	
 	private String query;
 	private InputStream inputStream;
@@ -81,11 +83,17 @@ public class BEQueryAction extends ActionSupport{
 							jsonString += "<tr>";
 							for (int i = 1; i < colcount; i++) {
 								if(md.getColumnTypeName(i ).equals("DATE")|| md.getColumnTypeName(i ).equals("TIMESTAMP")){
-									row.put(md.getColumnLabel(i), crs.getDate(i).toString());
-									jsonString +=  "<td>"+ crs.getDate(i).toString() +" </td>";
+									Date dt = null;
+									if(md.getColumnTypeName(i ).equals("DATE")) dt = crs.getDate(i);
+									if(md.getColumnTypeName(i ).equals("TIMESTAMP")) dt = crs.getTimestamp(i);
+									
+									String dtStr = (dt == null)?"":PrepstmtDTO.getDateStringFormat(dt,"yyyy-MM-dd HH:mm:ss");
+									row.put(md.getColumnLabel(i), dtStr);
+									jsonString +=  "<td>"+ dtStr +" </td>";
 								}else{
-									row.put(md.getColumnLabel(i), crs.getString(i));
-									jsonString +=  "<td>"+ crs.getString(i) +" </td>";
+									String res = (crs.getString(i) ==null?"":crs.getString(i));
+									row.put(md.getColumnLabel(i), res);
+									jsonString +=  "<td>"+ res +" </td>";
 								}
 								if(first){
 									cols += "<th>"+md.getColumnLabel(i) +" </th>";

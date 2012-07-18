@@ -6,5 +6,9 @@
 </head>
 <body>
 	Index servershell
+	
+	monitoring: <a href="jsp/monitoring.jsp" >monitoring.jsp</a>
+	log view: <a href="jsp/logview.jsp" >logview.jsp</a>
+	log view: <a href="jsp/query.jsp" >query.jsp</a>
 </body>
 </html>

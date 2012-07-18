@@ -8,12 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class CmdRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(CmdRunner.class);
+	private static Logger logger = Logger.getLogger(CmdRunner.class);
 	private static File opfile;
 	
 	static class StreamGobbler extends Thread

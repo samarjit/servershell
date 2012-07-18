@@ -8,13 +8,12 @@ import net.sf.json.JSONObject;
 import ognl.Ognl;
 import ognl.OgnlException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import servershell.be.dao.SentenceParseException;
 
 public class ParseSentenceOgnl {
-	private static Logger logger = LoggerFactory.getLogger(ParseSentenceOgnl.class);
+	private static Logger logger = Logger.getLogger(ParseSentenceOgnl.class);
 
 	public static String parse(String sentence, Object root) throws SentenceParseException {
 		String parsedresult = "";

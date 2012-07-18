@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
 public class CompoundResource {
-	private static Logger logger = LoggerFactory.getLogger(CompoundResource.class);
+	private static Logger logger = Logger.getLogger(CompoundResource.class);
  
 	 
 	/**
