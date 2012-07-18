@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="compile" name="servershell">
+    <property environment="env"/>
+  
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+	<property name="dependency-jars" value="../servershell_lib" />
+	<property name="war.name" value="servershell" />
+    <path id="servershell.classpath">
+        <pathelement location="target/classes"/>
+    	<pathelement location="build/classes"/>
+    	<fileset dir="${dependency-jars}" includes="**/*.jar" />
+    </path>
+    <target name="init">
+        <mkdir dir="target/classes"/>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.uad"/>
+                <exclude name="**/*.ucd"/>
+                <exclude name="**/*.uld"/>
+                <exclude name="**/*.upd"/>
+                <exclude name="**/*.udd"/>
+                <exclude name="**/*.uod"/>
+                <exclude name="**/*.usd"/>
+                <exclude name="**/*.utd"/>
+                <exclude name="**/*.uud"/>
+                <exclude name="**/*.odd"/>
+                <exclude name="**/*.ead"/>
+                <exclude name="**/*.ecd"/>
+                <exclude name="**/*.eld"/>
+                <exclude name="**/*.epd"/>
+                <exclude name="**/*.edd"/>
+                <exclude name="**/*.eod"/>
+                <exclude name="**/*.esd"/>
+                <exclude name="**/*.etd"/>
+                <exclude name="**/*.eud"/>
+                <exclude name="**/*.urd"/>
+                <exclude name="**/*.uml"/>
+                <exclude name="**/*.ecore"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/resources">
+                <exclude name="**/*.uad"/>
+                <exclude name="**/*.ucd"/>
+                <exclude name="**/*.uld"/>
+                <exclude name="**/*.upd"/>
+                <exclude name="**/*.udd"/>
+                <exclude name="**/*.uod"/>
+                <exclude name="**/*.usd"/>
+                <exclude name="**/*.utd"/>
+                <exclude name="**/*.uud"/>
+                <exclude name="**/*.odd"/>
+                <exclude name="**/*.ead"/>
+                <exclude name="**/*.ecd"/>
+                <exclude name="**/*.eld"/>
+                <exclude name="**/*.epd"/>
+                <exclude name="**/*.edd"/>
+                <exclude name="**/*.eod"/>
+                <exclude name="**/*.esd"/>
+                <exclude name="**/*.etd"/>
+                <exclude name="**/*.eud"/>
+                <exclude name="**/*.urd"/>
+                <exclude name="**/*.uml"/>
+                <exclude name="**/*.ecore"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="target/classes"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    
+    
+    <target depends="init" name="compile">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target/classes" source="${source}" target="${target}">
+            <src path="src/main/java"/>
+            <classpath refid="servershell.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target/classes" source="${source}" target="${target}">
+            <src path="src/main/resources"/>
+            <exclude name="**/*.java"/>
+            <classpath refid="servershell.classpath"/>
+        </javac>
+    </target>
+   
+	<property name="war-archive-name" value="target/${war.name}" ></property>
+	
+	<!-- <target name="create-war" depends="compile">
+	    <delete quiet="true" file="${build-server}/WebContent"/>
+		<delete quiet="true" file="${war-archive-name}.war"/>
+		<echo message="requires build-copy-server or compile-server to be run before runnign this command." />
+	    
+		<copy todir="${build-server}/WebContent">
+	      <fileset dir="${build-dir}/WebContent" includes="**/*"/>
+	    </copy>
+		
+		<delete quiet="true" dir="${build-server}/WebContent/WEB-INF/classes/*" />
+		
+		<echo message="Copying ${build-server}/build/classes to ${build-server}/WebContent/WEB-INF/classes folder" />
+		
+	
+		<copy todir="${build-server}/WebContent/WEB-INF/classes">
+	      <fileset dir="${build-dir}/build/classes" includes="**/*"/>
+	    </copy>
+		<copy todir="${build-server}/WebContent/WEB-INF/lib">
+			      <fileset dir="${dependency-jars}" includes="**/*"/>
+		</copy>
+	    <jar jarfile="${war-archive-name}.war" basedir="${build-server}/WebContent">
+	    </jar>
+		<echo message="created ... ${war-archive-name}.war" />
+	</target> -->
+	
+	<property name="deployDir" value="target/${war.name}"/>
+	<target name="war-exploded" depends="compile">
+				<delete quiet="true" dir="${deployDir}"/>
+				<delete quiet="true" file="target/${war.name}.war"/>
+		        
+				<copy todir="${deployDir}">
+		            <fileset dir="src/main/webapp"/>
+		        </copy>
+		        <copy todir="${deployDir}/WEB-INF/classes">
+		            <fileset dir="target/classes"/>
+		        </copy>
+		        <copy todir="${deployDir}/WEB-INF/lib" flatten="true">
+		            <fileset dir="${dependency-jars}" includes="**/*"/>         
+		        </copy>
+	        
+	</target>
+
+	<target name="create-war" depends="war-exploded">       
+	    <zip destfile="target/${war.name}.war" basedir="target/${war.name}"/>
+	</target>
+	
+	<target name="deployfe" >       
+			<copy todir="/App1/ezltrp/apache-tomcat-6.0.20/webapps">
+		      <fileset dir="target" includes="${war-archive-name}.war"/>
+		    </copy>
+	</target>
+	<target name="deploybe" >       
+			<copy todir="/App1/ezltrp/apache-tomcat-BE/webapps">
+		      <fileset dir="target" includes="${war-archive-name}.war"/>
+		    </copy>
+	</target>
+</project>
