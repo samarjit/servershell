@@ -13,6 +13,8 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	<sj:head/>
 	<script type="text/javascript">
 		function frmsubmit(){
+			$("#log").append("<div class='query'>"+$("#query").val()+"</div>");
+			$("#log").append("<div class='res'>"+$("#queryresult").html()+"</div>");
 				$.post("${pageContext.request.contextPath}/query.action",{query: $("#query").val(), cmd: 'query'},function (data){
 						$("#queryresult").html(data);		
 				});
@@ -33,6 +35,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	</style>
 </head>
 <body>
+<%@ include file="../index.jsp" %>
 <form action="query.action" id="frm1">
 <button type="button" onclick="frmsubmit()">Submit Query</button>
 	<table style="width:100%;height:100%">
@@ -52,6 +55,9 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	
 </form>	
   
+ Log:
+ <div id="log">
+ </div> 
 </body>
 </html>
 

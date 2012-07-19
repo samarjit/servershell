@@ -143,12 +143,12 @@
 	
 	<target name="deployfe" >       
 			<copy todir="/App1/ezltrp/apache-tomcat-6.0.20/webapps">
-		      <fileset dir="target" includes="${war-archive-name}.war"/>
+		      <fileset dir="target" includes="${war.name}.war"/>
 		    </copy>
 	</target>
 	<target name="deploybe" >       
 			<copy todir="/App1/ezltrp/apache-tomcat-BE/webapps">
-		      <fileset dir="target" includes="${war-archive-name}.war"/>
+		      <fileset dir="target" includes="${war.name}.war"/>
 		    </copy>
 	</target>
 </project>

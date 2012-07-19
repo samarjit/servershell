@@ -117,7 +117,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 </head>
 <body>
 
-
+<%@ include file="../index.jsp" %>
    
 
 

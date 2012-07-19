@@ -41,6 +41,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	</script>
 </head>
 <body>
+<%@ include file="../index.jsp" %>
 <form action="monitoring.action" id="frm1">
 <button type="button" onclick="frmsubmit()">Submit Query</button>
 <button type="button" onclick="frmsubmitPageup()">pageup</button>
