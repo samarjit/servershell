@@ -1,4 +1,4 @@
-package servershell.actions;
+package servershell.fe.actions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

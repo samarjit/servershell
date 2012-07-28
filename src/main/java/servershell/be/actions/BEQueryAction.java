@@ -1,4 +1,4 @@
-package servershell.actions;
+package servershell.be.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import servershell.be.dao.DBConnector;
+import servershell.fe.actions.QueryAction;
 
 import com.opensymphony.xwork2.ActionSupport;
 

@@ -1,4 +1,4 @@
-package servershell.actions;
+package servershell.fe.actions;
 
 
 import org.apache.log4j.Logger;
