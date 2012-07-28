@@ -14,6 +14,7 @@ import net.sf.json.JSONSerializer;
 
 import org.apache.log4j.Logger;
 
+import servershell.be.dto.PrepstmtDTO;
 import servershell.be.dto.PrepstmtDTO.DataType;
 import servershell.be.dto.PrepstmtDTOArray;
 import servershell.be.dto.ResultDTO;
@@ -153,7 +154,11 @@ public class FETranslatorDAO {
 						while (crs.next()) {
 							row = new HashMap<String, String>();
 							for (int i = 1; i <= colcount; i++) {
+								if(md.getColumnType(i) == 93){//TIMESTAMP
+									row.put(md.getColumnLabel(i), PrepstmtDTO.getDateStringFormat(crs.getDate(i), PrepstmtDTO.DATE_NS_FORMAT) );
+								}else{
 								row.put(md.getColumnLabel(i), crs.getString(i));
+								}
 							}
 							values.add(row);
 							countrec++;	

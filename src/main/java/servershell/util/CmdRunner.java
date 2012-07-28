@@ -8,12 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class CmdRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(CmdRunner.class);
+	private static Logger logger = Logger.getLogger(CmdRunner.class);
 	private static File opfile;
 	
 	static class StreamGobbler extends Thread
@@ -67,6 +66,7 @@ public class CmdRunner {
 	    }
 	}
 	
+	
 	public static int process(String cmd, File dir, File outputfile){
 		int exitVal = 0; 
 		try {
@@ -117,6 +117,7 @@ public class CmdRunner {
 	public static void main(String[] args) {
 			String gzipCmd = "sh";// "gpg.exe --batch --passphrase-file C:/Eclipse/workspace2/EzLinkBE/src/sAtw.passphrase --decrypt --output C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm C:/Eclipse/workspace2/sync_inbox/MTR241_20111124.htm.gpg";
 			CmdRunner.process(gzipCmd, null, null);
+			System.out.println(gzipCmd);
 	}
 
 }

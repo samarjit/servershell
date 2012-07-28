@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+ 
+<!-- Ezlink -->
+
+<screen name="ezlinkPage" mappingxml="map/ezlink/ezlink.xml" />
+<screen name="promotion" mappingxml="map/ezlink/promotion.xml" />
+<screen name="cms" mappingxml="map/ezlink/cms.xml" />
+
+<screen name="AlertQueue" mappingxml="map/jsptest/AlertQueue.xml" />
+<screen name="CardBlockRefund" mappingxml="map/jsptest/CardBlockRefund.xml" />
+<screen name="CardMaster" mappingxml="map/jsptest/CardMaster.xml" />
+<screen name="CustomerMaster" mappingxml="map/jsptest/CustomerMaster.xml" />
+<screen name="EzlRetnFileTrack" mappingxml="map/jsptest/EzlRetnFileTrack.xml" />
+<screen name="EzlRetnAuditTrail" mappingxml="map/jsptest/EzlRetnAuditTrail.xml" />
+<screen name="TxnHistory" mappingxml="map/jsptest/TxnHistory.xml" />
+<screen name="DeregistrationHst" mappingxml="map/jsptest/DeregistrationHst.xml" />
+<screen name="EzlRetnMemberType" mappingxml="map/jsptest/EzlRetnMemberType.xml" />
+<screen name="PassionUserTemp" mappingxml="map/jsptest/PassionUserTemp.xml" />
+<screen name="DealMaster" mappingxml="map/jsptest/DealMaster.xml" />
+</root>

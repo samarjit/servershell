@@ -444,7 +444,7 @@ String rootPath = (String) session.get("pwd");
 			jar.addAll(getActionMessages());
 			jobj.put("actionMessages", jar);
 			jobj.put("message", message);
-			jsonString =  jobj.toString(3);
+			jsonString =  jobj.toString();
 		}
 		inputStream = new ByteArrayInputStream(jsonString.getBytes());
 		return SUCCESS;
