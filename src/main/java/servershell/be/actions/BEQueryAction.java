@@ -2,7 +2,6 @@ package servershell.be.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -21,11 +20,8 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
 import servershell.be.dao.DBConnector;
-<<<<<<< HEAD:src/main/java/servershell/be/actions/BEQueryAction.java
-import servershell.fe.actions.QueryAction;
-=======
 import servershell.be.dto.PrepstmtDTO;
->>>>>>> 49544c47303af192afa94eca58c539ded5c05b05:src/main/java/servershell/actions/BEQueryAction.java
+import servershell.fe.actions.QueryAction;
 
 import com.opensymphony.xwork2.ActionSupport;
 
