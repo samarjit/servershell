@@ -47,7 +47,7 @@ public class BEShellAction extends ActionSupport {
 //		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/bequery.action");
 		try {
 			File file = new File(filename);
-			if(! file.exists()){
+			if(file.exists()){
 				FileInputStream fin = new FileInputStream(file);
 				inputStream = fin;
 			}else{
