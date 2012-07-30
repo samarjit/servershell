@@ -5,10 +5,12 @@
 	<title></title>
 </head>
 <body>
-	Index servershell
-	
-	monitoring: <a href="jsp/monitoring.jsp" >monitoring.jsp</a>
-	log view: <a href="jsp/logview.jsp" >logview.jsp</a>
-	log view: <a href="jsp/query.jsp" >query.jsp</a>
+	Index servershell<br/>
+	Welcome "${session.name}"<br/>
+	monitoring: <a href="${pageContext.request.contextPath}/jsp/monitoring.jsp" >monitoring.jsp</a>
+	log view: <a href="${pageContext.request.contextPath}/jsp/logview.jsp" >logview.jsp</a>
+	log view: <a href="${pageContext.request.contextPath}/jsp/query.jsp" >query.jsp</a>
+	upload: <a href="${pageContext.request.contextPath}/jsp/upload.jsp" >upload.jsp</a>
+	fileuploaddownload: <a href="${pageContext.request.contextPath}/jsp/fileuploaddownload.jsp" >fileuploaddownload.jsp</a>
 </body>
 </html>

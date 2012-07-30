@@ -38,7 +38,7 @@ public class BEShellAction extends ActionSupport {
 	 * @param filename
 	 * @return
 	 */
-	@Action(value="download", results={@Result(type="stream")})
+	@Action(value="bedownloadbe", results={@Result(type="stream")})
 	public String download(){
 		logger.info("This file is being downloaded:"+filename);
 		String errors = null; 
@@ -74,7 +74,7 @@ public class BEShellAction extends ActionSupport {
 	 * @param filename
 	 * @return
 	 */
-	@Action(value="upload", results={@Result(type="stream")})
+	@Action(value="beuploadbe", results={@Result(type="stream")})
 	public String upload(){
 		String jsonString = "";
 		JSONObject jobj= new JSONObject() ;
@@ -88,12 +88,14 @@ public class BEShellAction extends ActionSupport {
 			filename = fileUploadFileName;
 			File uploadDir = new File(beUploadDir);
 			boolean status = false;
+			logger.debug("beUploadDir exists? "+beUploadDir+ uploadDir.exists());
 			if(uploadDir.exists()){
 				File destFile = new File(uploadDir, filename);
+				logger.debug("Destination BE path:"+destFile.getAbsolutePath());
 				status = fileUpload.renameTo(destFile);
 			}
-			message = "Upload completed .. response="+status ;
-			logger.debug("Upload completed .. response="+status);
+			message = "Upload completed in BE.. response="+status ;
+			logger.debug("Upload completed in BE.. response="+status);
 			
 		} catch (Exception e) {
 			logger.error("",e);

@@ -6,12 +6,9 @@
   <packaging>war</packaging>
   <name>servershell</name>
    <properties>
-    <drools.version>5.3.0-SNAPSHOT</drools.version>
-    <jbpm.version>5.1-SNAPSHOT</jbpm.version>
-    <drools.osgi.version>5.3.0</drools.osgi.version>
     <!--<jbpm.osgi.version>5.1.0.SNAPSHOT</jbpm.osgi.version>
   -->
-    <struts-version>2.2.1.1</struts-version>
+   	<struts-version>2.3.4</struts-version>
    </properties>
   
   

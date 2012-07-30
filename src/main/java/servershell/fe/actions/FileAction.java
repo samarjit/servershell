@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -26,6 +27,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
 
@@ -33,6 +36,7 @@ import servershell.be.dao.BackendException;
 import servershell.util.CompoundResource;
 
 import com.opensymphony.xwork2.ActionSupport;
+
 
 public class FileAction extends ActionSupport implements SessionAware {
 
@@ -89,14 +93,14 @@ public class FileAction extends ActionSupport implements SessionAware {
 	 * @param filename
 	 * @return
 	 */
-	@Action(value="download", results={@Result(type="stream")})
+	@Action(value="bedownload", results={@Result(type="stream")})
 	public String download(){
 		logger.info("This file is being downloaded:"+filename);
 		String errors = null; 
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/download.action");
+		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/bedownloadbe.action");
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 		nameValuePairs.add(new BasicNameValuePair("filename",filename));
 		try {
@@ -125,30 +129,32 @@ public class FileAction extends ActionSupport implements SessionAware {
 	 * @param in fileUpload
 	 * @param in fileUploadContentType
 	 * @param in fileUploadFileName
-	 * @param in filename
+	 * @param in feUploadDir
 	 * @return
 	 */
-	@Action(value="feupload", results={@Result(type="stream")})
+	@Action(value="feupload", results={@Result(name="success",type="stream")})
 	public String feupload(){
-		
+		System.out.println("FE file upload started ..");
 		String jsonString = "";
 		JSONObject jobj= new JSONObject() ;
 		String message = "";
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
-		
+		logger.debug("feupload1 .... action.."+fileUploadFileName);
 		try {
 			if((session == null || !session.containsKey("name") )){
 				addActionError("User is not logged in please login first..");
 				throw new BackendException("User needs to login..");
 			}
 			
-			File userDir = createUserDir(rb);
+//			File userDir = createUserDir(rb);
 			filename = fileUploadFileName;
 			File uploadDir = new File(feUploadDir);
 			boolean status = false;
+			logger.debug("feUploadDir exists? "+feUploadDir+ uploadDir.exists());
 			if(uploadDir.exists()){
 				File destFile = new File(uploadDir, filename);
+				logger.debug("Destination path:"+destFile.getAbsolutePath());
 				status = fileUpload.renameTo(destFile);
 			}
 			message = "Upload completed .. response="+status ;
@@ -187,7 +193,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 	 * @param in filename
 	 * @return
 	 */
-	@Action(value="upload", results={@Result(type="stream")})
+	@Action(value="beupload", results={@Result(type="stream")})
 	public String upload(){
 		 
 		String jsonString = "";
@@ -196,7 +202,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 		
 		HttpClient client = new DefaultHttpClient();
 		 ResourceBundle rb = ResourceBundle.getBundle("config");
-		 HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/download.action");
+		 HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/beuploadbe.action");
 		 MultipartEntity entity = new MultipartEntity( HttpMultipartMode.BROWSER_COMPATIBLE );
 		 
 		 try {
@@ -205,11 +211,24 @@ public class FileAction extends ActionSupport implements SessionAware {
 					throw new BackendException("User needs to login..");
 				}
 			 
-			 File userDir = createUserDir(rb);
-			 filename = fileUploadFileName;
+			File userDir = createUserDir(rb);
+			filename = fileUploadFileName;
+			boolean status = false;
+			logger.debug("userDir exists? "+userDir+ userDir.exists());
+			if(userDir.exists()){
+				File destFile = new File(userDir, filename);
+				logger.debug("Destination path:"+destFile.getAbsolutePath());
+				status = fileUpload.renameTo(destFile);
+			}
+			if(status == false){
+				addActionError("local file save failed");
+				throw new Exception("local file save failed");
+			}
+			 
+			
 			 File uploadFile = new File(userDir, filename);
 			 // For File parameters
-			 entity.addPart( "fileType", new FileBody(uploadFile , "application/zip" ));
+			 entity.addPart( "fileUpload", new FileBody(uploadFile ));
 
 			 // For usual String parameters
 			 entity.addPart( "filename", new StringBody(filename));
@@ -222,8 +241,8 @@ public class FileAction extends ActionSupport implements SessionAware {
 			 String response = EntityUtils.toString( client.execute( post ).getEntity(), "UTF-8" );
 
 			 client.getConnectionManager().shutdown();
-			 message = "Upload completed .. response="+response;
-			 logger.debug("Upload completed .. response="+response);
+			 message = "Upload completed from BE  .. response="+response;
+			 logger.debug("Upload completed from BE .. response="+response);
 			 
 		} catch (Exception e) {
 			logger.error("",e);
@@ -254,7 +273,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 	private File createUserDir(ResourceBundle rb) {
 		String tempPath = CompoundResource.getString(rb, "application_home");
 		String name =  (String) session.get("name");
-		if (name == null || !"".equals(name)){
+		if (name == null || "".equals(name)){
 			addActionError("name is empty, please login... ");
 		}
 		File f = new File(tempPath,name);
@@ -266,7 +285,9 @@ public class FileAction extends ActionSupport implements SessionAware {
 	}
 	
 	
-	 
+	public String display() {
+		return NONE;
+	}
 
 	public String getFeUploadDir() {
 		return feUploadDir;
@@ -332,5 +353,12 @@ public class FileAction extends ActionSupport implements SessionAware {
 	}
 	
 	
-	
+	public static void main(String args[]){
+		FileAction fc = new FileAction();
+		fc.setBeUploadDir("C:/Users/Samarjit/Desktop/");
+		Map<String,Object> session = new HashMap<String, Object>();
+		session.put("name","sam");
+		fc.setSession(session);
+		fc.upload();
+	}
 }

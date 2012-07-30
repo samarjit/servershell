@@ -53,8 +53,8 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		}
 		
 		$.subscribe("complete", function(event, data){
-			
-			alert(data)
+		//	alert('status: ' + event.originalEvent.status + '\n\nresponseText: \n' + event.originalEvent.request.responseText + 
+		  //   '\n\nThe output div should have already been updated with the responseText.');
 		});
 		
 	
@@ -118,16 +118,64 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <body>
 
 <%@ include file="../index.jsp" %>
-   
+
+<hr/>
+<div style="color:red">   
+<s:actionerror/>
+<s:actionmessage/>
+</div>
+<hr/>
+
+<s:form action="feupload.action" id="frm0"  enctype="multipart/form-data">
+Upload FE Dir: <input type="text" name="feUploadDir" id="feUploadDir" size="50"/>
+File: <input type="file" name="fileUpload" id="fileUpload"/>
+<input type="submit" value="upload file"/>
+<sj:submit formId="frm0" id="pp"   targets="result" value="Upload FE" 
+ onBeforeTopics="before"
+ onCompleteTopics="complete"
+ onErrorTopics="errorState"  
+ timeout="2500" 
+ indicator="indicator" 
+  />
+</s:form>
+<br/>
 
 
-<s:form action="monitoring" id="frm0">
-<input type="text" name="cmd" id="cmd" value="login"/>
-User: <input type="text" name="name" id="name">
-Pass: <input type="password" name="password" id="password"/>
-<button type="button" onclick="login()" id="btn">login..</button>	
-<sj:submit formId="frm0" id="pp"   targets="result" value="Submit Form" 
-  onBeforeTopics="before"
+
+<s:form action="fedownload.action" id="frm1">
+Download FE filename: <input type="text" name="filename" id="filename" size="50">
+
+<sj:submit formId="frm1" id="pp1"   targets="result" value="Download FE" 
+ onBeforeTopics="before"
+ onCompleteTopics="complete"
+ onErrorTopics="errorState"  
+ timeout="2500" 
+ indicator="indicator" 
+  />
+</s:form>
+
+
+<s:form action="beupload.action" id="frm2"  enctype="multipart/form-data">
+Upload BE Dir: <input type="text" name="beUploadDir" id="beUploadDir" size="50"/>
+BE File: <input type="file" name="fileUpload" id="fileUpload"/>
+<input type="submit" value="upload file"/>
+<sj:submit formId="frm2" id="pp2"   targets="result" value="Upload BE" 
+ onBeforeTopics="before"
+ onCompleteTopics="complete"
+ onErrorTopics="errorState"  
+ timeout="2500" 
+ indicator="indicator" 
+  />
+</s:form>
+<br/>
+
+
+
+<s:form action="bedownload.action" id="frm3">
+Download BE filename: <input type="text" name="filename" id="filename" size="50">
+
+<sj:submit formId="frm3" id="pp3"   targets="result" value="Download BE" 
+ onBeforeTopics="before"
  onCompleteTopics="complete"
  onErrorTopics="errorState"  
  timeout="2500" 
@@ -137,20 +185,20 @@ Pass: <input type="password" name="password" id="password"/>
  
 <s:form action="upload.action" id="frm1">
 
-	<table style="width:100%;height:100%">
+	<table >
 		<tr>
 			<td width="100%">
 				Query ${pageContext.request.contextPath}
 				<textarea name="cmd" id="cmd1" cols="3" rows="2" style="width:100%"></textarea><button type="button" onclick="frmsubmit()">Submit Query</button>
-		        Result
-				<div name="result" id="result" cols="30" rows="10" style="width:100%"></div>
+		        
+				
 			</td>
 		</tr>
 	
 	</table>
 	
 </s:form>	
-  
+Result  <div name="result" id="result" cols="30" rows="10" style="width:100%"></div>
 </body>
 </html>
 
