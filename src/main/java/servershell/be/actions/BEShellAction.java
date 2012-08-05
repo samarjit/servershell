@@ -1,19 +1,28 @@
 package servershell.be.actions;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
-import servershell.fe.actions.FileAction;
 import servershell.util.CompoundResource;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -123,6 +132,239 @@ public class BEShellAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	long prevpos = 0;
+	String belogpath = "";
+	@Action(value="berunlog", results={@Result(type="stream")})
+	public String berunlog(){
+		String res = "empty no response";
+		 
+		JSONObject jsonMessage = new JSONObject();
+		String message = "";
+		String endchar = "";
+		String lastline = "";
+		try {
+			RandomAccessFile raf = new RandomAccessFile(belogpath, "r");
+			System.out.println("berunlog action .."+prevpos);
+			
+			
+			long len = raf.length();
+			byte str[] = new byte[200];
+			if(prevpos < len){
+				raf.seek(prevpos);
+				StringWriter strw = new StringWriter();
+				while((raf.read(str))!= -1){
+					strw.write(new String(str));
+				}
+				
+				BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
+				String tempLine = "";
+				String tempLastLine = "";
+				while((tempLine = stringReader.readLine()) != null){
+					tempLastLine = lastline;
+					lastline = tempLine.trim();
+					message += tempLastLine +"<br/>";
+				}
+				//find last EOL and truncate string upto last EOL
+				raf.seek(raf.getFilePointer() - 1);
+				byte lastbyte = raf.readByte();
+//				logger.debug("Message ends with:"+ raf.readByte()+" " +raf.readByte()+" " +raf.readByte()+" " + raf.readByte()+" " +raf.readByte()+" " +raf.readByte());
+				if(lastbyte == '\n')endchar = "EOL";
+			}
+			long pos = raf.getFilePointer();
+			raf.close();
+			jsonMessage.put("time",new Date().toString());
+			jsonMessage.put("prevpos",prevpos);
+			jsonMessage.put("pos",pos);
+			jsonMessage.put("endswith",endchar);
+			jsonMessage.put("message", message);
+			jsonMessage.put("lastline", lastline);
+			
+			res = jsonMessage.toString();
+		} catch (Exception e) {
+			logger.error(e);
+			 addActionError("Exception in berunlog please check:"+e +"  "+belogpath);
+			 
+		}
+		
+		if(getActionErrors().size() > 0){
+			res = getActionErrors().toString();
+		}
+		logger.debug(res);
+		inputStream = new ByteArrayInputStream(res.getBytes());
+		return SUCCESS;
+	}
+	
+	int pagesize  = 0;
+	
+	/**
+	 * belogpath in
+	 * pagesize in
+	 * cmd pageup/pagedown/getalluptoend
+	 * 
+	 * 
+	 * @return
+	 */
+	@Action(value="bescrolllog", results={@Result(type="stream")})
+	public String scrolllog(){
+		
+		
+//		File f = createUserDir(rb);
+		String message = "";
+		try{
+			
+			logger.debug("BEscrollog started .."+cmd);
+			RandomAccessFile raf = new RandomAccessFile(belogpath, "r");
+			FileChannel fc = raf.getChannel();
+			ArrayList<String> ar = new ArrayList<String>(50);
+			byte bytear[] = new byte[200];
+			
+			
+			long pos = raf.getFilePointer();
+			
+			
+			long len = raf.length();
+			
+			//read 20 lines
+			int numlines = -1;
+	//		File logpage = new File(f, "logfile.txt");
+			StringWriter strw = new StringWriter();
+			
+			int ipageup = pagesize;// ("pageup".equals(cmd))? pagesize: 0;
+			int ipagedown = pagesize;// ("pagedown".equals(cmd))? pagesize: 0;
+			
+			long templen = (prevpos == 0|| prevpos > len)? len: prevpos; 
+			int bytestoread = 200;
+			byte [] halfline = new byte[200];
+			byte []reverseline = new byte[200];
+			byte [] tocopy = new byte [200];
+			boolean breakflag = false;
+			//cases 200 bytes not even 1 line completed
+			//case 200 bytes 3 lines completed but only 1 like was asked for
+			if ("pageup".equals(cmd)) {
+				while (numlines <= ipageup && templen > 0) {
+					if (templen > 0) {
+						if (templen > 200) {
+							raf.seek(templen - bytestoread);
+							templen = templen - bytestoread;
+						} else {
+							raf.seek(0);
+							bytestoread = (int) templen;
+							templen = 0;
+	
+						}
+						try {
+							raf.readFully(bytear, 0, bytestoread);
+							 ArrayUtils.reverse(bytear);
+						} catch (IOException e) {
+							throw e;
+						}
+						
+						int lastcopypoint = 0;
+						for (int i =0 ;i < bytear.length; i++) {
+							byte b = bytear[i];
+							if (b == '\n') {
+								numlines++;
+								if(numlines == ipageup){
+									 templen = templen + bytestoread - i;
+									 halfline = Arrays.copyOfRange(bytear,lastcopypoint, i);
+									 ArrayUtils.reverse(halfline);
+									 System.out.println("Numlines="+numlines+" ipagesup="+ipageup+"Half Line:"+new String(halfline));
+									 ar.add(new String(halfline));
+									 breakflag = true;
+									 break;
+								}else{
+									tocopy = Arrays.copyOfRange(bytear, lastcopypoint, i);
+									ArrayUtils.reverse(tocopy);
+									System.out.println("One Line:"+new String(tocopy));
+									lastcopypoint = i;
+									ar.add(new String(tocopy));
+								}
+								
+								
+							}
+						}
+						
+					}
+					if(breakflag)break;
+				}
+				
+				prevpos = templen;
+				for (int i = ar.size() - 1; i >= 0; i--) {
+					strw.write(ar.get(i));
+				}
+				
+			}else if("pagedown".equals(cmd)){
+				System.out.println("templen:"+templen+" len:"+len);
+				while (numlines <= ipagedown && templen < len) {
+					if (templen < len) {
+						if ((len - templen )> 200) {
+							raf.seek(templen );
+							templen = templen + bytestoread;
+						} else {
+							raf.seek(templen);
+							bytestoread = (int) (len - templen);
+							templen = len;
+	
+						}
+						try {
+							raf.readFully(bytear, 0, bytestoread);
+						} catch (IOException e) {
+							throw e;
+						}
+						for (byte b : bytear) {
+							if (b == '\n') {
+								numlines++;
+							}
+	
+						}
+						ar.add(new String(bytear));
+					}
+	
+				}
+				System.out.println("2templen:"+templen+" len:"+len);
+				for (int i = 0 ; i < ar.size(); i++) {
+					strw.write(ar.get(i));
+				}
+			}else if("getalluptoend".equals(cmd)){
+				raf.seek(templen);
+				
+				while((raf.read(bytear))!= -1){
+					strw.write(new String(bytear));
+				}
+				
+				
+			}
+			
+			
+			BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
+			String tempLine = "";
+			while((tempLine = stringReader.readLine()) != null){
+				message += tempLine +"<br/>";
+			}
+			
+			JSONObject jsonMessage = new JSONObject();
+			jsonMessage.put("time",new Date().toString());
+			jsonMessage.put("prevpos",prevpos);
+			jsonMessage.put("pos",pos);
+//			jsonMessage.put("endswith",endchar);
+			jsonMessage.put("message", message);
+//			jsonMessage.put("lastline", lastline);
+			
+			message = jsonMessage.toString();
+			
+		}catch(Exception e){
+			logger.error(" Exception "+e);
+			addActionError("Exception "+e);
+		}
+		
+		if(getActionErrors().size() != 0){
+			message = getActionErrors().toString();
+		}
+		
+		inputStream  = new ByteArrayInputStream(message.getBytes());
+		
+		return SUCCESS;
+	}
 	
 	private File createUserDir(ResourceBundle rb) {
 		String tempPath = CompoundResource.getString(rb, "application_home");
@@ -140,6 +382,40 @@ public class BEShellAction extends ActionSupport {
 	
 	
 	
+	 
+
+	public String getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
+	}
+
+	public int getPagesize() {
+		return pagesize;
+	}
+
+	public void setPagesize(int pagesize) {
+		this.pagesize = pagesize;
+	}
+
+	public String getBelogpath() {
+		return belogpath;
+	}
+
+	public void setBelogpath(String belogpath) {
+		this.belogpath = belogpath;
+	}
+
+	public long getPrevpos() {
+		return prevpos;
+	}
+
+	public void setPrevpos(long prevpos) {
+		this.prevpos = prevpos;
+	}
+
 	public String getName() {
 		return name;
 	}

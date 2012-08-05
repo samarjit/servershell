@@ -7,10 +7,15 @@
 <body>
 	Index servershell<br/>
 	Welcome "${session.name}"<br/>
-	monitoring: <a href="${pageContext.request.contextPath}/jsp/monitoring.jsp" >monitoring.jsp</a>
-	log view: <a href="${pageContext.request.contextPath}/jsp/logview.jsp" >logview.jsp</a>
-	log view: <a href="${pageContext.request.contextPath}/jsp/query.jsp" >query.jsp</a>
-	upload: <a href="${pageContext.request.contextPath}/jsp/upload.jsp" >upload.jsp</a>
-	fileuploaddownload: <a href="${pageContext.request.contextPath}/jsp/fileuploaddownload.jsp" >fileuploaddownload.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/monitoring.jsp" >monitoring.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/logview.jsp" >logview.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/query.jsp" >query.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/upload.jsp" >upload.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/fileuploaddownload.jsp" >fileuploaddownload.jsp</a>
+	<a href="${pageContext.request.contextPath}/jsp/berunlog.jsp" >berunlog.jsp</a>
+	<a href="${pageContext.request.contextPath}/config-browser/index.action" >config browser</a>
+	<a href="${pageContext.request.contextPath}/jsp/jvmMemoryMonitor.jsp" >jvm</a>
+	<a href="${pageContext.request.contextPath}/jsp/bescrolllog.jsp" >bescrolllog</a>
+	
 </body>
 </html>
