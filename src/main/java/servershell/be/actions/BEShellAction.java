@@ -233,7 +233,8 @@ public class BEShellAction extends ActionSupport {
 			int ipagedown = pagesize;// ("pagedown".equals(cmd))? pagesize: 0;
 			
 			long templen = (prevpos == 0|| prevpos > len)? len: prevpos; 
-			int bytestoread = 200;
+			final int READBYTE = 200;
+			int bytestoread = READBYTE;
 			byte [] halfline = new byte[200];
 			byte []reverseline = new byte[200];
 			byte [] tocopy = new byte [200];
@@ -243,7 +244,7 @@ public class BEShellAction extends ActionSupport {
 			if ("pageup".equals(cmd)) {
 				while (numlines <= ipageup && templen > 0) {
 					if (templen > 0) {
-						if (templen > 200) {
+						if (templen > READBYTE) {
 							raf.seek(templen - bytestoread);
 							templen = templen - bytestoread;
 						} else {
@@ -253,51 +254,78 @@ public class BEShellAction extends ActionSupport {
 	
 						}
 						try {
+							Arrays.fill(bytear, (byte)0);
 							raf.readFully(bytear, 0, bytestoread);
-							 ArrayUtils.reverse(bytear);
+//							reverse(bytear);
 						} catch (IOException e) {
 							throw e;
 						}
 						
 						int lastcopypoint = 0;
-						for (int i =0 ;i < bytear.length; i++) {
+						Arrays.fill(tocopy, (byte)0);
+						int i=0;
+						
+//						for (byte b : bytear) {
+//							System.out.print((char)b);
+//						}
+//						System.out.println("going into loop");
+						for (i = bytestoread -1 ;i  >=0 ; i--) {
 							byte b = bytear[i];
 							if (b == '\n') {
 								numlines++;
 								if(numlines == ipageup){
-									 templen = templen + bytestoread - i;
-									 halfline = Arrays.copyOfRange(bytear,lastcopypoint, i);
-									 ArrayUtils.reverse(halfline);
-									 System.out.println("Numlines="+numlines+" ipagesup="+ipageup+"Half Line:"+new String(halfline));
-									 ar.add(new String(halfline));
+									 templen = templen  + i;
+//									 halfline = Arrays.copyOfRange(bytear,0, i);
+//									 reverse(halfline);
+//									 System.out.println("Half Line:"+new String(halfline));
+//									 ar.add(new String(halfline));
+									 tocopy[i] = b;
+									 System.out.print((char)b);
+									 System.out.println("numlines:"+numlines+ " ipageup:"+ipageup+" templen:"+templen+" bytestoread:"+bytestoread+" i="+i);
 									 breakflag = true;
 									 break;
 								}else{
-									tocopy = Arrays.copyOfRange(bytear, lastcopypoint, i);
-									ArrayUtils.reverse(tocopy);
-									System.out.println("One Line:"+new String(tocopy));
-									lastcopypoint = i;
-									ar.add(new String(tocopy));
+//									tocopy = Arrays.copyOfRange(bytear, lastcopypoint, i);
+//									reverse(tocopy);
+//									System.out.println("One Line:"+new String(tocopy));
+//									lastcopypoint = i;
+//									ar.add(new String(tocopy));
 								}
+								 
 								
-								
+							}else{
+								tocopy[i] = b;
+								System.out.print((char)b);
 							}
 						}
+//						ArrayUtils.reverse(bytear);
+//						reverse(bytear);
+//						for (int j=bytestoread-1 ; j >=0; j--) {
+//							System.out.print((char)bytear[j]);
+//						}
+//						System.out.print("|");
+						ar.add(new String(tocopy,0,bytestoread));
 						
-					}
+					} 
+					
 					if(breakflag)break;
 				}
+				//reverse(tocopy);
+				
+				
 				
 				prevpos = templen;
 				for (int i = ar.size() - 1; i >= 0; i--) {
-					strw.write(ar.get(i));
+					byte[] bar = ar.get(i).getBytes();
+					//reverse(bar);
+					strw.write(new String(bar));
 				}
-				
+				System.out.println("Full Text:\n"+strw.toString());
 			}else if("pagedown".equals(cmd)){
 				System.out.println("templen:"+templen+" len:"+len);
 				while (numlines <= ipagedown && templen < len) {
 					if (templen < len) {
-						if ((len - templen )> 200) {
+						if ((len - templen )> READBYTE) {
 							raf.seek(templen );
 							templen = templen + bytestoread;
 						} else {
@@ -311,27 +339,49 @@ public class BEShellAction extends ActionSupport {
 						} catch (IOException e) {
 							throw e;
 						}
-						for (byte b : bytear) {
+						
+						Arrays.fill(tocopy, (byte)0);
+						int i = 0;
+						for (i = 0; i< bytestoread ; i++) {
+							byte b = bytear[i];
 							if (b == '\n') {
 								numlines++;
+								if(numlines == ipageup){
+									System.out.println("templen (before):"+templen);
+									 templen = templen - (bytestoread- i);
+//									 halfline = Arrays.copyOfRange(bytear,0, i);
+									 System.out.println("numlines:"+numlines+ " ipagedown:"+ipagedown+" templen:"+templen+" bytestoread:"+bytestoread+" i="+i);
+									 tocopy[i] = b;
+//									 System.out.print((char)b);
+									 breakflag = true;
+									 break;
+								}
+							}else{
+								tocopy[i] = b;
+//								System.out.print((char)b);
 							}
 	
 						}
-						ar.add(new String(bytear));
+						ar.add(new String(tocopy,0,i));
+						
 					}
-	
+					if(breakflag)break;
 				}
 				System.out.println("2templen:"+templen+" len:"+len);
 				for (int i = 0 ; i < ar.size(); i++) {
 					strw.write(ar.get(i));
 				}
+				prevpos = templen;
+				System.out.println(strw.toString());
 			}else if("getalluptoend".equals(cmd)){
-				raf.seek(templen);
+				raf.seek(prevpos);
 				
 				while((raf.read(bytear))!= -1){
 					strw.write(new String(bytear));
+					Arrays.fill(bytear, (byte)0);
 				}
-				
+				strw.write(new String(bytear));
+				System.out.println(strw.toString());
 				
 			}
 			
@@ -380,7 +430,21 @@ public class BEShellAction extends ActionSupport {
 		return f;
 	}
 	
-	
+    public static void reverse(byte[] array) {
+        if (array == null) {
+            return;
+        }
+        int i = 0;
+        int j = array.length - 1;
+        byte tmp;
+        while (j > i) {
+            tmp = array[j];
+            array[j] = array[i];
+            array[i] = tmp;
+            j--;
+            i++;
+        }
+    }
 	
 	 
 
@@ -474,6 +538,28 @@ public class BEShellAction extends ActionSupport {
 		this.fileUploadContentType = fileUploadContentType;
 	}
 	
-	
+	public static void main(String[] args) throws Exception {
+		String belogpath ="C:/Users/Samarjit/Desktop/Book1.txt";
+		int pagesize = 4;
+		String cmd = "pageup";///pagedown/getalluptoend
+		char ch = '\0';
+		long prevpos = 0; 
+		System.out.println("Starting shell mode , press 'q'<enter> to exit");
+		while((ch = (char) System.in.read())!= 'q'){
+			BEShellAction be = new BEShellAction();			
+			be.setBelogpath(belogpath);
+			be.setPagesize(pagesize);
+			be.setPrevpos(prevpos);
+			if(ch == 'u')
+			be.setCmd("pageup");
+			else if(ch == 'd')be.setCmd("pagedown");
+			else if(ch == 'a')be.setCmd("getalluptoend");
+			else continue;
+			
+			System.out.println("calling servershell with prevpos:"+prevpos);
+			be.scrolllog();
+			prevpos = be.getPrevpos();
+		}
+	}
 	
 }
