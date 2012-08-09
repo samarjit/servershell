@@ -16,6 +16,7 @@
 	<a href="${pageContext.request.contextPath}/config-browser/index.action" >config browser</a>
 	<a href="${pageContext.request.contextPath}/jsp/jvmMemoryMonitor.jsp" >jvm</a>
 	<a href="${pageContext.request.contextPath}/jsp/bescrolllog.jsp" >bescrolllog</a>
+	<a href="${pageContext.request.contextPath}/jsp/beshell.jsp" >beshell</a>
 	
 </body>
 </html>

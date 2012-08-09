@@ -237,6 +237,26 @@
 		  
 		  </configuration>
 	   </plugin>
+	   <plugin>
+	   		<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.6</version>
+			<configuration>
+						<target name="run">
+							<java classname="servershell.be.actions.BEShellAction">
+							  <classpath refid="maven.compile.classpath"></classpath>
+							</java>
+						</target>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>run</phase>
+					
+					<goals>
+						<goal>run</goal>
+					</goals>
+				</execution>
+			</executions>        
+	   </plugin>
     </plugins>
   </build>   
   

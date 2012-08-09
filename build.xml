@@ -92,7 +92,11 @@
             <classpath refid="servershell.classpath"/>
         </javac>
     </target>
-   
+   	<target name="beshell">
+		<java classname="servershell.be.actions.BEShellAction">
+		  <classpath refid="servershell.classpath"></classpath>
+		</java>
+	</target>
 	<property name="war-archive-name" value="target/${war.name}" ></property>
 	
 	<!-- <target name="create-war" depends="compile">

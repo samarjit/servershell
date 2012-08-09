@@ -3,6 +3,7 @@ package servershell.be.actions;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,14 +11,19 @@ import java.io.RandomAccessFile;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.TreeSet;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
@@ -41,6 +47,8 @@ public class BEShellAction extends ActionSupport {
 	private String fileUploadFileName;
 	private String fileUploadContentType;
 	private String name;
+	private String data;
+	
 	
 	/**
 	 * 
@@ -197,6 +205,7 @@ public class BEShellAction extends ActionSupport {
 	int pagesize  = 0;
 	
 	/**
+	 * prevpos
 	 * belogpath in
 	 * pagesize in
 	 * cmd pageup/pagedown/getalluptoend
@@ -279,8 +288,8 @@ public class BEShellAction extends ActionSupport {
 //									 reverse(halfline);
 //									 System.out.println("Half Line:"+new String(halfline));
 //									 ar.add(new String(halfline));
-									 tocopy[i] = b;
-									 System.out.print((char)b);
+									 tocopy[bytestoread -1 -i] = b;
+//									 System.out.printf("%d",b);
 									 System.out.println("numlines:"+numlines+ " ipageup:"+ipageup+" templen:"+templen+" bytestoread:"+bytestoread+" i="+i);
 									 breakflag = true;
 									 break;
@@ -290,12 +299,13 @@ public class BEShellAction extends ActionSupport {
 //									System.out.println("One Line:"+new String(tocopy));
 //									lastcopypoint = i;
 //									ar.add(new String(tocopy));
+									tocopy[bytestoread -1 -i] = b;
 								}
 								 
 								
 							}else{
-								tocopy[i] = b;
-								System.out.print((char)b);
+								tocopy[bytestoread -1 -i] = b;
+//								System.out.printf("%d",b);
 							}
 						}
 //						ArrayUtils.reverse(bytear);
@@ -303,8 +313,9 @@ public class BEShellAction extends ActionSupport {
 //						for (int j=bytestoread-1 ; j >=0; j--) {
 //							System.out.print((char)bytear[j]);
 //						}
-//						System.out.print("|");
-						ar.add(new String(tocopy,0,bytestoread));
+//						System.out.print(new String(tocopy)+"|");
+						//reverse(tocopy);
+						ar.add(new String(tocopy,0,bytestoread-1));
 						
 					} 
 					
@@ -317,7 +328,10 @@ public class BEShellAction extends ActionSupport {
 				prevpos = templen;
 				for (int i = ar.size() - 1; i >= 0; i--) {
 					byte[] bar = ar.get(i).getBytes();
-					//reverse(bar);
+					reverse(bar);
+					for (byte b : bar) {
+						if(b!=0)System.out.printf("%d",b);
+					}
 					strw.write(new String(bar));
 				}
 				System.out.println("Full Text:\n"+strw.toString());
@@ -355,6 +369,8 @@ public class BEShellAction extends ActionSupport {
 //									 System.out.print((char)b);
 									 breakflag = true;
 									 break;
+								}else{
+									 tocopy[i] = b;
 								}
 							}else{
 								tocopy[i] = b;
@@ -397,7 +413,7 @@ public class BEShellAction extends ActionSupport {
 			jsonMessage.put("prevpos",prevpos);
 			jsonMessage.put("pos",pos);
 //			jsonMessage.put("endswith",endchar);
-			jsonMessage.put("message", message);
+			jsonMessage.put("message", message.trim());
 //			jsonMessage.put("lastline", lastline);
 			
 			message = jsonMessage.toString();
@@ -415,6 +431,80 @@ public class BEShellAction extends ActionSupport {
 		
 		return SUCCESS;
 	}
+	
+	@Action(value="becd", results={@Result(type="stream")})
+	public String cd(){
+		String temppath = data;
+		String message;
+		File f = new File(data);
+		if(f.exists()){
+			message = f.getAbsolutePath();
+		}else{
+			message = "File not found:"+data;
+		}
+			inputStream  = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	/**
+	 * rootPath
+	 * relPath
+	 * @return
+	 */
+	@Action(value="bels", results={@Result(type="stream")})
+	public String bels   (){
+		String message = "";
+		logger.debug("bels() called with"+data);
+		JSONObject jobj =  JSONObject.fromObject(data);
+		String rootPath  = jobj.getString("rootPath");
+		String relPath  = jobj.getString("relPath");
+		if("".equals(relPath))relPath ="*";
+		logger.debug("bels() rootPath :"+rootPath+"; relPath:"+relPath);
+		File f = new File(rootPath);
+		// put in security of path matching
+		FileFilter regex = new WildcardFileFilter(relPath);
+		File[] flist =  f.listFiles(regex);
+		SimpleDateFormat sm = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+		HashMap<Long, String> hm1 = new HashMap<Long, String>();
+		HashMap<Long, String> hm2 = new HashMap<Long, String>();
+		for (File fl : flist) {
+			if (fl.isDirectory()) {
+				//jobj.put("dir", fl.lastModified() + " " + fl.getPath());
+				hm1.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+			}
+		}
+		for (File fl : flist) {
+			if (fl.isFile()) {
+				hm2.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+//				jobj.put("file", fl.length() + "\t" + fl.lastModified() + "\t" + fl.getPath());
+			}
+		}
+		TreeSet<Long> ar = new TreeSet<Long>(hm1.keySet());
+		for (Iterator<Long> ltime = ar.descendingIterator();ltime.hasNext();) {
+			message += hm1.get(ltime.next());
+		}
+		TreeSet<Long> ar2 = new TreeSet<Long>(hm2.keySet());
+		for (Iterator<Long> ltime = ar2.descendingIterator();ltime.hasNext();) {
+			message += hm2.get(ltime.next());
+		}
+		
+		inputStream  = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="behome", results={@Result(type="stream")})
+	public String home  (){
+		String message = System.getProperty("user.home");
+		inputStream  = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="begrep", results={@Result(type="stream")})
+	public String grep  (){
+		
+		return SUCCESS;
+	}
+	
 	
 	private File createUserDir(ResourceBundle rb) {
 		String tempPath = CompoundResource.getString(rb, "application_home");
@@ -447,6 +537,14 @@ public class BEShellAction extends ActionSupport {
     }
 	
 	 
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 
 	public String getCmd() {
 		return cmd;
