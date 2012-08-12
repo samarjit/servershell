@@ -1,17 +1,24 @@
-<!DOCTYPE script PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE>
 <%@taglib prefix="s"  uri="/struts-tags" %>
-<%@taglib prefix="sj"  uri="/struts-jquery-tags" %>
+<%@taglib prefix="sj"  uri="/struts-jquery-tags"  %>
+<%@taglib prefix="sjg"  uri="/struts-jquery-grid-tags" %>
 <%--@taglib prefix="sjg"  uri="/struts-jquery-grid-tags" --%>
 <html>
 <head>
 <title>Passion User Temp</title> 
-<sj:head jqueryui="true" jquerytheme="redmond"  />
-<link rel="stylesheet" type="text/css" href="../css/ui.jqgrid.css">
-<script src="../js/jquery.validate.js" > </script>
-<script src="../js/additional-methods.js" > </script>
-<script src="../js/i18n/grid.locale-en.js" > </script>
+<s:head />
+<sj:head jqueryui="true" jquerytheme="redmond" loadAtOnce="true" debug="true"  />
+
+<s:set var="ctx"  >${pageContext.request.contextPath}</s:set>
+
+<link rel="stylesheet" type="text/css" href="${ctx }/struts/themes/ui.jqgrid.css">
+<!--<script src="../js/jquery.validate.js" > </script>
+<script src="../js/additional-methods.js" > </script>-->
+<script src="${ctx}/struts/i18n/grid.locale-en.js" > </script>
 <script src="../js/jquery.jqGrid.min.js" > </script>
-<script src="../js/json2.js" > </script>
+<!--<script src="../js/json2.js" > </script>-->
+
+
 
 <script>
 	var rulesframework = {}; 
@@ -20,9 +27,10 @@
 	</s:if>
         	var fieldlist = "cardno, idvalue, idtype, actionflag, validcard, alreadyregistered, registrationcompleted, inputfilename, returnfilecreated, errorcode, fileprocessedflag, nationality, errormsg".split(",");
    $(document).ready(function(){
+	   jQuery.struts2_jquery.require("js/struts2/jquery.grid.struts2-3.2.1"+jQuery.struts2_jquery.minSuffix+".js");
 	//iadt.setFieldlist(fieldlist);
 	globalAjaxErrorSetup();
-	$("#form1").validate($.extend(rulesframework,{debug: true}));
+	//$("#form1").validate($.extend(rulesframework,{debug: true}));
 	calljqgrid();		
    });
 	function showAjaxError(request, type, errorThrown)
@@ -126,6 +134,10 @@
 </head>
 
 <body>
+  
+
+    
+    
   <table id="listid" ></table>
   <div id="pagerid"></div>  <div id="messagegrid"></div>
 <!--Submit Form -->

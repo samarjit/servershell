@@ -24,6 +24,7 @@ public ResultDTO() {
 	errors = new ArrayList<String>();
 	messages = new ArrayList<String>();
 	pagination = new HashMap<String, Map<String,Integer>>();
+	sessionvars = new HashMap<String,String>();
 	HashMap<String, Integer> hm = new HashMap<String, Integer>();
 	hm.put("currentpage",1);
 	hm.put("totalpage",1);

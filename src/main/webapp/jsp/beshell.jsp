@@ -19,7 +19,8 @@ function refresh(cmd){
 		$("#result").text(data);
 		
 		var json = $.parseJSON(data);
-		
+		//$("#runlogdiv").text(json.message);
+		 
 		if(json.message != ""){
 			/*lasteol = (json.endswith == "EOL")?true: false;
 			if(lasteol == false){
@@ -57,7 +58,9 @@ function clearresult(){
 function gotoHome(){
 	$("#rootpath").load("${pageContext.request.contextPath}/bhome.action");
 }
-
+function showHomeTopic(event, data){
+	alert(event.originalEvent.request.responseText);
+}
 function showRootPath(){
 	$("#rootpath").load("${pageContext.request.contextPath}/bpwd.action");
 }
@@ -73,27 +76,36 @@ function changedir(){
 function ls(){
 	$("#result").load("${pageContext.request.contextPath}/bls.action?rootPath="+$('#rootpath').val()+"&relPath="+$("#relPath").val());
 }
+function grep(){
+	$("#result").load("${pageContext.request.contextPath}/bgrep.action?rootPath="+$('#rootpath').val()+"&filename="+$("#grepfile").val()+"&expression="+$("#exp").val());
+}
+function copytoLogpath(){
+	$("#belogpath").val($("#rootpath").val());
+}
 </script>
 </head>
 <body>
 <br/>
 <button type="button" onclick="gotoHome()">goto home dir</button>
+<s:url  action="bhome.action" var="bhome1" />
+<sj:submit value="home" type="button" href="%{#bhome1}" onCompleteTopics="showHomeTopic()" targets="result" >js:home</sj:submit>
 <br/>
 pwd:<textarea id="rootpath" rows="2" cols="80"></textarea>
+<button onclick="copytoLogpath()">copy to logpath</button>
 <br/>
 List:<input name="relPath" id="relPath"/><button type="button" onclick="ls()">ls</button>
 
 <br/>
 CD Path:<input name="cdpath" id="cdpath"><button type="button" onclick="changedir()">cd</button>
 <br/> 
-Find:<input name="grepfile" id="grepfile" /><button type="button" onclick="grep()">grep</button>
+grep exp <input name="exp" id="exp">file<input name="grepfile" id="grepfile" /><button type="button" onclick="grep()">grep</button>
 <br/>
 <button type="button" onclick="autorefresh()">autorefresh</button>
 <button type="button" onclick="stopautorefresh()">stopautorefresh</button>
 <button type="button" onclick="clearresult()">clear</button>
 
 <form action="bescrolllog.action" id="form1">
-BE Logpath<input name="belogpath" id="belogpath" value="C:/Users/Samarjit/Desktop/Book1.txt" />
+BE Logpath<input name="belogpath" id="belogpath" size="100" value="C:/Users/Samarjit/Desktop/Book1.txt" />
 Prevpos: <input type="text" name="prevpos" id="prevpos" value="7000" /> 
 Page Size: <input type="text" name="pagesize" id="pagesize" value="10" />
 
@@ -102,9 +114,9 @@ Page Size: <input type="text" name="pagesize" id="pagesize" value="10" />
 <button type="button" id="ref" onclick="refresh('getalluptoend')">Get all</button>
 </form>
 <div id="res"></div>
-<div id="result">
+<pre id="result" style="font-family:courier new;font-size:.7em">
 
-</div>
+</pre>
 <pre id="runlogdiv"></pre>
 </body>
 </html>

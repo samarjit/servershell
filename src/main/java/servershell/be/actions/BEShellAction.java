@@ -23,8 +23,9 @@ import java.util.TreeSet;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -48,7 +49,7 @@ public class BEShellAction extends ActionSupport {
 	private String fileUploadContentType;
 	private String name;
 	private String data;
-	
+	public String expression;
 	
 	/**
 	 * 
@@ -405,7 +406,7 @@ public class BEShellAction extends ActionSupport {
 			BufferedReader stringReader = new BufferedReader(new StringReader(strw.toString()));
 			String tempLine = "";
 			while((tempLine = stringReader.readLine()) != null){
-				message += tempLine +"<br/>";
+				message += tempLine.trim() +"\r\n";
 			}
 			
 			JSONObject jsonMessage = new JSONObject();
@@ -419,7 +420,7 @@ public class BEShellAction extends ActionSupport {
 			message = jsonMessage.toString();
 			
 		}catch(Exception e){
-			logger.error(" Exception "+e);
+			logger.error(" Exception "+e,e);
 			addActionError("Exception "+e);
 		}
 		
@@ -499,9 +500,37 @@ public class BEShellAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/**
+	 * rootPath
+	 * expression
+	 * @return
+	 */
 	@Action(value="begrep", results={@Result(type="stream")})
 	public String grep  (){
-		
+		JSONObject jobj =  JSONObject.fromObject(data);
+		String rootPath  = jobj.getString("rootPath");
+		String filename  = jobj.getString("filename");
+		String expression  = jobj.getString("expression");
+		logger.debug("grep:"+expression+" "+rootPath+"/"+filename);
+		File file = new File(rootPath+"/"+filename);
+        LineIterator it = null;
+        String message = "";
+        try{
+			it = FileUtils.lineIterator(file, "UTF-8");
+            while (it.hasNext()){
+                String line = it.nextLine();
+                if(line.matches(expression)){
+                	message +=line+"\r\n";
+                }
+            }
+         }catch (IOException e) {
+			message = "IOException"+e.toString();
+         }finally {
+        	 if(it!=null)LineIterator.closeQuietly(it);
+         }
+        if("".equals(message)){message= "No data found in grep"+new Date().toString();
+        }
+        inputStream = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
 	

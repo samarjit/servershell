@@ -3,6 +3,8 @@ package servershell.be.dao;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+import ognl.OgnlException;
+
 import com.ycs.fe.commandprocessor.QueryParseException;
 
 public class BackendException extends Exception {
@@ -34,6 +36,10 @@ public class BackendException extends Exception {
 	}
 
 	public BackendException(String string, DataTypeException e) {
+		message = string +" "+e.getMessage();
+	}
+
+	public BackendException(String string, OgnlException e) {
 		message = string +" "+e.getMessage();
 	}
 

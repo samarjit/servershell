@@ -10,10 +10,15 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.ParameterAware;
 
+import servershell.be.dto.InputDTO;
 import servershell.be.dto.PageReturnType;
 import servershell.be.dto.ResultDTO;
+
+import com.opensymphony.xwork2.ActionContext;
 
 
 
@@ -30,8 +35,8 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 	private static final long serialVersionUID = 1L;
 	private Map<String, String[]> parameters;
 
-//	@Action(value="simpleform",results={@Result(name="success",type="stream",params={"contentType","text/html","inputName","inputStream"})}
-//	)
+	@Action(value="simpleform",results={@Result(name="ajax",type="stream",params={"contentType","text/html","inputName","inputStream"})}
+	)
 	public String execute() throws Exception{
 		String resultHtml = "{}";
 		ResultDTO resDTO = new ResultDTO() ;
@@ -66,6 +71,10 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				submitdata = submitdataObj.toString();
 				System.out.println("Suitable to send to BE? screenName:"+screenName+" submitdata:"+submitdataObj.toString());
 				JSONObject jsonRecord =   submitdataObj;
+				//for local processing
+				InputDTO inputDTO = new InputDTO();
+				inputDTO.setData((JSONObject) jsonRecord);
+				ActionContext.getContext().getValueStack().getContext().put("inputDTO", inputDTO);
 				
 				resDTO = validate(jsonRecord);
 				resDTO = commandProcessor(jsonRecord, resDTO);

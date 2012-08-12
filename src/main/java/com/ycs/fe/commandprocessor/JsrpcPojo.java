@@ -39,6 +39,7 @@ private Logger logger = Logger.getLogger(getClass());
 //			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
 			String parsedquery = "";
 			ResultDTO resultDTO = new ResultDTO();
+			QueryParser queryParser = new QueryParser();
 			try {
 //				String pageconfigxml =  ScreenMapRepo.findMapXMLPath(screenName);
 //				org.dom4j.Document document1 = new SAXReader().read(pageconfigxml);
@@ -65,7 +66,7 @@ private Logger logger = Logger.getLogger(getClass());
 				List<Element> nodeList = crudnode.selectNodes("//fields/field/*");
 				logger.debug("fields size:"+nodeList.size());
 				HashMap<String, DataType> hmfielddbtype = new HashMap<String, PrepstmtDTO.DataType>();
-				QueryParser.populateFieldDBType(nodeList, hmfielddbtype);
+				queryParser.populateFieldDBType(nodeList, hmfielddbtype);
 				
 				/*Pattern pattern  = Pattern.compile(":(\\w*)",Pattern.DOTALL|Pattern.MULTILINE);
 				Matcher m = pattern.matcher(updatequery);
@@ -94,7 +95,7 @@ private Logger logger = Logger.getLogger(getClass());
 					
 					if(countquery != null){
 						PrepstmtDTOArray  arparam = new PrepstmtDTOArray();
-						parsedquery = QueryParser.parseQuery(countquery, outstack, jsonRecord, arparam, hmfielddbtype,jsonInput, prevResultDTO);
+						parsedquery = queryParser.parseQuery(countquery, outstack, jsonRecord, arparam, hmfielddbtype,jsonInput, prevResultDTO);
 						int reccount = fetranslatorDAO.executeCountQry(screenName, parsedquery, outstack, arparam);
 						logger.debug("Processing count query"+countquery);
 						if(reccount > pagesize){
@@ -235,7 +236,7 @@ private Logger logger = Logger.getLogger(getClass());
 				//pagination end
 				
 				PrepstmtDTOArray  arparam = new PrepstmtDTOArray();
-				parsedquery = QueryParser.parseQuery(updatequery, panelname, jsonRecord, arparam, hmfielddbtype,  jsonInput, prevResultDTO);
+				parsedquery = queryParser.parseQuery(updatequery, panelname, jsonRecord, arparam, hmfielddbtype,  jsonInput, prevResultDTO);
 				
 			       logger.debug("JsonRPC query:"+parsedquery+"\n Expanded prep:"+arparam.toString(parsedquery));
 			       fetranslatorDAO = new FETranslatorDAO();

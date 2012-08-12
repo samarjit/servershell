@@ -175,6 +175,16 @@
     	<artifactId>httpmime</artifactId>
     	<version>4.1.1</version>
     </dependency>
+    <dependency>
+    	<groupId>com.jgeppert.struts2.jquery</groupId>
+    	<artifactId>struts2-jquery-grid-plugin</artifactId>
+    	<version>3.2.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>jaxen</groupId>
+    	<artifactId>jaxen</artifactId>
+    	<version>1.1.1</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
   	<dependencies>
@@ -234,7 +244,8 @@
 		       <webAppConfig>
             	<contextPath>/servershell</contextPath>
 			   </webAppConfig>
-		  
+		       <contextXml>${basedir}/src/main/webapp/WEB-INF/jetty-context.xml</contextXml>
+		       
 		  </configuration>
 	   </plugin>
 	   <plugin>
@@ -328,7 +339,7 @@
 		</profile>
 	</profiles>	
 	
-  <repositories>
+  <!-- <repositories>
     <repository>
 			<id>mybatis-snapshot</id>
 			<name>MyBatis Snapshot Repository</name>
@@ -360,5 +371,5 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
-  </repositories>
+  </repositories> -->
 </project>

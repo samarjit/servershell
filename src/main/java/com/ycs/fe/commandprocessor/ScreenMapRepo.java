@@ -156,6 +156,7 @@ public class ScreenMapRepo {
 	}
 	
 	public static void main(String[] args) throws FrontendException {
+		
 		System.out.println(new ScreenMapRepo().findMapXMLPath("ProgramSetup"));
 	}
 }

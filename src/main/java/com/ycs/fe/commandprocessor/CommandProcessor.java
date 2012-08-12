@@ -176,8 +176,8 @@ public class CommandProcessor {
 			resDTO.addError("error.processornotfound");
 		}catch(Exception e){
 			if(resDTO == null)resDTO= new ResultDTO();
-			resDTO.addError("system.error");
-			logger.error(e);
+			resDTO.addError("system.error"+e.toString());
+			logger.error("",e);
 		}
 		
 		return resDTO;

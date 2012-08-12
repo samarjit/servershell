@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import ognl.OgnlException;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.dom4j.Element;
 
 import servershell.be.dao.BackendException;
@@ -18,21 +21,17 @@ import servershell.be.dto.PrepstmtDTO.DataType;
 import servershell.be.dto.PrepstmtDTOArray;
 import servershell.be.dto.ResultDTO;
 
-import com.opensymphony.xwork2.ActionContext;
-
 public class QueryParser{
-	private static Logger logger = Logger.getLogger(QueryParser.class);
+	private Logger logger = Logger.getLogger(QueryParser.class);
 	
 	/**
 	 * @param nodeList List<org.dom4j.Element>[in]
 	 * @param hmfielddbtype [out]
 	 * @throws DataTypeException 
-	 * @throws servershell.be.dao.DataTypeException 
-	 * @throws  
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public static void populateFieldDBType(List<Element> nodeList, HashMap<String, DataType> hmfielddbtype) throws DataTypeException{
+	public  void populateFieldDBType(List<Element> nodeList, HashMap<String, DataType> hmfielddbtype) throws DataTypeException {
 		for (Element nodeelm : nodeList) {
 			String col = nodeelm.attributeValue("column");
 			String fldname = nodeelm.attributeValue("name");
@@ -42,9 +41,11 @@ public class QueryParser{
 				if(dbtype != null  ){
 //					updatequery += " "+col+"= TO_DATE('"+jsonObject.getString(fldname)+"', 'DD/MM/YYYY')";
 					hmfielddbtype.put(fldname, PrepstmtDTO.getDataTypeFrmStr(dbtype)  );
+					hmfielddbtype.put(col,PrepstmtDTO.getDataTypeFrmStr(dbtype));
 				}else{
 //					updatequery += " "+col+"='"+jsonObject.getString(fldname)+"',";
 					hmfielddbtype.put(fldname, PrepstmtDTO.getDataTypeFrmStr("STRING"));
+					hmfielddbtype.put(col,PrepstmtDTO.getDataTypeFrmStr("STRING"));
 				}
 			}
 		}
@@ -65,10 +66,10 @@ public class QueryParser{
 	 * @throws QueryParseException 
 	 * @throws Exception
 	 */
-	public static String parseQuery(String updatequery,String panelname,JSONObject jsonObject, PrepstmtDTOArray  arparam, HashMap<String, DataType> hmfielddbtype, InputDTO jsonInput, ResultDTO prevResultDTO) throws BackendException{
+	public String parseQuery(String updatequery,String panelname,JSONObject jsonObject, PrepstmtDTOArray  arparam, HashMap<String, DataType> hmfielddbtype, InputDTO jsonInput, ResultDTO prevResultDTO) throws BackendException{
 		//Where
 //		String updatewhere = crudnode.selectSingleNode("sqlwhere").getText();
-		String PATTERN = "\\:(inp|res|vs|ses)?\\.?([^,\\s\\|]*)\\|?([^,\\s]*)";//"\\:(\\w*)\\[?(\\d*)\\]?\\.?([^,\\s\\|]*)\\|?([^,\\s]*)";
+		String PATTERN = "\\#(inp|res|vs|ses)?\\.?([^,\\s\\|]*)\\|?([^,\\s]*)";//"\\:(\\w*)\\[?(\\d*)\\]?\\.?([^,\\s\\|]*)\\|?([^,\\s]*)";
 		
 		Pattern   pattern = Pattern.compile(PATTERN,Pattern.DOTALL|Pattern.MULTILINE);
 		updatequery = updatequery.trim();
@@ -89,7 +90,7 @@ public class QueryParser{
 	        	  if("inp".equals( m1.group(1))){ //:form[0].param === :param use jsonObject and get group(3) val 
 	        		  logger.debug(" Processing with #inputDTO");
 	        		  String expr = m1.group(2);
-	        		  String propval = ActionContext.getContext().getValueStack().findString("#inputDTO.data."+expr);
+	        		  String propval = ServletActionContext.getContext().getValueStack().findString("#inputDTO.data."+expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
 	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
@@ -113,11 +114,11 @@ public class QueryParser{
 	        		  //TODO: implement for object filling from related panels.
 	        		  String expr = m1.group(2);
 	        		  //String propval = ActionContext.getContext().getValueStack().findString("#resultDTO.data."+expr);
-	        		  String propval = ActionContext.getContext().getValueStack().findString("#resultDTO.data."+expr);
+	        		  String propval = ServletActionContext.getContext().getValueStack().findString("#resultDTO.data."+expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
 	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
-
+	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
         			  }else{
@@ -132,11 +133,11 @@ public class QueryParser{
 	        		  //TODO: implement for object filling from related panels.
 	        		  String expr = m1.group(2);
 	        		  //expr = expr.substring(4); //remove ':vs' in :vs.xxe[].xp
-	        		  String propval = ActionContext.getContext().getValueStack().findString(expr);
+	        		  String propval = ServletActionContext.getContext().getValueStack().findString(expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
 	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
-
+	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
         			  }else{
@@ -150,11 +151,11 @@ public class QueryParser{
 	        		  logger.debug("Process with session");
 	        		  String expr = m1.group(2);
 	        		  //expr = expr.substring(4); //remove ':ses' in :vs.xxe[].xp
-	        		  String propval = (String) ActionContext.getContext().getSession().get(expr);
+	        		  String propval = (String) ServletActionContext.getContext().getSession().get(expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
 	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
-
+	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
         			  }else{
@@ -178,7 +179,7 @@ public class QueryParser{
 	        		  propval = jsonObject.getString(m1.group(2));
 	        		  parsedquery += updatequery.substring(end,m1.start());//
 	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
-					 
+	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
         			  }else{

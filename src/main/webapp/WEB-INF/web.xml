@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+ 
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" metadata-complete="true">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	 metadata-complete="true"> 
 	<display-name>sam</display-name>
 
-	 
+<listener>
+<listener-class>com.ycs.fe.InitCMSBE</listener-class>
+</listener>
   <filter>
     <filter-name>struts-execute</filter-name>
     <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>

@@ -4,6 +4,7 @@ package servershell.fe.actions;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.Date;
 
 import net.sf.json.JSONObject;
@@ -39,13 +40,14 @@ public class BEShellRelayAction extends ActionSupport {
 	public String relPath;
 	public String belogpath;
 	public String pagesize;
+	public String expression;
 	
 	@Action(value="bscrolllog")
 	public String scrolllog(){
 		String message = "";
 		
 		try{
-			String url = "prevpos="+prevpos+"&belogpath="+belogpath+"&cmd="+cmd+"&pagesize="+pagesize;
+			String url = "prevpos="+prevpos+"&belogpath="+URLEncoder.encode(belogpath)+"&cmd="+cmd+"&pagesize="+pagesize;
 			logger.debug("url bescrolllog:"+url);
 			message = SendToBE.sendToBE("", "bescrolllog.action?"+url);
 				/*JSONObject jsonMessage = new JSONObject();
@@ -59,7 +61,7 @@ public class BEShellRelayAction extends ActionSupport {
 				message = jsonMessage.toString();
 				*/
 			}catch(Exception e){
-				logger.error(" Exception "+e);
+				logger.error(" Exception "+e,e);
 				addActionError("Exception "+e);
 			}
 			
@@ -134,29 +136,60 @@ public class BEShellRelayAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/**
+	 * rootPath
+	 * relPath
+	 * @return
+	 */
 	@Action(value="bls")
 	public String bls  (){
-		String message;
+		String message = "ls not completed";
 		try {
 			logger.debug("bls() called with rootPath:"+rootPath+" relPath:"+relPath);
-			JSONObject jobj = new JSONObject();
-			jobj.put("relPath", relPath);
-			jobj.put("rootPath", rootPath);
+			JSONObject jobj = new JSONObject();  
+			jobj.put("relPath", relPath);  
+			jobj.put("rootPath", rootPath);  
 			String data = jobj.toString();
-			message = SendToBE.sendToBE(data, "bels.action");
+			message = SendToBE.sendToBE(data, "bels.action"); 
 			rootPath = message;
 		} catch (IOException e) {
 			logger.error("IOException cannot contact backend: "+e.toString());
 			message = "Cannot connect to backend- "+ e.toString();
 		}
+		if("".equals(message))message="No data Found"+new Date().toString();
 		inputStream  = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
+	
+	
+	public String filename;
+	/**
+	 * filename
+	 * rootPath
+	 * expression
+	 * @return
+	 */
 	@Action(value="bgrep")
 	public String grep  (){
+		String  message = ""; 
 		
+		try {
+			JSONObject jobj = new JSONObject();
+			jobj.put("expression", expression);
+			jobj.put("filename", filename); 
+			jobj.put("rootPath", rootPath);
+			String data = jobj.toString();
+			message = SendToBE.sendToBE(data, "begrep.action");
+		} catch (IOException e) {
+			logger.error("IOException cannot contact backend: "+e.toString());
+			message = "Cannot connect to backend- "+ e.toString();
+		}	
+		
+		inputStream  = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
+	
+	
 	public String execute(){
 			logger.info("This is from log back");
 			logger.debug("This is logback debug");

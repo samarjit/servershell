@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
@@ -24,7 +23,6 @@ import org.dom4j.io.SAXReader;
  */
 public class AppCacheManager {
 	private static AppCacheManager instance;
-	private ServletContext context;
 	private static Map cache;
 	private static CacheManager singletonManager;
 	public static AppCacheManager getInstance() throws CacheException{
@@ -78,7 +76,7 @@ public class AppCacheManager {
 	}
 	
 	public static void createCache(String cacheName){
-		  localCache = new Cache(cacheName, 5000, false, false, 5, 2);
+		localCache = new Cache(cacheName, 50, false, false, 120, 120);
 		  singletonManager.addCache(localCache);
 	}
 	public static void putElementInCache(String cachename,String key, Object object){
@@ -115,11 +113,13 @@ public class AppCacheManager {
 	public static void main(String[] args) throws CacheException {
 		  AppCacheManager.getInstance().initCache();
 	}
-	public void setContext(ServletContext context) {
-		this.context = context;
+	
+	public static void removeCache(String cachename) {
+		singletonManager.removeCache(cachename);
 	}
-	public ServletContext getContext() {
-		return context;
+	public static void shutdown() {
+		singletonManager.shutdown( );
 	}
-
+	
+	
 }
