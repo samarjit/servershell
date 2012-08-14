@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,8 +60,7 @@ public class BEShellAction extends ActionSupport {
 		logger.info("This file is being downloaded:"+filename);
 		String errors = null; 
 		
-		ResourceBundle rb = ResourceBundle.getBundle("config");
-//		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/bequery.action");
+		//		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/bequery.action");
 		try {
 			File file = new File(filename);
 			if(file.exists()){
@@ -219,12 +217,12 @@ public class BEShellAction extends ActionSupport {
 		
 		
 //		File f = createUserDir(rb);
+		RandomAccessFile raf = null;
 		String message = "";
 		try{
 			
 			logger.debug("BEscrollog started .."+cmd);
-			RandomAccessFile raf = new RandomAccessFile(belogpath, "r");
-			FileChannel fc = raf.getChannel();
+			raf = new RandomAccessFile(belogpath, "r");
 			ArrayList<String> ar = new ArrayList<String>(50);
 			byte bytear[] = new byte[200];
 			
@@ -245,8 +243,6 @@ public class BEShellAction extends ActionSupport {
 			long templen = (prevpos == 0|| prevpos > len)? len: prevpos; 
 			final int READBYTE = 200;
 			int bytestoread = READBYTE;
-			byte [] halfline = new byte[200];
-			byte []reverseline = new byte[200];
 			byte [] tocopy = new byte [200];
 			boolean breakflag = false;
 			//cases 200 bytes not even 1 line completed
@@ -271,7 +267,6 @@ public class BEShellAction extends ActionSupport {
 							throw e;
 						}
 						
-						int lastcopypoint = 0;
 						Arrays.fill(tocopy, (byte)0);
 						int i=0;
 						
@@ -422,6 +417,14 @@ public class BEShellAction extends ActionSupport {
 		}catch(Exception e){
 			logger.error(" Exception "+e,e);
 			addActionError("Exception "+e);
+		}finally{
+			if(raf != null)
+				try {
+					raf.close();
+				} catch (IOException e) {
+					logger.error("Exception while closing random access file:"+e);
+					addActionError("Exception while closing random access file:"+e);
+				}
 		}
 		
 		if(getActionErrors().size() != 0){
@@ -435,7 +438,6 @@ public class BEShellAction extends ActionSupport {
 	
 	@Action(value="becd", results={@Result(type="stream")})
 	public String cd(){
-		String temppath = data;
 		String message;
 		File f = new File(data);
 		if(f.exists()){
@@ -535,6 +537,7 @@ public class BEShellAction extends ActionSupport {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	private File createUserDir(ResourceBundle rb) {
 		String tempPath = CompoundResource.getString(rb, "application_home");
 		
@@ -668,7 +671,7 @@ public class BEShellAction extends ActionSupport {
 	public static void main(String[] args) throws Exception {
 		String belogpath ="C:/Users/Samarjit/Desktop/Book1.txt";
 		int pagesize = 4;
-		String cmd = "pageup";///pagedown/getalluptoend
+//		String cmd = "pageup";///pagedown/getalluptoend
 		char ch = '\0';
 		long prevpos = 0; 
 		System.out.println("Starting shell mode , press 'q'<enter> to exit");

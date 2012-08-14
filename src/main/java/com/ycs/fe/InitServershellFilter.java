@@ -19,7 +19,7 @@ import com.ycs.fe.commandprocessor.AppCacheManager;
  * @author SAMARJIT
  *
  */
-public class InitCMSBE implements ServletContextListener {
+public class InitServershellFilter implements ServletContextListener {
 	ServletContext context;
 
 	@Override
@@ -36,7 +36,7 @@ public class InitCMSBE implements ServletContextListener {
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
-		Logger logger = Logger.getLogger(InitCMSBE.class);
+		Logger logger = Logger.getLogger(InitServershellFilter.class);
 		logger.debug("servershell servlet starting...");
 		
 		AppCacheManager appcache;

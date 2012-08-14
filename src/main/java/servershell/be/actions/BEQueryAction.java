@@ -57,7 +57,6 @@ public class BEQueryAction extends ActionSupport{
 				Map<String, String> row ;
 				List<Map<String, String>> values = new ArrayList<Map<String, String>>();
 				int countrec = 0;
-				String retval;
 				if(query.matches("(?ims:select)[\\S\\s]*(?ims:from)([\\S\\s]*)")){
 					
 					Pattern p  = Pattern.compile("(?ims:select)[\\S\\s]*(?ims:from)([\\S\\s]*)");
@@ -107,7 +106,7 @@ public class BEQueryAction extends ActionSupport{
 							countrec++;	
 						}
 						jsonString = "<table class='grid' border=1 ><tr>"+cols+"</tr>"+jsonString +"</table>";
-						retval = String.valueOf(countrec) ;
+						String.valueOf(countrec);
 					}else{
 						addActionMessage("There are more than 1000 rcords please modify query and add more filter criterion");
 					}
