@@ -7,7 +7,7 @@
 	<display-name>sam</display-name>
 
 <listener>
-<listener-class>com.ycs.fe.InitCMSBE</listener-class>
+<listener-class>com.ycs.fe.InitServershellFilter</listener-class>
 </listener>
   <filter>
     <filter-name>struts-execute</filter-name>
