@@ -93,7 +93,7 @@ public class DBConnector {
 				try {
 					DataSource ds = (DataSource) envContext.lookup("jdbc/myoracle");
 					conn = ds.getConnection();
-
+					
 					if (conn == null || conn.isClosed()) {
 						logger.error("Some thing wrong with connecting with database!");
 						throw new SQLException("Some thing wrong with connecting with database using connection pool!");
@@ -118,13 +118,22 @@ public class DBConnector {
 				
 //				try{
 //					if(!poolinitialized){
-//						C3P0Helper.setUp();
+//						MiniConnectionPoolHelper.setUp();
 //						poolinitialized = true;
 //					}
-//					conn =  C3P0Helper.getConnection();
+//					conn =  MiniConnectionPoolHelper.getConnection();
 //				}catch(Exception e){
-//					logger.error("c3p0 connection error"+e);
+//					logger.error("MiniConnectionPoolHelper connection error",e);
 //				}
+				try{
+					if(!poolinitialized){
+						JDBCUtils.setUp();
+						poolinitialized = true;
+					}
+					conn =  JDBCUtils.getConnection();
+				}catch(Exception e){
+					logger.error("MiniConnectionPoolHelper connection error",e);
+				}
 				
 				isRuninServerContext = false;
 				if(conn == null){ 

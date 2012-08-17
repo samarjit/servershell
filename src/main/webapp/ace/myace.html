@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test</title>
+<style type="text/css">
+ #editor {
+        position: absolute;
+        width: 500px;
+        height: 400px;
+    }
+</style>
+
+</head>
+<body>
+<button type="button" onclick="editorContext.editor.setSession(editorContext.sessions[0]); return false;">Document #1 (JS)</button>
+<button type="button" onclick="editorContext.editor.setSession(editorContext.sessions[1]); return false;">Document #2 (JavaScript)</button>
+<button type="button" onclick="editorContext.editor.setSession(editorContext.sessions[2]); return false;">Document #3 (CSS)</button>
+
+<div id="editor" style="width: 500px; height: 500px;">Some text</div>
+
+  
+	<script type="text/javascript">
+      
+  </script>
+  
+	
+<script src="ace.js" data-ace-base="ace" charset="utf-8"></script>
+<script src="mode-xml.js" data-ace-base="ace" charset="utf-8"></script>
+ 
+<script>
+  var editor = ace.edit("editor");
+   var JavaScriptMode = require("ace/mode/xml").Mode;
+     editor.getSession().setMode(new JavaScriptMode());
+</script>
+</body>
+</html>

@@ -17,6 +17,8 @@
 	<a href="${pageContext.request.contextPath}/jsp/jvmMemoryMonitor.jsp" >jvm</a>
 	<a href="${pageContext.request.contextPath}/jsp/bescrolllog.jsp" >bescrolllog</a>
 	<a href="${pageContext.request.contextPath}/jsp/beshell.jsp" >beshell</a>
+	<a href="${pageContext.request.contextPath}/jsp/screendesignedit.jsp" >screendesignedit</a>
+	<a href="${pageContext.request.contextPath}/jsp/revenggquery.jsp" >revenggquery</a>
 	
 </body>
 </html>

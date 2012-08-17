@@ -30,7 +30,7 @@ public ResultDTO() {
 	hm.put("totalpage",1);
 	hm.put("totalrec",1);
 	hm.put("pagesize",1);
-	pagination.put("formx", hm);
+//	pagination.put("formx", hm);
 }
 
 
@@ -206,6 +206,11 @@ public static ResultDTO fromJsonString(JSONObject resDTOjson){
 	   tempDTO.setResult(resDTOjson.getString("result"));
 	return tempDTO;
 	
+}
+
+public String toJsonString(){
+	JSONObject jobj = JSONObject.fromObject(this);
+	return jobj.toString();
 }
 
 }

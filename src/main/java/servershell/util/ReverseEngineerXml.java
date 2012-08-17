@@ -11,16 +11,18 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONObject;
 import servershell.be.dao.DBConnector;
 
 public class ReverseEngineerXml {
 	private String globalSQL = "  SELECT PRODUCT_CODE ,  PRODUCT_NAME ,  PLASTIC_CODE,   PLASTIC_DESC    FROM PRODUCT_DETAILS ";
 	private  StringWriter strw = null;
+	JSONObject jresult = null;
 	
 	public String getStringResult(String globalSQL) throws Exception{
 		this.globalSQL = globalSQL;
 		reverseEng();
-		return strw.toString();
+		return jresult.toString();
 	}
 	public static String toProperCase(String inputString) {
 
@@ -108,11 +110,13 @@ public class ReverseEngineerXml {
 			tableName = metaData.getTableName(0);
 		}
 		
+		strw = new StringWriter();
 		PrintWriter out = new PrintWriter( strw);
+		jresult = new JSONObject();
 		
 		StringBuffer sb = new StringBuffer();
 		if(tableName == null || tableName.equals("")){
-			Pattern p = Pattern.compile("(?ims:from)\\s+(\\w+)\\s+", Pattern.MULTILINE);
+			Pattern p = Pattern.compile("(?ims:from)\\s+(\\w+)\\s*", Pattern.MULTILINE);
 			Matcher  m = p.matcher(sql);
 			m.find();
 			out.println(m.group(1).toUpperCase());
@@ -151,6 +155,10 @@ public class ReverseEngineerXml {
 		if(con!= null){
 			con.close();
 		}
+		
+		
+		jresult.put("tabledetails", strw.toString());
+		strw.getBuffer().setLength(0);
 		
 		//html
 		out.println("<!DOCTYPE script PUBLIC \"-//W3C//DTD XHTML 1.1 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n" + 
@@ -316,6 +324,10 @@ public class ReverseEngineerXml {
 		 out.println("</body>\r\n" + 
 		 		"\r\n" + 
 		 		"</html>");
+		 
+		 jresult.put("htmlscreen", strw.toString());
+		 strw.getBuffer().setLength(0);
+			
 		 out.println("<!--View Grid-->\r\n" + 
 			 		"        	 <table>" );
 		 for (int i = 0; i < aralias.size(); i++) {
@@ -329,6 +341,9 @@ public class ReverseEngineerXml {
 			 out.println("        	   "+arheader.get(i)+" \t<s:property value=\"#resultDTO.data.formonload[0]."+alias+"\"  />");
 		 }
 		
+		 jresult.put("htmlscreenview", strw.toString());
+		 strw.getBuffer().setLength(0);
+		 
 		 
 		 String datatype = "";
 			
@@ -363,6 +378,10 @@ public class ReverseEngineerXml {
 			
 			out.println(sel);
 			out.println(sel2);
+			
+			 jresult.put("aliasquery", strw.toString());
+			 strw.getBuffer().setLength(0);
+			
 			out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
 					"<root xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"../config.xsd\">\r\n" + 
 					"  <screen name=\""+screenName+"\">\r\n" + 
@@ -386,7 +405,7 @@ public class ReverseEngineerXml {
 					           "			<countquery pagesize=\"10\">select count('x') from "+tableName+" </countquery>\r\n" + 
 					           "	   </jsonrpc>");
 			//normal inserts
-			out.println("<!--NORMAL SQLs-->");
+			out.println("<!--NORMAL SQLs");
 			String simplefrmcols ="";
 			String simplefrmvals = "";
 			String prefix = "frmnrml";
@@ -415,7 +434,9 @@ public class ReverseEngineerXml {
 			}
 			simepleformupd += " WHERE "+arcol.get(0)+"=#inp.form1[0]."+aralias.get(0);
 			out.println("      <sqlupdate id=\""+prefix+"edit\" outstack=\"updt\">"+simepleformupd+"</sqlupdate>");
+			out.println("-->");
 			
+			 
 			//start grid inserts
 			out.println("<!--GRID INSERTS (check out which alias is required-->");
 			//simpleform insert 
@@ -517,9 +538,14 @@ public class ReverseEngineerXml {
 			 		"  </panels>\r\n" + 
 			 		"</root>\r\n");
 			 
+			 jresult.put("pagexml", strw.toString());
+			 strw.getBuffer().setLength(0);
+			 
 			 out.println("\r\n<screen name=\""+screenName+"\" mappingxml=\"map/jsptest/"+screenName+".xml\" />\r\n");
 			 //xml validation
 			
+			 jresult.put("screenmapxml", strw.toString());
+			 strw.getBuffer().setLength(0);
 			
 			String crs = "";
 			String crs1 = "";
@@ -555,6 +581,59 @@ public class ReverseEngineerXml {
 //			out.println(upd+"\r\n");
 //			out.println(ins+"\r\n");
 //			out.println(insertSql+"\r\n");
+			
+			out.println("struts.xml <action name=\"cms\" class=\"com.ycs.ezlink.action.CmsAction\">" +
+					"<result name=\"jobsTrack\" >/jsp/jobsTrack.jsp</result>" +
+					"..</action>" +
+					"\r\n" +
+					"CmsAction.java\r\n" +
+					"struts execute(){" +
+					"lse if(\"jobsTrack\".equals(method)){\r\n" + 
+					"				String jobName = request.getParameter(\"jobName\");\r\n" + 
+					"				JSONObject json = facade.jobsTrack(jobName);\r\n" + 
+					"				resultName = parseResult(json);\r\n" + 
+					"			}" +
+					"}" +
+					"\r\n" +
+					"" +
+					"CmsFacade.java:" +
+					"" +
+					"public JSONObject jobsTrack(String jobName) {\r\n" + 
+					"		JSONObject result = new JSONObject();\r\n" + 
+					"		ResultDTO resultDTO = null;\r\n" + 
+					"		JSONObject data = new JSONObject();\r\n" + 
+					"		data.put(CMSConstant.JOB_NAME, jobName);\r\n" + 
+					"		resultDTO = processCmd(data, \"jobsTrack\", \"cms\");\r\n" + 
+					"		if(resultDTO !=null && resultDTO.getErrors().size() == 0 ){\r\n" + 
+					"			JSONObject jar = (JSONObject) resultDTO.getData().get(\"jobsTrack\");\r\n" + 
+					"			result.put(CMSConstant.RESULT_NAME, \"jobsTrack\");\r\n" + 
+					"			result.put(CMSConstant.DATA, jar);\r\n" + 
+					"		}else{\r\n" + 
+					"			result.put(CMSConstant.RESULT_NAME, \"jobsTrack\");\r\n" + 
+					"			result.put(CMSConstant.ERROR, CMSConstant.SQL_ERROR);\r\n" + 
+					"			result.put(CMSConstant.DATA, new JSONArray());\r\n" + 
+					"		}\r\n" + 
+					"		return result;\r\n" + 
+					"	}" +
+					"\r\n" +
+					"\r\n" +
+					"" +
+					"cms.xml\r\n" +
+					"" +
+					"<bl>\r\n<buslogic id=\"jobsTrack\" method=\"jobsTrack\"> </buslogic></bl>\r\n" +
+					"<bulkcmd name=\"jobsTrack\" opt=\"buslogic:jobsTrack\" result=\"ajax\" />\r\n" +
+					"JobTrack.jsp\r\n" +
+					"CmsBL.java\r\n" +
+					"else if (\"jobsTrack\".equals(methodName)) {\r\n" + 
+					"				jobsTrack(inputDTO,resDTO);\r\n" + 
+					"			}\r\n" +
+					"JodTrackDAO.java\r\n" +
+					"" +
+					"");
+			
+			jresult.put("miscellaneous", strw.toString());
+			strw.getBuffer().setLength(0);
+
 	}
 
 	/**
@@ -562,7 +641,9 @@ public class ReverseEngineerXml {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		//new ReverseEngineerXml().reverseEng();
+		ReverseEngineerXml re = new ReverseEngineerXml();
+		 
+		re.getStringResult("select * from alert_queue ");
 	}
 
 }
