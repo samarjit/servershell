@@ -24,7 +24,7 @@ private static Logger logger = Logger.getLogger(QueryService.class);
 	public String remoteCommandProcessor(String submitdataObj, String screenName) {
 		String ret = "";
 		try {
-			ret = sendToBE("remoteCommandProcessor",screenName, submitdataObj, "submitdataObj");
+			ret = sendToBE("remoteCommandProcessor.action",screenName, submitdataObj, "submitdataObj");
 		} catch (IOException e) {
 			logger.error("remoteCommandProcessor in FE call",e);
 		}
@@ -34,7 +34,7 @@ private static Logger logger = Logger.getLogger(QueryService.class);
 	public String selectOnLoad(String screenName1, String jsonsubmitdata) {
 		String ret = "";
 		try {
-			sendToBE("selectOnLoad",screenName1, jsonsubmitdata, "jsonsubmitdata");
+			sendToBE("selectOnLoad.action",screenName1, jsonsubmitdata, "jsonsubmitdata");
 		} catch (IOException e) {
 			logger.error("selectOnLoad in FE call",e);
 		}

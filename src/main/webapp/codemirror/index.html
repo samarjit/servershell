@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="codemirror.css">
     <script src="codemirror.js"></script>
     <script src="xml.js"></script>
+    <script src="javascript.js"></script>
+    <script src="htmlmixed.js"></script>
     <style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
-    <link rel="stylesheet" href="../../doc/docs.css">
+    
   </head>
   <body>
     <h1>CodeMirror: XML mode</h1>
@@ -16,6 +18,11 @@
   &lt;!-- this is a comment --&gt;
   &lt;head&gt;
     &lt;title&gt;HTML Example&lt;/title&gt;
+     &lt;script&gt;
+    function hello(){
+    	var  s = 'hello .';
+	}
+  &lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
     The indentation tries to be &lt;em&gt;somewhat &amp;quot;do what
@@ -25,8 +32,7 @@
 </textarea></form>
     <script>
       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        mode: {name: "xml", alignCDATA: true},
-        lineNumbers: true
+        mode:  "text/html", matchBrackets: true, lineNumbers: true
       });
     </script>
     <p>The XML mode supports two configuration parameters:</p>

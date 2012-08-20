@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtm1/DTD/xhtm1-transitional.dtd">
+<%@taglib prefix="s" uri="/struts-tags" %>
+<%@taglib prefix="sj" uri="/struts-jquery-tags" %>
+<html >
+ <head>
+  <title> BM Test </title>
+  <meta name="generator" content="editplus" />
+  <meta name="author" content="" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1" />
+ <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"  ></script>
+ </head>
+
+<style type="text/css">
+
+</style>
+<script type="text/javascript">
+function fn() {
+globalAjaxErrorSetup();
+	$.getJSON( 
+	type: "post",
+	url:'http://apps.bharatmatrimony.com/applogin/login.php',
+	 headers: { 
+        Accept : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",  
+        "Content-Type": "application/x-www-form-urlencoded; charset=ISO-8859-1"
+    },
+	data:'ID=SAMANTASAMARJIT%40GMAIL.COM&PASSWORD=samar123&OUTPUTTYPE=2&APPTYPE=104',
+	success: function (data){
+	console.log(data);
+	 } ,
+	error: showAjaxError
+	
+	} );
+
+
+}
+
+ function globalAjaxErrorSetup(){
+	   $( "#globalajaxerror" ).ajaxError(function(e, jqxhr, settings, exception) {
+		     alert( "Triggered ajaxError handler." +exception);
+			 if(window.console){
+				 console.log("Ajax ecxcetion:");
+				 console.log(exception);
+				 }  
+		 });
+	}
+		
+
+function showAjaxError(request, type, errorThrown)
+   {
+       var message = "There was an error with the AJAX request.\n";
+       switch (type) {
+           case 'timeout':
+               message += "The request timed out.";
+               break;
+           case 'notmodified':
+               message += "The request was not modified but was not retrieved from the cache.";
+               break;
+           case 'parseerror':
+               message += "XML/Json format is bad.";
+               break;
+           default:
+               message += "HTTP Error (" +type+" "+ request.status + " " + request.statusText + "  "+errorThrown+").";
+       }
+       message += "\n";
+       alert(message);
+   }
+
+   function getAppversion() {
+	$.ajax( {
+			type: 'POST',
+			url:"http://apps.bharatmatrimony.com/appdynamicarray/appgetarrayversion.php",
+			data:{'OUTPUTTYPE':2,'APPTYPE':104},
+			contentType: "application/x-www-form-urlencoded",
+			 headers: { 
+			        "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+			        "Accept-Charset":"ISO-8859-1,utf-8;q=0.7,*;q=0.3"
+			 },
+			success:function (data) {
+	  			console.log("data");
+				},
+			error: showAjaxError
+				
+				 
+			}  
+			);
+   }
+   
+   var xmlhttp;
+   $(document).ready(function (){
+	   if (window.XMLHttpRequest)
+	     {// code for IE7+, Firefox, Chrome, Opera, Safari
+	     xmlhttp=new XMLHttpRequest();
+	     }
+	   else
+	     {// code for IE6, IE5
+	     xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	     }
+   });
+   function getappversion(){
+	
+	 
+   
+	   xmlhttp.open("POST","http://apps.bharatmatrimony.com/appdynamicarray/appgetarrayversion.php",true);
+	   xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	   xmlhttp.send("OUTPUTTYPE=2&APPTYPE=104");
+	   
+	   xmlhttp.onreadystatechange=function()
+	   {
+	   if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	     {
+	     document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+	     }
+	    console.log("xmlhttp.readyState="+xmlhttp.readyState+" xmlhttp.status="+xmlhttp.status);
+		   if(typeof (xmlhttp.responseText != 'undefined'))
+		    {
+			   console.log("xmlhttp.responseText is not undefined");
+			   if(typeof(xmlhttp.responseText.length)!= 'undefined')
+			   {
+				   console.log(xmlhttp.responseText.length);
+			   }
+		    } 
+	   }
+   
+   }
+</script>
+ <body>
+ <input type="button" value="init() " onclick="init()" />
+ <input type="button" value="login " onclick="fn()" />
+ <input type="button" value="get appversion" onclick="getAppversion()" />
+ <input type="text" id="sss" />
+
+ <div id="globalajaxerror" class="">	
+ </div>
+ <div id="myDiv" class="">	mydiv
+ </div>
+  <form method="post" action="http://apps.bharatmatrimony.com/applogin/login.php">
+	ID: <input name="ID" value="SAMANTASAMARJIT@GMAIL.COM"/>
+	PASSWORD: <input name="PASSWORD" value="samar123"/>
+	OUTPUTTYPE: <input name="OUTPUTTYPE" value="2"/>
+	APPTYPE: <input name="APPTYPE" value="104"/>
+	<input type="submit" />
+	
+  </form>
+ </body>
+</html>

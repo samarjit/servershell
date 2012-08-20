@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -125,15 +126,15 @@ public class DBConnector {
 //				}catch(Exception e){
 //					logger.error("MiniConnectionPoolHelper connection error",e);
 //				}
-				try{
-					if(!poolinitialized){
-						JDBCUtils.setUp();
-						poolinitialized = true;
-					}
-					conn =  JDBCUtils.getConnection();
-				}catch(Exception e){
-					logger.error("MiniConnectionPoolHelper connection error",e);
-				}
+//				try{
+//					if(!poolinitialized){
+//						JDBCUtils.setUp();
+//						poolinitialized = true;
+//					}
+//					conn =  JDBCUtils.getConnection();
+//				}catch(Exception e){
+//					logger.error("MiniConnectionPoolHelper connection error",e);
+//				}
 				
 				isRuninServerContext = false;
 				if(conn == null){ 
@@ -267,39 +268,60 @@ public class DBConnector {
 			while (itr.hasNext()) {
 				PrepstmtDTO pd = (PrepstmtDTO) itr.next();
 				if (pd.getType() == PrepstmtDTO.DataType.TIMESTAMP) {
-					Timestamp newDate = new Timestamp(new SimpleDateFormat(SIMPLE_DATE_FORMAT).parse(pd.getData()).getTime());
+					if(pd.getData() == null || "".equals(pd.getData())){
+						stmt.setNull(count, Types.TIMESTAMP);
+					}else{Timestamp newDate = new Timestamp(new SimpleDateFormat(SIMPLE_DATE_FORMAT).parse(pd.getData()).getTime());
 					stmt.setTimestamp(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_NS) {
-					Timestamp newDate = new Timestamp((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setTimestamp(count, newDate);
+					if(pd.getData() == null || "".equals(pd.getData())){
+						stmt.setNull(count, Types.DATE);
+					}else{
+						Timestamp newDate = new Timestamp((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
+						stmt.setTimestamp(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_TIME_MIN) {
-					Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATE_TIME_MIN_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setDate(count, newDate);
+					if(pd.getData() == null || "".equals(pd.getData())){
+						stmt.setNull(count, Types.DATE);
+					}else{
+						Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATE_TIME_MIN_FORMAT)).parse(pd.getData()).getTime());
+						stmt.setDate(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATEDDMMYYYY) {
-					Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATEDDMMYYYY_FORMAT)).parse(pd.getData()).getTime());
+					if(pd.getData() == null || "".equals(pd.getData())){
+						stmt.setNull(count, Types.DATE);
+					}else{Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATEDDMMYYYY_FORMAT)).parse(pd.getData()).getTime());
 					stmt.setDate(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DOUBLE) {
 					String in = pd.getData();
 					if (in == null || "".equals(in))
-						in = "0.0D";
-					stmt.setDouble(count, Double.parseDouble(in));
+						stmt.setNull(count, Types.DOUBLE);
+					else stmt.setDouble(count, Double.parseDouble(in));
 				} else if (pd.getType() == PrepstmtDTO.DataType.FLOAT) {
 					String in = pd.getData();
 					if (in == null || "".equals(in))
-						in = "0.0f";
-					stmt.setFloat(count, Float.parseFloat(in));
+						stmt.setNull(count, Types.FLOAT);
+					else stmt.setFloat(count, Float.parseFloat(in));
 				} else if (pd.getType() == PrepstmtDTO.DataType.INT) {
 					String in = pd.getData();
-					if (in == null || "".equals(in))
-						in = "0";
-					stmt.setInt(count, Integer.parseInt(in));
+					if (in == null || "".equals(in)){
+						stmt.setNull(count, Types.INTEGER);
+					}else {
+						stmt.setInt(count, Integer.parseInt(in));
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.STRING) {
-					stmt.setString(count, pd.getData());
+					String in = pd.getData();
+					if (in == null || "".equals(in)){
+						stmt.setNull(count, Types.VARCHAR);
+					}else{
+						stmt.setString(count, pd.getData());
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.LONG) {
 					String in = pd.getData();
 					if (in == null || "".equals(in))
-						in = "0";
-					stmt.setLong(count, Long.parseLong(in));
+						stmt.setNull(count, Types.BIGINT);
+					else stmt.setLong(count, Long.parseLong(in));
 				}
 				count++;
 			}

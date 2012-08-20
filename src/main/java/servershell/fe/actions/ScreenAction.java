@@ -1,17 +1,39 @@
 package servershell.fe.actions;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Date;
+import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
 
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.ycs.fe.commandprocessor.AppCacheManager;
+import com.ycs.fe.commandprocessor.Constants;
 
+@ParentPackage("json-default")
+@Results(value={
+@Result(type="stream", name="success")
+,@Result(type="json", name="json",params={"ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="input",params={"ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+})
 @Result(type="stream", name="success")
 public class ScreenAction extends ActionSupport{
 	
@@ -37,7 +59,367 @@ public class ScreenAction extends ActionSupport{
 		inputStream = new ByteArrayInputStream(message.getBytes());
 		return "success";
 	}
+	
+	public String ftlbasepath;
+	public String ftlfilename;
+	public String htmlscreen1;
+	
+	@Action(value="createhtml")
+	public String createhtml(){
+		String message= "Not processed!";
+		System.out.println(ftlbasepath);
+		System.out.println(ftlfilename);
+		System.out.println(htmlscreen1);
+		File dir = new File(ftlbasepath);
+		if(dir.exists()){
+			File f = new File(dir,ftlfilename);
+			try {
+				FileWriter fw = new FileWriter(f);
+				fw.write(htmlscreen1);
+				fw.close();
+				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+ftlbasepath+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	public String xmlscreenpath;
+	public String xmlscreenname;
+	public String screenxml;
+	
+	@Action(value="createxml")
+	public String createxml(){
+		String message= "Not processed!";
+		System.out.println(xmlscreenpath);
+		System.out.println(xmlscreenname);
+		System.out.println(screenxml);
+		File dir = new File(xmlscreenpath);
+		if(dir.exists()){
+			File f = new File(dir,xmlscreenname);
+			try {
+				FileWriter fw = new FileWriter(f);
+				fw.write(screenxml);
+				fw.close();
+				
+				///saving config to BE//
+				JSONObject jobj = new JSONObject();
+				jobj.put("filepath", filepath);
+				jobj.put("filename", filename);
+				jobj.put("fefile", fefile);
+				jobj.put("create", "true");
+				
+				message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
+				///saving config to BE//
+				
+				AppCacheManager.removeCache("xmlcache");
+				message += " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+ftlbasepath+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
 
+	public String screenmappath;
+	public String screenmapfilename;
+	public String screenmapxml;
+	@Action(value="loadscreenmap")
+	public String loadscreenmap(){
+		String message= "Not processed!";
+		logger.debug(screenmappath);
+		logger.debug(screenmapfilename);
+		logger.debug("loadding...");
+		
+		
+		JSONObject jres =new JSONObject();
+		File dir = new File(screenmappath);
+		if(dir.exists()){
+			File f = new File(dir,screenmapfilename);
+			try {
+				jres.put("data", message);
+				if(f.exists()){
+					String fefile = FileUtils.readFileToString(f);
+					jres.put("data", fefile);
+				}else{
+					jres.put("errors", "screenmap File not found "+f.getAbsolutePath()) ;
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+				jres.put("errors", message);
+			}
+			
+		}else{
+			message = "Directory "+screenmappath+" does not exist.";
+			jres.put("errors", message);
+		}
+		
+		
+		inputStream = new ByteArrayInputStream(jres.toString().getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="screenmapsave")
+	public String screenmapsave(){
+		String message= "Not processed!";
+		logger.debug(screenmappath);
+		logger.debug(screenmapfilename);
+		logger.debug(screenmapxml);
+		logger.debug("saving...");
+		
+		File dir = new File(screenmappath);
+		if(dir.exists()){
+			File f = new File(dir,screenmapfilename);
+			try {
+				if(f.exists()){
+					FileWriter fw = new FileWriter(f);
+					fw.write(screenmapxml);
+					fw.close();
+					
+					///saving config to BE//
+					JSONObject jobj = new JSONObject();
+					jobj.put("filepath", filepath);
+					jobj.put("filename", filename);
+					jobj.put("fefile", fefile);
+					jobj.put("create", "false");
+					
+					message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
+					///saving config to BE//
+					
+					AppCacheManager.removeCache("xmlcache");
+					message += " File "+f.getAbsolutePath() +" saved successfully, length="+f.length()+ new Date();
+				}else{
+					message = "File not found "+f.getAbsolutePath();
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+screenmappath+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	public String filepath;
+	public String filename;
+	public String fefile;
+	@Action(value="loadfefile")
+	public String loadfefile(){
+		String message= "Not processed!";
+		System.out.println(filepath);
+		System.out.println(filename);
+		System.out.println("loadding...");
+		JSONObject jres =new JSONObject();
+		File dir = new File(filepath);
+		if(dir.exists()){
+			File f = new File(dir,filename);
+			try {
+				jres.put("data", message);
+				if(f.exists()){
+					String fefile = FileUtils.readFileToString(f);
+					jres.put("data", fefile);
+				}else{
+					jres.put("errors", "File not found "+f.getAbsolutePath()) ;
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+				jres.put("errors", message);
+			}
+			
+		}else{
+			message = "Directory "+filepath+" does not exist.";
+			jres.put("errors", message);
+		}
+		
+		inputStream = new ByteArrayInputStream(jres.toString().getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="savefefile")
+	public String savefefile(){
+		String message= "Not processed!";
+		System.out.println(filepath);
+		System.out.println(filename);
+		System.out.println(fefile);
+		System.out.println("saving...");
+		
+		File dir = new File(filepath);
+		if(dir.exists()){
+			File f = new File(dir,filename);
+			try {
+				if(f.exists()){
+					FileWriter fw = new FileWriter(f);
+					fw.write(fefile);
+					fw.close();
+					AppCacheManager.removeCache("xmlcache");
+					message = " File "+f.getAbsolutePath() +" saved successfully, length="+f.length()+ new Date();
+				}else{
+					message = "File not found "+f.getAbsolutePath();
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+filepath+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="createfefile")
+	public String createfefile(){
+		String message= "Not processed!";
+		File dir = new File(filepath);
+		if(dir.exists()){
+			File f = new File(dir,filename);
+			try {
+				if(f.exists()){
+					
+					message = " File "+f.getAbsolutePath() +" already exists, length="+f.length()+ new Date();
+				}else{
+					f.createNewFile();
+					message = "File created at "+f.getAbsolutePath() + " "+new Date();
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (IOException e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+filepath+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	//returns all json result
+	public HashMap<String, Object> jobj = new HashMap<String, Object>();
+
+	//@Validations(requiredStrings={@RequiredStringValidator(fieldName="myfile",type = ValidatorType.FIELD, message = "Login User is required")})
+	@Action(value="bconfig")
+	public String bconfig(){
+		String message = "Not configured!";
+		System.out.println("This is now configured FE");
+		ServletActionContext.getRequest().getSession().setAttribute("processor", "FE");
+		Constants.CMD_PROCESSOR = 0;
+		Constants.APP_LAYER = 1;
+		Constants.FRONTEND = 1;
+		try {
+			jobj.put("bemessage", message);
+			message = SendToBE.sendToBE("data", "beconfig.action");
+			jobj.put("bemessage", message);
+			jobj.put("femessage", "configured FE");
+		} catch (IOException e) {
+			addActionError(e.toString());
+		}
+		
+		 
+		logger.debug("This is now configured BE");
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return "json";
+	}
+	
+	@Action(value="bloadfefile")
+	public String bloadfefile(){
+		String message= "Not processed!";
+		System.out.println(filepath);
+		System.out.println(filename);
+		System.out.println("loadding...");
+		JSONObject jres =new JSONObject();
+		
+		try{
+			JSONObject jobj = new JSONObject();
+			jobj.put("filepath", filepath);
+			jobj.put("filename", filename);
+			jobj.put("fefile", fefile);
+			
+			String jsonmsg = SendToBE.sendToBE(jobj.toString(), "beloadfile.action");
+			jres = JSONObject.fromObject(jsonmsg);
+		}catch(Exception e){
+			logger.error(e.toString());
+			message = "File writing error "+e.toString();
+			jres.put("errors", message);
+		}
+		
+		inputStream = new ByteArrayInputStream(jres.toString().getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="bsavefefile")
+	public String bsavefefile(){
+		String message= "Not processed!";
+		System.out.println(filepath);
+		System.out.println(filename);
+		System.out.println(fefile);
+		System.out.println("saving in BE ...");
+		
+		 
+		try{
+			JSONObject jobj = new JSONObject();
+			jobj.put("filepath", filepath);
+			jobj.put("filename", filename);
+			jobj.put("fefile", fefile);
+			
+			message = SendToBE.sendToBE(jobj.toString(), "besavefile.action");
+		}catch(Exception e){
+			logger.error(e.toString());
+			message = "exception while saving file in BE- "+e.toString();
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="bcreatefefile")
+	public String bcreatefefile(){
+		String message= "Not processed!";
+		try {
+			JSONObject jobj = new JSONObject();
+			jobj.put("filepath", filepath);
+			jobj.put("filename", filename);
+			message = SendToBE.sendToBE(jobj.toString(), "becreatefile.action");
+		} catch (Exception e) {
+			message = "Backend caused exception "+e.toString();
+		}
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="login")
+	public String loginaction(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		System.out.println(request.getParameter("PASSWORD")+" "+request.getParameter("ID"));
+		jobj.put("ok", "working");
+		return "json";
+	}
 	public InputStream getInputStream() {
 		return inputStream;
 	}
@@ -45,6 +427,13 @@ public class ScreenAction extends ActionSupport{
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
-	
+
+	public HashMap<String, Object> getJobj() {
+		return jobj;
+	}
+
+	public void setJobj(HashMap<String, Object> jobj) {
+		this.jobj = jobj;
+	}
 
 }

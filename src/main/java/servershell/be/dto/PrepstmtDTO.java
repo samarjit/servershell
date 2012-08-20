@@ -11,7 +11,7 @@ import servershell.be.dao.DataTypeException;
  //public static String DATE="DATE"; 
  //public static String DOUBLE="DOUBLE"; 
  //public static String FLOAT="FLOAT"; 
-  public static final String DATEDDMMYYYY_FORMAT = "DD/MM/yyyy";
+  public static final String DATEDDMMYYYY_FORMAT = "dd/MM/yyyy";
   public static final String DATE_NS_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
   public static final String DATE_TIME_MIN_FORMAT = "dd/MM/yyyy HH:mm"; 
           

@@ -184,7 +184,7 @@ public class CommandProcessor {
 	}
 	
 	private String remoteCommandProcessor(String submitdataObj, String screenName) {
-		ResourceBundle rb = ResourceBundle.getBundle("path_config");
+		ResourceBundle rb = ResourceBundle.getBundle("config");
 		String wsbasepath = rb.getString("be.webservice.basepath");
 		URL url = null;
 		try {

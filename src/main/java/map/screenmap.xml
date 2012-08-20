@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <root>
  
- 
+<screen name="AlertQueuep" mappingxml="map/jsptest/AlertQueuep.xml" /> 
 <screen name="PassionUserTemp" mappingxml="map/jsptest/PassionUserTemp.xml" />
+<screen name="AlertQueue" mappingxml="map/jsptest/AlertQueue.xml" />
+
 </root>

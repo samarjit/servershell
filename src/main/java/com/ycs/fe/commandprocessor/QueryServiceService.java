@@ -15,8 +15,7 @@ public class QueryServiceService {
 	}
 
 	public QueryService getQueryServicePort() {
-		// TODO Auto-generated method stub
-		return null;
+		return new QueryService();
 	}
 
 }

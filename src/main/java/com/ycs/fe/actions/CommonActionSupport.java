@@ -169,10 +169,10 @@ public class CommonActionSupport extends ActionSupport {
 			}
 		}catch(FrontendException e){
 			logger.error("error.processingresult",e);
-			throw new FrontendException("error.nextpagenotfound");
+			throw new FrontendException("error.nextpagenotfound",e);
 		}catch (Exception e){
 			logger.error("error.processingresult",e);
-			throw new Exception("error.global");
+			throw new Exception("error.global",e);
 		}
 		logger.debug("resultName = "+pg.resultName);
 		logger.debug("screenName = "+pg.nextScreenName);

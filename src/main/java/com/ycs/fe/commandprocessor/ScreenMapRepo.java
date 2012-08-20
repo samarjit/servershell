@@ -84,14 +84,14 @@ public class ScreenMapRepo {
 			net.sf.ehcache.Element scrXmlFromCache = AppCacheManager.getElementFromCache("xmlcache", scrName);
 				
 			if(scrXmlFromCache == null){
-		
+				
 				Document doc = new SAXReader().read(path);
 				root = doc.getRootElement();
-				System.out.println("xmlcache -> "+scrName+" cache miss");
+				logger.debug("xmlcache -> "+scrName+" cache miss");
 				AppCacheManager.putElementInCache("xmlcache", scrName, root);
 			}else{
 				root = (Element) scrXmlFromCache.getObjectValue();	
-				System.out.println("xmlcache -> "+scrName+" cache hit");
+				logger.debug("xmlcache -> "+scrName+" cache hit");
 			}
 		} catch (DocumentException e) {
 			logger.error("XML Load Exception path="+path+" ScreenName="+scrName);

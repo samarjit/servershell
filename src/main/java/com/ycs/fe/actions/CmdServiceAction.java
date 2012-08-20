@@ -7,6 +7,8 @@ import java.util.Iterator;
 
 import net.sf.json.JSONObject;
 
+import ognl.Ognl;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -15,6 +17,7 @@ import org.apache.struts2.convention.annotation.Result;
 import servershell.be.dto.InputDTO;
 import servershell.be.dto.ResultDTO;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.ycs.fe.commandprocessor.CommandProcessor;
 import com.ycs.fe.commandprocessor.FrontendException;
@@ -31,12 +34,15 @@ public class CmdServiceAction extends ActionSupport{
 	
 	@Action(value="remoteCommandProcessor", results ={@Result(name="success",type="stream")})
 	public String remoteCommandProcessor() throws Exception{
+		System.out.println(">>>>incoming value : +++ "+ submitdataObj);
 		logger.debug(">>>>incoming value : +++ "+ submitdataObj);
 		String tmpResDTO = "Query Service Error in remoteCommandProcessor";
 		JSONObject submitdata =  JSONObject.fromObject(submitdataObj);
 		InputDTO inpDTO = new InputDTO();
 		inpDTO.setData(submitdata);
-		ServletActionContext.getContext().getValueStack().set("inputDTO", inpDTO);
+		ServletActionContext.getContext().getValueStack().getContext().put("inputDTO", inpDTO);
+//		 String propval = ServletActionContext.getContext().getValueStack().findString("#inputDTO.data.form1[0].CARD_NO");
+//		 System.out.println("@@@@@@@@@from value stack="+propval+"    --"+ActionContext.getContext().get("inputDTO"));
 		JSONObject sessionvars =   inpDTO.getData().getJSONObject("sessionvars");
 		System.out.println("InputDTO.getData() is "+inpDTO.getData().toString());
 		if(sessionvars!=null && !sessionvars.isNullObject())

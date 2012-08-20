@@ -2,8 +2,8 @@ package com.ycs.fe.commandprocessor;
 
 public class Constants {
 
-	public static final String APP_LAYER = null;
-	public static final String FRONTEND = null;
-	public static final String CMD_PROCESSOR = null;
+	public static   int APP_LAYER = 1;
+	public static   int FRONTEND = 1;
+	public static   int CMD_PROCESSOR = 1;
 
 }

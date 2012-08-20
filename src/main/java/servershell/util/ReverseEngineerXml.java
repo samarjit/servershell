@@ -160,6 +160,11 @@ public class ReverseEngineerXml {
 		jresult.put("tabledetails", strw.toString());
 		strw.getBuffer().setLength(0);
 		
+		out.println(screenName);
+		
+		jresult.put("screenname", strw.toString());
+		strw.getBuffer().setLength(0);
+		
 		//html
 		out.println("<!DOCTYPE script PUBLIC \"-//W3C//DTD XHTML 1.1 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n" + 
 				"<%@taglib prefix=\"s\"  uri=\"/struts-tags\" %>\r\n" + 
@@ -168,13 +173,14 @@ public class ReverseEngineerXml {
 				"<html>\r\n" + 
 				"<head>\r\n" + 
 				" <title>"+screenName+"</title>\r\n" + 
-				"<sj:head jqueryui=\"true\" jquerytheme=\"redmond\"  />\r\n" + 
-				"<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/ui.jqgrid.css\">\r\n" + 
-				"<script src=\"../js/jquery.validate.js\" > </script>\r\n" + 
-				"<script src=\"../js/additional-methods.js\" > </script>\r\n" + 
+				"<sj:head jqueryui=\"true\" jquerytheme=\"redmond\"  />\r\n" +
+				"<s:set var=\"ctx\"  >${pageContext.request.contextPath}</s:set>" + 
+				"<link rel=\"stylesheet\" type=\"text/css\" href=\"${ctx}/struts/themes/ui.jqgrid.css\">\r\n" + 
+				"<!--script src=\"../js/jquery.validate.js\" > </script>\r\n" + 
+				"<script src=\"../js/additional-methods.js\" > </script-->\r\n" + 
 				"<script src=\"../js/i18n/grid.locale-en.js\" > </script>\r\n" + 
 				"<script src=\"../js/jquery.jqGrid.min.js\" > </script>\r\n" + 
-				"<script src=\"../js/json2.js\" > </script>\r\n"+
+				"<!--script src=\"../js/json2.js\" > </script-->\r\n"+
 				"\r\n"+
 				"<script>");
 		
@@ -188,7 +194,7 @@ public class ReverseEngineerXml {
 		out.println("   $(document).ready(function(){\r\n" + 
 				           "	//iadt.setFieldlist(fieldlist);\r\n" + 
 				           "	globalAjaxErrorSetup();\r\n"+
-				           "	$(\"#form1\").validate($.extend(rulesframework,{debug: true}));\r\n" + 
+				           "	//$(\"#form1\").validate($.extend(rulesframework,{debug: true}));\r\n" + 
 				           "	calljqgrid();		\r\n" + 
 				           "   });");
 		out.println("	function showAjaxError(request, type, errorThrown)\r\n" + 
