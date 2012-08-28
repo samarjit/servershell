@@ -29,6 +29,7 @@ public class SendToBE {
 		HttpPost post = new HttpPost(rb.getString("be.webservice.basepath")+"/"+urlaction);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 		nameValuePairs.add(new BasicNameValuePair("data",data));
+		nameValuePairs.add(new BasicNameValuePair("sendtobe","sendtobe"));
 		try {
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 

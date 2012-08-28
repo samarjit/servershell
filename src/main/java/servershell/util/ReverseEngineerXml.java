@@ -106,9 +106,9 @@ public class ReverseEngineerXml {
 		int scale= 0;
 		String tableName = "";
 		tableName = metaData.getTableName(1);
-		if(tableName == null || tableName.equals("")){
-			tableName = metaData.getTableName(0);
-		}
+//		if(tableName == null || tableName.equals("")){
+//			tableName = metaData.getTableName(2);
+//		}
 		
 		strw = new StringWriter();
 		PrintWriter out = new PrintWriter( strw);
@@ -175,7 +175,7 @@ public class ReverseEngineerXml {
 				" <title>"+screenName+"</title>\r\n" + 
 				"<sj:head jqueryui=\"true\" jquerytheme=\"redmond\"  />\r\n" +
 				"<s:set var=\"ctx\"  >${pageContext.request.contextPath}</s:set>" + 
-				"<link rel=\"stylesheet\" type=\"text/css\" href=\"${ctx}/struts/themes/ui.jqgrid.css\">\r\n" + 
+				"<link rel=\"stylesheet\" type=\"text/css\" href=\"${ctx}/css/ui.jqgrid.css\">\r\n" + 
 				"<!--script src=\"../js/jquery.validate.js\" > </script>\r\n" + 
 				"<script src=\"../js/additional-methods.js\" > </script-->\r\n" + 
 				"<script src=\"../js/i18n/grid.locale-en.js\" > </script>\r\n" + 

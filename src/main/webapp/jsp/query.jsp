@@ -15,10 +15,19 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		function frmsubmit(){
 			$("#log").append("<div class='query'>"+$("#query").val()+"</div>");
 			$("#log").append("<div class='res'>"+$("#queryresult").html()+"</div>");
+				$("#queryresult").text("Loading .. ");	
 				$.post("${pageContext.request.contextPath}/query.action",{query: $("#query").val(), cmd: 'query'},function (data){
-						$("#queryresult").html(data);		
+					$("#queryresult").html(data);		
 				});
 		}
+		$(document).ready(function (){
+			$('#query').keydown(function (e) {
+				  if (e.ctrlKey && e.keyCode == 13) {
+	 					frmsubmit();
+				  }
+				});
+		});
+		
 	</script>
 	<style type="text/css">
 	.grid{
@@ -37,16 +46,16 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <body>
 <%@ include file="../index.jsp" %>
 <form action="query.action" id="frm1">
-<button type="button" onclick="frmsubmit()">Submit Query</button>
+<!-- <button type="button" onclick="frmsubmit()">Submit Query</button> -->
 	<table style="width:100%;height:100%">
-		<tr>
+		<tr height="160px">
 			<td>
-				Query ${pageContext.request.contextPath}
+				<div class="ui-widget-header">Query ${pageContext.request.contextPath}</div>
 				<textarea name="query" id="query" cols="30" value="select * from alert_queue where rownum <5;" rows="10" style="width:100%">select * from alert_queue where rownum <5;</textarea>
 			</td>
 		</tr>
-		<tr>
-			<td>Result
+		<tr valign="top">
+			<td><div class="ui-widget-header">Result</div>
 				<div name="queryresult" id="queryresult" cols="30" rows="10" style="width:100%"></div>
 			</td>
 		</tr>

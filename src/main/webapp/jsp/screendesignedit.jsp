@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Reverse Engineering Tool</title>
 <s:head/>
-<sj:head/>
+<sj:head compressed="false" loadAtOnce="true"/>
 
 <script src="${pageContext.request.contextPath}/ace/ace.js"   charset="utf-8"></script>
 <script src="${pageContext.request.contextPath}/ace/mode-xml.js"   charset="utf-8"></script>

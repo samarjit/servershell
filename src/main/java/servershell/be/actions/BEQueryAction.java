@@ -80,7 +80,7 @@ public class BEQueryAction extends ActionSupport{
 						while (crs.next()) {
 							row = new HashMap<String, String>();
 							jsonString += "<tr>";
-							for (int i = 1; i < colcount; i++) {
+							for (int i = 1; i <= colcount; i++) {
 								if(md.getColumnTypeName(i ).equals("DATE")|| md.getColumnTypeName(i ).equals("TIMESTAMP")){
 									Date dt = null;
 									if(md.getColumnTypeName(i ).equals("DATE")) dt = crs.getDate(i);

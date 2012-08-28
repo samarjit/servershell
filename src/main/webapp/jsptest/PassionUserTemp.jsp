@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <%@taglib prefix="s"  uri="/struts-tags" %>
 <%@taglib prefix="sj"  uri="/struts-jquery-tags"  %>
-<%@taglib prefix="sjg"  uri="/struts-jquery-grid-tags" %>
+
 <%--@taglib prefix="sjg"  uri="/struts-jquery-grid-tags" --%>
 <html>
 <head>
@@ -11,7 +11,7 @@
 
 <s:set var="ctx"  >${pageContext.request.contextPath}</s:set>
 
-<link rel="stylesheet" type="text/css" href="${ctx }/struts/themes/ui.jqgrid.css">
+<link rel="stylesheet" type="text/css" href="${ctx }/css/ui.jqgrid.css">
 <!--<script src="../js/jquery.validate.js" > </script>
 <script src="../js/additional-methods.js" > </script>-->
 <script src="${ctx}/struts/i18n/grid.locale-en.js" > </script>

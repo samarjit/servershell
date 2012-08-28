@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
@@ -22,19 +21,22 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import servershell.util.AccessRights;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.Validations;
+import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 import com.ycs.fe.commandprocessor.AppCacheManager;
 import com.ycs.fe.commandprocessor.Constants;
 
-@ParentPackage("json-default")
+@ParentPackage("default")
 @Results(value={
 @Result(type="stream", name="success")
-,@Result(type="json", name="json",params={"ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
-,@Result(type="json", name="input",params={"ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="json",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="input",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
 })
-@Result(type="stream", name="success")
 public class ScreenAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 1L;
@@ -320,10 +322,29 @@ public class ScreenAction extends ActionSupport{
 		return SUCCESS;
 	}
 	
+	@Action("logout")
+	public String logout(){
+		ServletActionContext.getRequest().getSession().invalidate();
+		jobj.put("logout", "successfull.."+new Date());
+		return "json";
+	}
+	public void validate(){
+		String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
+		String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
+		System.out.println("Role = "+role+" User="+user);
+		String actionName = ServletActionContext.getActionMapping().getName();
+		
+		if(user == null){
+			addFieldError("user","User must be logged in ..");
+		}else{
+			if(!AccessRights.isAccessible(role,actionName))
+				addActionError("User "+user+" does not have accesss to "+actionName+".action");
+		}
+	}
 	//returns all json result
 	public HashMap<String, Object> jobj = new HashMap<String, Object>();
 
-	//@Validations(requiredStrings={@RequiredStringValidator(fieldName="myfile",type = ValidatorType.FIELD, message = "Login User is required")})
+//	@Validations(requiredFields={@RequiredFieldValidator(fieldName="sqlstring",type = ValidatorType.FIELD, message = "sqlstring is required")})
 	@Action(value="bconfig")
 	public String bconfig(){
 		String message = "Not configured!";

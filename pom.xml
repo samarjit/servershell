@@ -179,11 +179,11 @@
     	<artifactId>httpmime</artifactId>
     	<version>4.1.1</version>
     </dependency>
-    <dependency>
+  <!--   <dependency>
     	<groupId>com.jgeppert.struts2.jquery</groupId>
     	<artifactId>struts2-jquery-grid-plugin</artifactId>
     	<version>3.2.1</version>
-    </dependency>
+    </dependency> -->
     <dependency>
     	<groupId>jaxen</groupId>
     	<artifactId>jaxen</artifactId>

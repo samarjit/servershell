@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	}
 	</style>
 	<s:head />
-	<sj:head ajaxcache="false"/>
+	<sj:head ajaxcache="false" compressed="false" debug="true"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/struts/js/plugins/jquery.form.min.js" ></script>
 	<script type="text/javascript">
 	$.fn.serializeObject = function()
@@ -54,7 +54,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		
 		$.subscribe("complete", function(event, data){
 			
-			alert(data)
+			///alert(data)
 		});
 		
 	
@@ -89,7 +89,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		    // DOM element for the form do this: 
 		    // var formElement = jqForm[0]; 
 		 
-		    alert('About to submit: \n\n' + queryString); 
+		   // alert('About to submit: \n\n' + queryString); 
 		 
 		    // here we could return false to prevent the form from being submitted; 
 		    // returning anything other than false will allow the form submit to continue 
@@ -109,8 +109,8 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 		    // property set to 'json' then the first argument to the success callback 
 		    // is the json data object returned by the server 
 		 
-		    alert('status: ' + statusText + '\n\nresponseText: \n' + responseText + 
-		        '\n\nThe output div should have already been updated with the responseText.'); 
+		   // alert('status: ' + statusText + '\n\nresponseText: \n' + responseText + 
+		    //    '\n\nThe output div should have already been updated with the responseText.'); 
 		} 
 		
 	</script>

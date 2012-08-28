@@ -26,13 +26,25 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
 
+import servershell.util.AccessRights;
 import servershell.util.CompoundResource;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.Validations;
 
+@ParentPackage("default")
+@Results(value={
+@Result(type="stream", name="success")
+,@Result(type="json", name="json",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="input",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+})
 public class BEShellAction extends ActionSupport {
 	private static final long serialVersionUID = 12L;
 	
@@ -49,6 +61,25 @@ public class BEShellAction extends ActionSupport {
 	private String name;
 	private String data;
 	public String expression;
+	public String sendtobe;
+	
+	
+	public void validate(){
+		
+		if(sendtobe == null ||  "".equals(sendtobe)){
+			String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
+			String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
+			System.out.println("Role = "+role+" User="+user);
+			String actionName = ServletActionContext.getActionMapping().getName();
+			
+			if(user == null){
+				addFieldError("user","User must be logged in ..");
+			}else{
+				if(!AccessRights.isAccessible(role,actionName))
+					addActionError("User "+user+" does not have accesss to "+actionName+".action");
+			}
+		}
+	}
 	
 	/**
 	 * 
@@ -449,6 +480,7 @@ public class BEShellAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	
 	/**
 	 * rootPath
 	 * relPath
@@ -463,34 +495,46 @@ public class BEShellAction extends ActionSupport {
 		String relPath  = jobj.getString("relPath");
 		if("".equals(relPath))relPath ="*";
 		logger.debug("bels() rootPath :"+rootPath+"; relPath:"+relPath);
-		File f = new File(rootPath);
-		// put in security of path matching
-		FileFilter regex = new WildcardFileFilter(relPath);
-		File[] flist =  f.listFiles(regex);
-		SimpleDateFormat sm = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
-		HashMap<Long, String> hm1 = new HashMap<Long, String>();
-		HashMap<Long, String> hm2 = new HashMap<Long, String>();
-		for (File fl : flist) {
-			if (fl.isDirectory()) {
-				//jobj.put("dir", fl.lastModified() + " " + fl.getPath());
-				hm1.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+		try{
+			
+			if(rootPath == null || "".equals(rootPath))throw new Exception("rootPath is empty");
+
+			File f = new File(rootPath);
+			if(!f.exists())throw new Exception(" file not found "+f.getAbsolutePath());
+			if(!f.canRead()) throw new Exception("Path is not readable "+rootPath);
+			// put in security of path matching
+			FileFilter regex = new WildcardFileFilter(relPath);
+			File[] flist =  f.listFiles(regex);
+			SimpleDateFormat sm = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+			HashMap<Long, String> hm1 = new HashMap<Long, String>();
+			HashMap<Long, String> hm2 = new HashMap<Long, String>();
+			if(flist == null)throw new Exception("File not found "+regex+" in "+rootPath);
+			for (File fl : flist) {
+				if (fl.isDirectory()) {
+					//jobj.put("dir", fl.lastModified() + " " + fl.getPath());
+					hm1.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+				}
 			}
-		}
-		for (File fl : flist) {
-			if (fl.isFile()) {
-				hm2.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
-//				jobj.put("file", fl.length() + "\t" + fl.lastModified() + "\t" + fl.getPath());
+			for (File fl : flist) {
+				if (fl.isFile()) {
+					hm2.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+	//				jobj.put("file", fl.length() + "\t" + fl.lastModified() + "\t" + fl.getPath());
+				}
 			}
+			TreeSet<Long> ar = new TreeSet<Long>(hm1.keySet());
+			for (Iterator<Long> ltime = ar.descendingIterator();ltime.hasNext();) {
+				message += hm1.get(ltime.next());
+			}
+			TreeSet<Long> ar2 = new TreeSet<Long>(hm2.keySet());
+			for (Iterator<Long> ltime = ar2.descendingIterator();ltime.hasNext();) {
+				message += hm2.get(ltime.next());
+			}
+		}catch(Exception e){
+			for (StackTraceElement elm : e.getStackTrace()) {
+				message+=elm.getClassName()+"."+elm.getMethodName()+"("+elm.getLineNumber()+")\r\n";
+			}
+			message = "bels() Error: "+e.toString()+"\r\n"+message;
 		}
-		TreeSet<Long> ar = new TreeSet<Long>(hm1.keySet());
-		for (Iterator<Long> ltime = ar.descendingIterator();ltime.hasNext();) {
-			message += hm1.get(ltime.next());
-		}
-		TreeSet<Long> ar2 = new TreeSet<Long>(hm2.keySet());
-		for (Iterator<Long> ltime = ar2.descendingIterator();ltime.hasNext();) {
-			message += hm2.get(ltime.next());
-		}
-		
 		inputStream  = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
@@ -509,15 +553,17 @@ public class BEShellAction extends ActionSupport {
 	 */
 	@Action(value="begrep", results={@Result(type="stream")})
 	public String grep  (){
+		String message = "";
+		LineIterator it = null;
+		try{
 		JSONObject jobj =  JSONObject.fromObject(data);
 		String rootPath  = jobj.getString("rootPath");
 		String filename  = jobj.getString("filename");
 		String expression  = jobj.getString("expression");
 		logger.debug("grep:"+expression+" "+rootPath+"/"+filename);
 		File file = new File(rootPath+"/"+filename);
-        LineIterator it = null;
-        String message = "";
-        try{
+        	if(!file.exists())throw new Exception(" file not found "+file.getAbsolutePath());
+        	if(!file.canRead())throw new Exception(" file not readable "+file.getAbsolutePath());
 			it = FileUtils.lineIterator(file, "UTF-8");
             while (it.hasNext()){
                 String line = it.nextLine();
@@ -525,12 +571,12 @@ public class BEShellAction extends ActionSupport {
                 	message +=line+"\r\n";
                 }
             }
-         }catch (IOException e) {
-			message = "IOException"+e.toString();
+         }catch (Exception e) {
+			message = "begrep() Exception"+e.toString()+" input data="+data;
          }finally {
         	 if(it!=null)LineIterator.closeQuietly(it);
          }
-        if("".equals(message)){message= "No data found in grep"+new Date().toString();
+        if("".equals(message)){message= "No data found in grep  "+new Date().toString();
         }
         inputStream = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;

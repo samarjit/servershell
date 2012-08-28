@@ -10,18 +10,25 @@ import java.util.Date;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import servershell.util.AccessRights;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 
-@Results(
-value={@Result(name="success",type="stream")}		
-)
+ 
+@ParentPackage("default")
+@Results(value={
+@Result(type="stream", name="success")
+,@Result(type="json", name="json",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="input",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+})
 public class BEShellRelayAction extends ActionSupport {
 	
 	 
@@ -41,6 +48,20 @@ public class BEShellRelayAction extends ActionSupport {
 	public String belogpath;
 	public String pagesize;
 	public String expression;
+	
+	public void validate(){
+		String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
+		String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
+		System.out.println("Role = "+role+" User="+user);
+		String actionName = ServletActionContext.getActionMapping().getName();
+		
+		if(user == null){
+			addFieldError("user","User must be logged in ..");
+		}else{
+			if(!AccessRights.isAccessible(role,actionName))
+				addActionError("User "+user+" does not have accesss to "+actionName+".action");
+		}
+	}
 	
 	@Action(value="bscrolllog")
 	public String scrolllog(){
