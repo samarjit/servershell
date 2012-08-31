@@ -52,7 +52,7 @@ public class BEScreenAction extends ActionSupport{
 	@Action(value="beconfig")
 	public String beconfig(){
 		String message = null;
-		System.out.println("This is now configured BE");
+		logger.debug("This is now configured BE");
 		ServletActionContext.getRequest().getSession().setAttribute("processor", "BE");
 		Constants.CMD_PROCESSOR = 0;
 		Constants.APP_LAYER = 0;
@@ -70,16 +70,17 @@ public class BEScreenAction extends ActionSupport{
 		String filename;
 		String fefile;
 		String create;
+		logger.debug("besyncxml:"+data);
 		JSONObject jobj = JSONObject.fromObject(data);
 		filepath = jobj.getString("filepath");
 		filename = jobj.getString("filename");
 		fefile = jobj.getString("fefile");
 		create = jobj.getString("create");
 		
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println(fefile);
-		System.out.println("saving in BE...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug(fefile);
+		logger.debug("saving in BE...");
 		
 		File dir = new File(filepath);
 		if(dir.exists()){
@@ -118,9 +119,9 @@ public class BEScreenAction extends ActionSupport{
 		JSONObject jobj = JSONObject.fromObject(data);
 		filepath = jobj.getString("filepath");
 		filename = jobj.getString("filename");
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println("loadding...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug("loadding...");
 		JSONObject jres =new JSONObject();
 		File dir = new File(filepath);
 		if(dir.exists()){
@@ -160,10 +161,10 @@ public class BEScreenAction extends ActionSupport{
 		filename = jobj.getString("filename");
 		fefile = jobj.getString("fefile");
 		
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println(fefile);
-		System.out.println("saving...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug(fefile);
+		logger.debug("saving...");
 		
 		File dir = new File(filepath);
 		if(dir.exists()){

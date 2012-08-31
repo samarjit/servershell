@@ -581,13 +581,14 @@ public class ReverseEngineerXml {
 						"              arPrepstmt.add(DataType."+ardatatype.get(i)+", pinMaster.get"+arheader.get(i).replace(" ", "")+"());\r\n" + 
 						"           }\r\n";
 			}
-//			out.println(crs+"\r\n");
-//			out.println(crs1+"\r\n");
-//			out.println(crs2+"\r\n");
-//			out.println(upd+"\r\n");
-//			out.println(ins+"\r\n");
-//			out.println(insertSql+"\r\n");
-			
+			out.println(crs+"\r\n");
+			out.println(crs1+"\r\n");
+			out.println(crs2+"\r\n");
+			out.println(upd+"\r\n");
+			out.println(ins+"\r\n");
+			out.println(insertSql+"\r\n");
+			jresult.put("sqls", strw.toString());
+			 strw.getBuffer().setLength(0);
 			out.println("struts.xml <action name=\"cms\" class=\"com.ycs.ezlink.action.CmsAction\">" +
 					"<result name=\"jobsTrack\" >/jsp/jobsTrack.jsp</result>" +
 					"..</action>" +

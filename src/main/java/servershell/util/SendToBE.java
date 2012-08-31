@@ -12,7 +12,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
@@ -33,18 +32,20 @@ public class SendToBE {
 		try {
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-			ResponseHandler<String>  responseHandler = new BasicResponseHandler();
+			ResponseHandler<String>  responseHandler = new CustomResponseHandler();
 			String responseBody = client.execute(post, responseHandler);
 			System.out.println(responseBody.trim());
 		
 			logger.debug("This is logback debug " + responseBody.trim());
 			jsonString = responseBody.trim();
+			
+			client.getConnectionManager().shutdown();
 		} catch (UnsupportedEncodingException e) {
 			logger.error("",e);
 			throw e;
 		} catch (ClientProtocolException e) {
-			logger.error("",e);
-			throw e;
+			logger.error(e.getCause(),e);
+			throw   e;
 		} catch (IOException e) {
 			logger.error("",e);
 			throw e;

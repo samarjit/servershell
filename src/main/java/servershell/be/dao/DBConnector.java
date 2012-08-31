@@ -126,15 +126,15 @@ public class DBConnector {
 //				}catch(Exception e){
 //					logger.error("MiniConnectionPoolHelper connection error",e);
 //				}
-//				try{
-//					if(!poolinitialized){
-//						JDBCUtils.setUp();
-//						poolinitialized = true;
-//					}
-//					conn =  JDBCUtils.getConnection();
-//				}catch(Exception e){
-//					logger.error("MiniConnectionPoolHelper connection error",e);
-//				}
+				try{
+					if(!poolinitialized){
+						JDBCUtils.setUp();
+						poolinitialized = true;
+					}
+					conn =  JDBCUtils.getConnection();
+				}catch(Exception e){
+					logger.error("MiniConnectionPoolHelper connection error",e);
+				}
 				
 				isRuninServerContext = false;
 				if(conn == null){ 

@@ -6,9 +6,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Reverse Engineering Tool</title>
+<title>BE File Editor</title>
 <s:head/>
-<sj:head/>
+<sj:head  compressed="false" defaultLoadingText="Loading..." />
 
 <script src="${pageContext.request.contextPath}/ace/ace.js"   charset="utf-8"></script>
 <script src="${pageContext.request.contextPath}/ace/mode-xml.js"   charset="utf-8"></script>
@@ -60,8 +60,8 @@ Result: <pre id="resultdiv" style="height:40px;width:900px">d</pre>
  
 
 Edit File: <s:form action="bloadfefile.action" id="fefileloadform">
-<input name="filepath" id="filepath" value="src\main\webapp\jsptest" />
-<input name="filename" id="filename" value="PassionUserTemp.jsp" />
+<input name="filepath" id="filepath" value="src\main\webapp\jsptest" size="100" />
+<input name="filename" id="filename" value="PassionUserTemp.jsp"  size="70" />
 <sj:submit targets="resultdiv" formIds="fefileloadform" onCompleteTopics="pageloaded" button="true">load FE file</sj:submit>
 
 </s:form> 

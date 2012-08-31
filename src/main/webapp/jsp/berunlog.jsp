@@ -61,7 +61,7 @@ function clearresult(){
 <button type="button" onclick="stopautorefresh()">stopautorefresh</button>
 <button type="button" onclick="clearresult()">clear</button>
 <form action="berunlog.action" id="form1">
-BE Logpath<input name="belogpath" id="belogpath" value="C:/Users/Samarjit/Desktop/profilelist.txt" />
+BE Logpath<input name="belogpath" id="belogpath" value="C:/Users/Samarjit/Desktop/profilelist.txt"  size="100" />
 <input type="text" name="prevpos" id="prevpos" value="0" /> 
 <button type="button" id="ref" onclick="refresh()">refresh</button>
 <sj:submit  targets="res"  ></sj:submit>

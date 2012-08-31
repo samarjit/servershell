@@ -62,8 +62,8 @@ function clearresult(){
 <button type="button" onclick="stopautorefresh()">stopautorefresh</button>
 <button type="button" onclick="clearresult()">clear</button>
 <form action="bescrolllog.action" id="form1">
-BE Logpath<input name="belogpath" id="belogpath" value="C:/Users/Samarjit/Desktop/Book1.txt" />
-Prevpos: <input type="text" name="prevpos" id="prevpos" value="7000" /> 
+BE Logpath<input name="belogpath" id="belogpath" value="C:/Users/Samarjit/Desktop/Book1.txt"  size="100" />
+Prevpos: <input type="text" name="prevpos" id="prevpos" value="0" /> 
 Page Size: <input type="text" name="pagesize" id="pagesize" value="10" />
 
 <button type="button" id="ref" onclick="refresh('pageup')">Up</button>

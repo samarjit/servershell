@@ -179,7 +179,8 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="screenmapsave")
 	public String screenmapsave(){
 		String message= "Not processed!";
-		logger.debug(screenmappath);
+		logger.debug("FE:"+screenmappath);
+		logger.debug("BE:"+filepath);
 		logger.debug(screenmapfilename);
 		logger.debug(screenmapxml);
 		logger.debug("saving...");
@@ -196,10 +197,10 @@ public class ScreenAction extends ActionSupport{
 					///saving config to BE//
 					JSONObject jobj = new JSONObject();
 					jobj.put("filepath", filepath);
-					jobj.put("filename", filename);
-					jobj.put("fefile", fefile);
+					jobj.put("filename", screenmapfilename);
+					jobj.put("fefile", screenmapxml);
 					jobj.put("create", "false");
-					
+					logger.debug("send to BE:"+jobj.toString());
 					message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
 					///saving config to BE//
 					

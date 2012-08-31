@@ -10,7 +10,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	<title>Query</title>
 	<s:head />
-	<sj:head/>
+	<sj:head  compressed="false" defaultLoadingText="Loading..."/>
 	<script type="text/javascript">
 		function frmsubmit(){
 			$("#log").append("<div class='query'>"+$("#query").val()+"</div>");
@@ -28,6 +28,20 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 				});
 		});
 		
+		
+		function describeQry(){
+			$("#queryresult").text("Loading...");
+			$.get("${pageContext.request.contextPath}/bcreatescreen.action",{sqlstring: $("#query").val().replace(";","")},function (data) {
+				var json = $.parseJSON(data);
+				if(json.tabledetails){
+					$("#queryresult").text(json.tabledetails);
+				}else{
+					$("#queryresult").text(data);
+				}
+				
+			});
+			
+		}
 	</script>
 	<style type="text/css">
 	.grid{
@@ -35,7 +49,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	  border: 1px solid lightgrey;
 	  border-collapse: collapse;
 	  font-face: verdana;
-	  font-size: .8em;
+	  font-size: .9em;
 	}
 	.grid th{
 		background-color: grey;
@@ -50,13 +64,13 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	<table style="width:100%;height:100%">
 		<tr height="160px">
 			<td>
-				<div class="ui-widget-header">Query ${pageContext.request.contextPath}</div>
+				<div class="ui-widget-header">Query ${pageContext.request.contextPath} <sj:a  button="true" id="dsc" onclick="describeQry()"  >describe</sj:a> </div>
 				<textarea name="query" id="query" cols="30" value="select * from alert_queue where rownum <5;" rows="10" style="width:100%">select * from alert_queue where rownum <5;</textarea>
 			</td>
 		</tr>
 		<tr valign="top">
 			<td><div class="ui-widget-header">Result</div>
-				<div name="queryresult" id="queryresult" cols="30" rows="10" style="width:100%"></div>
+				<pre name="queryresult" id="queryresult"   style="width:100%"></pre>
 			</td>
 		</tr>
 	
@@ -64,7 +78,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	
 </form>	
   
- Log:
+ Log:<sj:a button="true" onclick="javascript:document.getElementById('log').innerHTML=''" >clear</sj:a>
  <div id="log">
  </div> 
 </body>

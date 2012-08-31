@@ -7,9 +7,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Reverse Engineering Tool</title>
+<title>Reverse Engg</title>
 <s:head />
-<sj:head jqueryui="true" defaultIndicator="indicator" defaultLoadingText="Loading..." />
+<sj:head jqueryui="true" defaultIndicator="indicator" compressed="false" defaultLoadingText="Loading..." />
 
 
 <script src="${pageContext.request.contextPath}/ace/ace.js"   charset="utf-8"></script>
@@ -40,6 +40,7 @@ $.subscribe('onsuccesRevEng',function(event,data){
 	$("#aliasquery").text(json.aliasquery);
 	$("#pagexml").text(json.pagexml);
 	$("#screenmapxml").text(json.screenmapxml);
+	$("#sqls").text(json.sqls);
 	$("#miscellaneous").text(json.miscellaneous);
 	$("#ftlfilename").val(json.screenname+".html");
 	$("#xmlscreenname").val(json.screenname+".xml");
@@ -95,8 +96,8 @@ Reverse Engg. Add Column: <form> <input name="revenggqry" id="revenggqry" /><but
 <div class="ui-widget-header">htmlscreen1:</div> 
 Path:<s:form action="createhtml.action" id="pp" method="post" > 
 Once confirmed copy to: src/main/webapp/jsptest
-<input name="ftlbasepath" value="target/classes/map/jsptest" />
-<input name="ftlfilename" id="ftlfilename"/> 
+<input name="ftlbasepath" value="target/classes/map/jsptest"  size="100" />
+<input name="ftlfilename" id="ftlfilename"  size="70" /> 
 <sj:a button="true"   onclick="beforeHtmlSave()" targets="revenggresult" formIds="pp"  > Save</sj:a>
  <textarea name="htmlscreen1" id="htmlscreen1" rows="10" cols="80" style="width:1024px;display:none" >g</textarea></s:form>
 htmlscreen: <div style="width: 1024px; height: 400px;position:relative" > <div id="htmlscreen" style="width: 1024px; height: 400px;">g</div></div>
@@ -106,13 +107,14 @@ htmlscreen: <div style="width: 1024px; height: 400px;position:relative" > <div i
 <div class="ui-widget-header">aliasquery:</div> <pre id="aliasquery">g</pre>
 <div class="ui-widget-header">pagexml:</div>
 <s:form action="createxml.action">
-<input name="xmlscreenpath" value="src/main/java/map/jsptest"/>
-<input name="xmlscreenname" id="xmlscreenname"/> 
+<input name="xmlscreenpath" value="src/main/java/map/jsptest"  size="100" />
+<input name="xmlscreenname" id="xmlscreenname"  size="70" /> 
 <textarea rows="1" cols="1" id="screenxml" name="screenxml">ss</textarea>
 <sj:submit type="button" targets="revenggresult" onclick="beforeXmlSave()" button="true">save xml</sj:submit>
 </s:form>
 <div style="width: 1024px; height: 400px;position:relative" ><div id="pagexml" style="width: 1024px; height: 400px;">g</div></div>
 
+<div class="ui-widget-header">SQLs:</div><pre id="sqls">g</pre>
 <div class="ui-widget-header">miscellaneous:</div><pre id="miscellaneous">g</pre>
 
 </body>

@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	}
 	</style>
 	<s:head />
-	<sj:head ajaxcache="false" compressed="false" debug="true"/>
+	<sj:head ajaxcache="false"  compressed="false" defaultLoadingText="Loading..." debug="true"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/struts/js/plugins/jquery.form.min.js" ></script>
 	<script type="text/javascript">
 	$.fn.serializeObject = function()

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>BE Scrolllog</title>
+<title>BE Shell</title>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 <%@include file="../index.jsp" %>
@@ -106,7 +106,7 @@ grep exp <input name="exp" id="exp">file<input name="grepfile" id="grepfile" /><
 
 <form action="bescrolllog.action" id="form1">
 BE Logpath<input name="belogpath" id="belogpath" size="100" value="C:/Users/Samarjit/Desktop/Book1.txt" />
-Prevpos: <input type="text" name="prevpos" id="prevpos" value="7000" /> 
+Prevpos: <input type="text" name="prevpos" id="prevpos" value="0" /> 
 Page Size: <input type="text" name="pagesize" id="pagesize" value="10" />
 
 <button type="button" id="ref" onclick="refresh('pageup')">Up</button>

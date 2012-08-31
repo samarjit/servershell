@@ -8,7 +8,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <%@taglib prefix="sj" uri="/struts-jquery-tags" %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-	<title>Servershell</title>
+	<title>Upload Download</title>
 	<style>
 	form{
 	border: 1px solid black;
@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	}
 	</style>
 	<s:head />
-	<sj:head ajaxcache="false"/>
+	<sj:head ajaxcache="false"  compressed="false" defaultLoadingText="Loading..." />
 	<script type="text/javascript" src="${pageContext.request.contextPath}/struts/js/plugins/jquery.form.min.js" ></script>
 	<script type="text/javascript">
 	$.fn.serializeObject = function()

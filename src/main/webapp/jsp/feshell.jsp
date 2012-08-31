@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>BE Scrolllog</title>
+<title>FE Shell</title>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 <%@include file="../index.jsp" %>
@@ -104,13 +104,13 @@ function copytoLogpath(){
 <s:url  action="behome.action" var="bhome1" />
 <sj:submit value="home" type="button" href="%{#bhome1}" onCompleteTopics="showHomeTopic()" targets="result" >js:home</sj:submit>
 <br/>
-pwd:<textarea id="rootpath" rows="2" cols="80"></textarea>
+pwd:<textarea id="rootpath" rows="2" cols="100"></textarea>
 <button onclick="copytoLogpath()">copy to logpath</button>
 <br/>
 List:<input name="relPath" id="relPath"/><button type="button" onclick="ls()">ls</button>
 
 <br/>
-CD Path:<input name="cdpath" id="cdpath" size="80"><button type="button" onclick="changedir()">cd</button>
+CD Path:<input name="cdpath" id="cdpath" size="100"><button type="button" onclick="changedir()">cd</button>
 <br/> 
 grep exp <input name="exp" id="exp">file<input name="grepfile" id="grepfile" /><button type="button" onclick="grep()">grep</button>
 <br/>
@@ -120,7 +120,7 @@ grep exp <input name="exp" id="exp">file<input name="grepfile" id="grepfile" /><
 
 <form action="bescrolllog.action" id="form1">
 BE Logpath<input name="belogpath" id="belogpath" size="100" value="C:/Users/Samarjit/Desktop/Book1.txt" />
-Prevpos: <input type="text" name="prevpos" id="prevpos" value="7000" /> 
+Prevpos: <input type="text" name="prevpos" id="prevpos" value="0" /> 
 Page Size: <input type="text" name="pagesize" id="pagesize" value="10" />
 
 <button type="button" id="ref" onclick="refresh('pageup')">Up</button>

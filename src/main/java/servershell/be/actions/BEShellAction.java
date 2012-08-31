@@ -147,7 +147,7 @@ public class BEShellAction extends ActionSupport {
 		} catch (Exception e) {
 			logger.error("",e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
-			String str = null;
+			String str = "";
 			for (StackTraceElement stElm : stackTrace) {
 				str += stElm.toString()+"<br/>";
 			}

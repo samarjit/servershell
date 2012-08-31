@@ -96,11 +96,11 @@ public class QueryAction extends ActionSupport implements SessionAware{
 				addActionError("Validation Error :" +e.toString());
 			} catch (Exception e) {
 				StackTraceElement[] stackTrace = e.getStackTrace();
-				String str = null;
+				String str = "";
 				for (StackTraceElement stElm : stackTrace) {
 					str += stElm.toString()+"<br/>";
 				}
-				addActionError("Unknown Exception "+e.getMessage()+"  "+ str);
+				addActionError("Unknown Exception "+e.toString()+"  "+ str);
 				logger.error(" Unkown Exception",e);
 			}
 			

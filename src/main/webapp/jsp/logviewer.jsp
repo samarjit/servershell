@@ -10,7 +10,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	<title>Logviewer</title>
 	<s:head />
-	<sj:head/>
+	<sj:head  compressed="false" defaultLoadingText="Loading..." />
 	<script type="text/javascript">
 	var logfilename = "";
 		function frmsubmit(){
@@ -48,7 +48,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
 <button type="button" onclick="frmsubmitPagedown()">pagedown</button>
 	 
 				Query ${pageContext.request.contextPath}
-				<input name="cmd" id="cmd" cols="30" rows="1" style="width:100%" value="log C:\Users\Samarjit\Desktop\temp\prdlogs\EzLinkBEJob.log.14May" /> 
+				<input name="cmd" id="cmd" cols="30" rows="1" style="width:100%" value="log C:\Users\Samarjit\Desktop\temp\prdlogs\EzLinkBEJob.log.14May"  size="100" /> 
 				Pageup: <input type="text" name="pageup" id="pageup"/>
 				Pagedown: <input type="text" name="pagedown" id="pagedown" />
 			 Result
