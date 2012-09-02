@@ -29,48 +29,75 @@
 </style> 
 
 <script type="text/javascript">
-var editor,editor2,editor3,editor4;
+var pagexml,htmlscreenview,htmlscreen,editor4,screenmap;
 var initialized = false;
+$(document).ready(function (){
+	  	screenmap = ace.edit("screenmapxmlxml");
+		 var XmlMode3 = require("ace/mode/html").Mode;
+		 screenmap.getSession().setMode(new XmlMode3());
+		 
+		 pagexml = ace.edit("pagexml");
+	  	 var XmlMode = require("ace/mode/xml").Mode;
+	  	 pagexml.getSession().setMode(new XmlMode());
+	     
+	     htmlscreenview = ace.edit("htmlscreenview");
+		 var XmlMode2 = require("ace/mode/xml").Mode;
+		 htmlscreenview.getSession().setMode(new XmlMode2());    
+		     
+		 htmlscreen = ace.edit("htmlscreen");
+		 var XmlMode3 = require("ace/mode/html").Mode;
+		 htmlscreen.getSession().setMode(new XmlMode3());    
+		
+});
 $.subscribe('onsuccesRevEng',function(event,data){
 	var json = $.parseJSON(event.originalEvent.request.responseText);
-	$("#tabledetails").text(json.tabledetails);
-	//$("#htmlscreen1").val(json.htmlscreen);
-	$("#htmlscreen").text(json.htmlscreen);
-	$("#htmlscreenview").text(json.htmlscreenview);
-	$("#aliasquery").text(json.aliasquery);
-	$("#pagexml").text(json.pagexml);
-	$("#screenmapxml").text(json.screenmapxml);
-	$("#sqls").text(json.sqls);
-	$("#miscellaneous").text(json.miscellaneous);
-	$("#ftlfilename").val(json.screenname+".html");
-	$("#xmlscreenname").val(json.screenname+".xml");
-	
+		
 	if(!initialized){
 		initialized = true;
-	 editor = ace.edit("pagexml");
-  	 var XmlMode = require("ace/mode/xml").Mode;
-     editor.getSession().setMode(new XmlMode());
-     
-       editor2 = ace.edit("htmlscreenview");
-	 var XmlMode2 = require("ace/mode/xml").Mode;
-	 editor2.getSession().setMode(new XmlMode2());    
-	     
-       editor3 = ace.edit("htmlscreen");
-	 var XmlMode3 = require("ace/mode/html").Mode;
-	 editor3.getSession().setMode(new XmlMode3());    
+
+         
 	
     /*    editor4 = CodeMirror.fromTextArea(document.getElementById("htmlscreen1"), {
          mode:  "text/html", tabMode: "indent" ,         matchBrackets: true
       }); */
        
 	}
+	
+	
+	$("#tabledetails").text(json.tabledetails);
+	//$("#htmlscreen1").val(json.htmlscreen);
+	//$("#htmlscreen").text(json.htmlscreen);
+	//$("#htmlscreenview").text(json.htmlscreenview);
+	$("#aliasquery").text(json.aliasquery);
+	//$("#pagexml").text(json.pagexml);
+	$("#screenmapxmlShow").text(json.screenmapxml);
+	$("#sqls").text(json.sqls);
+	$("#miscellaneous").text(json.miscellaneous);
+	$("#ftlfilename").val(json.screenname+".jsp");
+	$("#xmlscreenname").val(json.screenname+".xml");
+	
+	pagexml.setValue(json.pagexml);
+	
+	htmlscreenview.setValue(json.htmlscreenview);
+	htmlscreen.setValue(json.htmlscreen);
+	
 });
 
+ 
 function beforeXmlSave (event, data){
 	$("#screenxml").val(editor.getValue());
 }
 function beforeHtmlSave (event, data){
 	$("#htmlscreen1").val(editor3.getValue());
+}
+
+$.subscribe("screenMapLoaded",function(event, data){
+	var json = $.parseJSON(event.originalEvent.request.responseText);
+	$("#revenggresult").text(event.originalEvent.request.responseText);
+	screenmap.setValue(json.data);
+});
+function screenMapSave(){
+	$("#screenmapxml").val(screenmap.getValue());
 }
 
 </script>
@@ -92,7 +119,22 @@ Reverse Engg. Add Column: <form> <input name="revenggqry" id="revenggqry" /><but
 <div    name="revenggresult" id="revenggresult" style="height:40px;width:100%; overflow:hidden"></div>
  
 <div class="ui-widget-header">Tabledetails:</div> <pre id="tabledetails">g</pre>
-<div class="ui-widget-header">screenmapxml (Add to existing screenmap.xml):</div><pre id="screenmapxml">g</pre> 
+<div class="ui-widget-header">screenmapxml (Add to existing screenmap.xml):
+</div>
+<s:form   id="frmscreenmap">
+FE screenmappath:<input name="screenmappath" id="screenmappath" value="target/classes/map" size="100"/> <br/>
+BE xmlpath:<input name="filepath" value="target/classes/map/jsptest"  size="100" />
+screenmapfilename: <input name="screenmapfilename" id="screenmapfilename" value="screenmap.xml" />
+<textarea name="screenmapxml" id="screenmapxml" rows="1" cols="1"></textarea><br/>
+<s:url var="loadscreenmap" action="loadscreenmap"></s:url>
+<sj:a targets="revenggresult" href="%{loadscreenmap}" formIds="frmscreenmap" onSuccessTopics="screenMapLoaded" button="true">load screenmap</sj:a>
+<s:url var="screenmapsave" action="screenmapsave"></s:url>
+<sj:a targets="revenggresult" href="%{screenmapsave}" formIds="frmscreenmap"  onclick="screenMapSave()" button="true">save screenmap</sj:a>
+</s:form>
+<pre id="screenmapxmlShow">g</pre>
+screenmap.xml: <div style="width: 1024px; height: 300px;position:relative" > <div id="screenmapxmlxml" style="width: 1024px; height: 300px;">g</div></div>  
+<br/>
+
 <div class="ui-widget-header">htmlscreen1:</div> 
 Path:<s:form action="createhtml.action" id="pp" method="post" > 
 Once confirmed copy to: src/main/webapp/jsptest
@@ -107,7 +149,8 @@ htmlscreen: <div style="width: 1024px; height: 400px;position:relative" > <div i
 <div class="ui-widget-header">aliasquery:</div> <pre id="aliasquery">g</pre>
 <div class="ui-widget-header">pagexml:</div>
 <s:form action="createxml.action">
-<input name="xmlscreenpath" value="src/main/java/map/jsptest"  size="100" />
+FE xmlpath:<input name="xmlscreenpath" value="target/classes/map/jsptest"  size="100" /><br/>
+BE xmlpath:<input name="filepath" value="target/classes/map/jsptest"  size="100" />
 <input name="xmlscreenname" id="xmlscreenname"  size="70" /> 
 <textarea rows="1" cols="1" id="screenxml" name="screenxml">ss</textarea>
 <sj:submit type="button" targets="revenggresult" onclick="beforeXmlSave()" button="true">save xml</sj:submit>

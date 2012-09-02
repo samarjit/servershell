@@ -102,7 +102,7 @@ public class BEScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
@@ -142,7 +142,7 @@ public class BEScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 			jres.put("errors", message);
 		}
 		
@@ -186,7 +186,7 @@ public class BEScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
@@ -220,7 +220,7 @@ public class BEScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());

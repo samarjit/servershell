@@ -114,7 +114,7 @@ public class ScreenAction extends ActionSupport{
 				///saving config to BE//
 				JSONObject jobj = new JSONObject();
 				jobj.put("filepath", filepath);
-				jobj.put("filename", filename);
+				jobj.put("filename", xmlscreenname);
 				jobj.put("fefile", fefile);
 				jobj.put("create", "true");
 				
@@ -142,7 +142,8 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="loadscreenmap")
 	public String loadscreenmap(){
 		String message= "Not processed!";
-		logger.debug(screenmappath);
+		logger.debug("FE:"+screenmappath);
+		logger.debug("BE:"+filepath);
 		logger.debug(screenmapfilename);
 		logger.debug("loadding...");
 		
@@ -167,7 +168,7 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+screenmappath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 			jres.put("errors", message);
 		}
 		
@@ -216,7 +217,7 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+screenmappath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
@@ -252,7 +253,7 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 			jres.put("errors", message);
 		}
 		
@@ -288,7 +289,7 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
@@ -316,7 +317,7 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+filepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());

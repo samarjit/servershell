@@ -96,14 +96,16 @@ Result: <div id="resultdiv" style="height:40px;width:900px;overflow:hidden">d</d
 Edit screenmap:
 
 <s:form id="frmscreenmap" action="loadscreenmap"> 
-screenmappath:<input name="screenmappath" id="screenmappath" value="target/classes/map" size="100"/> 
+FE screenmappath:<input name="screenmappath" id="screenmappath" value="target/classes/map" size="100"/> <br/>
+BE xmlpath:<input name="filepath" value="target/classes/map/jsptest"  size="100" />
 screenmapfilename: <input name="screenmapfilename" id="screenmapfilename" value="screenmap.xml" />
 <sj:a targets="resultdiv" formIds="frmscreenmap" onSuccessTopics="screenMapLoaded" button="true">load screenmap</sj:a>
 <!-- <button type="button"  onclick="screenMapLoad">load screenmap</button> -->
 </s:form><br/>
 
 Edit Screen xml: <s:form id="xmlscr" action="loadscreenmap"> 
-<input name="screenmappath" id="filepath" value="target/classes/map" size="100"/>
+FE:<input name="screenmappath" value="target/classes/map" size="100"/><br/>
+BE:<input name="filepath" value="target/classes/map"  size="100" />
 <input name="screenmapfilename" id="filename" />
 
 <sj:a targets="resultdiv" formIds="xmlscr" onCompleteTopics="pagexmlloaded" button="true">load pagexml</sj:a>
