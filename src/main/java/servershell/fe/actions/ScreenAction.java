@@ -2,12 +2,16 @@ package servershell.fe.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,12 +26,12 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
 import servershell.util.AccessRights;
+import servershell.util.CompoundResource;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.Validations;
-import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 import com.ycs.fe.commandprocessor.AppCacheManager;
 import com.ycs.fe.commandprocessor.Constants;
 
@@ -443,6 +447,90 @@ public class ScreenAction extends ActionSupport{
 		jobj.put("ok", "working");
 		return "json";
 	}
+	
+	@Validations(requiredFields  ={
+			@RequiredFieldValidator(fieldName="filepath",message="filepath is required"),
+			@RequiredFieldValidator(fieldName="screenmappath",message="filepath is required"),
+			@RequiredFieldValidator(fieldName="ftlbasepath",message="filepath is required")
+	})
+	@Action("savefebepath")
+	public String savefebepath(){
+		String f = filepath;
+		String sm = screenmappath;
+		String ftlbase = ftlbasepath;
+		
+		ResourceBundle rb = ResourceBundle.getBundle("config");
+		String apppath = CompoundResource.getString(rb, "application_home");
+		File appf = new File(apppath);
+		try {
+			
+			 if(appf.exists()){
+				File pathinfoFile = new File(appf.getAbsoluteFile(),"userprop.txt");
+				if(!pathinfoFile.exists())pathinfoFile.createNewFile();
+				
+				Properties prop = new Properties();
+				FileInputStream fis = new FileInputStream(pathinfoFile); 
+				prop.load(fis);
+				fis.close();
+				
+				prop.setProperty("filepath", filepath);
+				prop.setProperty("screenmappath", screenmappath);
+				prop.setProperty("ftlbasepath", ftlbasepath);
+				
+				
+				FileOutputStream fos  = new FileOutputStream (pathinfoFile); 
+				prop.store(fos, "Records saved on "+new Date().toString());
+				fos.close();
+				
+				jobj.put("success", "data saved as on "+new Date().toString()+"  in "+ pathinfoFile.getAbsolutePath());
+			}else{
+				addActionError(appf.getAbsolutePath()+" as specified in config does not exist.");
+			}
+			
+		} catch (Exception e) {
+			logger.error("exception ",e);
+			addActionError("exception "+e.toString());
+		}
+		
+		return "json";
+	}
+	
+	@Action("findfebepath")
+	public String findfebepath(){
+		
+		ResourceBundle rb = ResourceBundle.getBundle("config");
+		String apppath = CompoundResource.getString(rb, "application_home");
+		File appf = new File(apppath);
+		try {
+			
+			 if(appf.exists()){
+				File pathinfoFile = new File(appf.getAbsoluteFile(),"userprop.txt");
+				
+				Properties prop = new Properties();
+				FileInputStream fis = new FileInputStream(pathinfoFile); 
+				prop.load(fis);
+				fis.close();
+				
+				filepath = prop.getProperty("filepath");
+				screenmappath = prop.getProperty("screenmappath");
+				ftlbasepath = prop.getProperty("ftlbasepath" );
+				
+				jobj.put("filepath", filepath);
+				jobj.put("screenmappath", screenmappath);
+				jobj.put("ftlbasepath", ftlbasepath);
+				
+				jobj.put("success", "data as on "+new Date().toString()+" from "+pathinfoFile.getAbsolutePath());
+			}else{
+				addActionError(appf.getAbsolutePath()+" as specified in config does not exist.");
+			}
+			
+		} catch (Exception e) {
+			logger.error("exception ",e);
+			addActionError("exception "+e.toString());
+		}
+		return "json";
+	}
+	
 	public InputStream getInputStream() {
 		return inputStream;
 	}
