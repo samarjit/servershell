@@ -453,8 +453,8 @@ public class ScreenAction extends ActionSupport{
 			@RequiredFieldValidator(fieldName="screenmappath",message="filepath is required"),
 			@RequiredFieldValidator(fieldName="ftlbasepath",message="filepath is required")
 	})
-	@Action("savefebepath")
-	public String savefebepath(){
+	@Action("saveuserpref")
+	public String saveuserpref(){
 		String f = filepath;
 		String sm = screenmappath;
 		String ftlbase = ftlbasepath;
@@ -495,8 +495,8 @@ public class ScreenAction extends ActionSupport{
 		return "json";
 	}
 	
-	@Action("findfebepath")
-	public String findfebepath(){
+	@Action("finduserpref")
+	public String finduserpref(){
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
 		String apppath = CompoundResource.getString(rb, "application_home");
