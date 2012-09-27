@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -24,6 +25,8 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.interceptor.RequestAware;
+import org.apache.struts2.interceptor.SessionAware;
 
 import servershell.util.AccessRights;
 import servershell.util.CompoundResource;

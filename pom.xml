@@ -8,7 +8,7 @@
    <properties>
     <!--<jbpm.osgi.version>5.1.0.SNAPSHOT</jbpm.osgi.version>
   -->
-   	<struts-version>2.3.4</struts-version>
+   	<struts-version>2.2.1.1</struts-version>
    </properties>
   
   
@@ -103,6 +103,8 @@
     	<groupId>ojdbc</groupId>
     	<artifactId>ojdbc</artifactId>
     	<version>6</version>
+    	<scope>system</scope>
+    	<systemPath>C:/Users/Samarjit/Downloads/ojdbc6.jar</systemPath>
     </dependency>
     
     <dependency>
@@ -184,11 +186,11 @@
     	<artifactId>struts2-jquery-grid-plugin</artifactId>
     	<version>3.2.1</version>
     </dependency>-->
-    <dependency>
+    <!-- <dependency>
     	<groupId>jaxen</groupId>
     	<artifactId>jaxen</artifactId>
     	<version>1.1.1</version>
-    </dependency> 
+    </dependency>  -->
     <dependency>
     	<groupId>org.apache.struts</groupId>
     	<artifactId>struts2-json-plugin</artifactId>
@@ -207,15 +209,17 @@
     <dependency>
     	<groupId>org.jsoup</groupId>
     	<artifactId>jsoup</artifactId>
-    	<version>1.4.1</version>
+    	<version>1.6.1</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
+    <!-- <dependency>
+    	<groupId>javassist</groupId>
+    	<artifactId>javassist</artifactId>
+    	<version>3.11.0.GA</version>
+    </dependency> -->
   </dependencies>
-  <dependencyManagement>
-  	<dependencies>
-  	</dependencies>
-  </dependencyManagement>
+ 
   
   <build>
 
