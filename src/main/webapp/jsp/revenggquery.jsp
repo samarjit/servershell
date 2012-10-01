@@ -85,10 +85,10 @@ $.subscribe('onsuccesRevEng',function(event,data){
 
  
 function beforeXmlSave (event, data){
-	$("#screenxml").val(editor.getValue());
+	$("#screenxml").val(pagexml.getValue());
 }
 function beforeHtmlSave (event, data){
-	$("#htmlscreen1").val(editor3.getValue());
+	$("#htmlscreen1").val(htmlscreen.getValue());
 }
 
 $.subscribe("screenMapLoaded",function(event, data){
@@ -116,14 +116,14 @@ indicator="indicator"
 <br/>
 Reverse Engg. Add Column: <form> <input name="revenggqry" id="revenggqry" /><button type="button">Rev engg.</button></form><br/>
 <div class="ui-widget-header">Reverse Engg. Result:</div>
-<div    name="revenggresult" id="revenggresult" style="height:40px;width:100%; overflow:hidden"></div>
+<div    name="revenggresult" id="revenggresult" style="height:40px;width:100%; overflow:auto"></div>
  
 <div class="ui-widget-header">Tabledetails:</div> <pre id="tabledetails">g</pre>
 <div class="ui-widget-header">screenmapxml (Add to existing screenmap.xml):
 </div>
 <s:form   id="frmscreenmap">
 FE screenmappath:<input name="screenmappath" id="screenmappath" value="target/classes/map" size="100"/> <br/>
-BE xmlpath:<input name="filepath" value="target/classes/map/jsptest"  size="100" />
+BE screenmappath:<input name="filepath" value="target/classes/map/jsptest"  size="100" />
 screenmapfilename: <input name="screenmapfilename" id="screenmapfilename" value="screenmap.xml" />
 <textarea name="screenmapxml" id="screenmapxml" rows="1" cols="1"></textarea><br/>
 <s:url var="loadscreenmap" action="loadscreenmap"></s:url>

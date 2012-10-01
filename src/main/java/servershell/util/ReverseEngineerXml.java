@@ -147,9 +147,10 @@ public class ReverseEngineerXml {
 			ardatatype.add(getXmlmapDataTypeName(metaData.getColumnTypeName(i + 1), scale != 0, metaData.getPrecision(i+1)));
 			arcolprecision.add(size);
 			
-			out.print(metaData.getColumnName(i + 1) + "  \t");
-			out.print(metaData.getColumnDisplaySize(i + 1) + " ==? " + metaData.getPrecision(i+1)+"\t"+scale+"\t");
-			out.println(metaData.getColumnTypeName(i + 1)+" , "+metaData.getColumnType(i + 1));
+			//out.print(metaData.getColumnName(i + 1) + "  \t\t\t");
+			String scal =  (scale >0)?","+scale:"";
+//			out.print(metaData.getColumnDisplaySize(i + 1) + " ==? " + metaData.getPrecision(i+1)+"\t"+scale+"\t");
+			out.printf("%-50s %50s \r\n",metaData.getColumnName(i + 1)   ,metaData.getColumnTypeName(i + 1)+"("+size+scal+"), "/*+metaData.getColumnType(i + 1)*/);
 		}
 		
 		if(con!= null){

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import net.sf.json.JSONObject;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -28,6 +30,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
 
 import servershell.be.dao.BackendException;
+import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -84,6 +87,16 @@ public class QueryAction extends ActionSupport implements SessionAware{
 						addActionError("Update not allowed for user "+name);
 						throw new BackendException("Update not allowed for user "+name);
 					}
+				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:select)[\\S\\s]*") ){ //describe
+					String qr = query.substring(4).trim();
+					jsonString = SendToBE.sendToBE(qr, "becreatescreen.action");
+					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
+					
+				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:\\w+)[\\S\\s]*") ){ //describe
+					String qr = query.substring(4).trim();
+					qr = "select * from "+qr+" where 1=2";
+					jsonString = SendToBE.sendToBE(qr, "becreatescreen.action");
+					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
 				}else{
 					logger.debug("invalid query skipping..."+query);
 					addActionError("invalid query skipping...");

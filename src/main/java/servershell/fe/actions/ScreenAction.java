@@ -122,7 +122,7 @@ public class ScreenAction extends ActionSupport{
 				JSONObject jobj = new JSONObject();
 				jobj.put("filepath", filepath);
 				jobj.put("filename", xmlscreenname);
-				jobj.put("fefile", fefile);
+				jobj.put("fefile", screenxml);
 				jobj.put("create", "true");
 				
 				message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");

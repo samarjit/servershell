@@ -175,8 +175,19 @@ private static Logger logger = Logger.getLogger(CreateXL2.class);
 						if(mrowspan == 0 && mcolspan == 0 && handled == false){
 							tab.get(_irow).get(_icell).put("text",tcell.text());
 						}else if(handled == false && mrowspan > 0){
+							int tmpmcolspan = -1;
+							int tmpmrowspan = -1;
+							while(tmpmrowspan != 0 || tmpmcolspan != 0){
 							_icell = (mcolspan>0)?mcolspan+_icell+1:_icell+1;
-							tab.get(_irow).get(_icell).put("text",tcell.text());
+							
+							strmrowspan = tab.get(_irow).get(_icell).get("rowspan");
+							strmcolspan = tab.get(_irow).get(_icell).get("colspan");
+							
+							tmpmrowspan = (strmrowspan != null && !"".equals(strmrowspan))?Integer.parseInt(strmrowspan):0;
+							tmpmcolspan = (strmcolspan != null && !"".equals(strmcolspan))?Integer.parseInt(strmcolspan):0;
+							}
+							
+							tab.get(_irow).get(_icell).put("text",tcell.text()); handled = true;
 						}
 						_icell++;
 					}
