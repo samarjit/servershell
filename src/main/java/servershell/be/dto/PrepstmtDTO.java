@@ -85,6 +85,7 @@ import servershell.be.dao.DataTypeException;
  public String data; 
  
  public static String getDateStringFormat(Date dt, String format){
+	 if(dt == null)return "";
 	 SimpleDateFormat sm = new SimpleDateFormat();
 	 if(format.equals(DATEDDMMYYYY_FORMAT)){
 		   sm = new SimpleDateFormat(DATEDDMMYYYY_FORMAT);

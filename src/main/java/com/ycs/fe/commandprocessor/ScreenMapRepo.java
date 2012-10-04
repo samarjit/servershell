@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -41,7 +42,10 @@ public class ScreenMapRepo {
 			net.sf.ehcache.Element scrXmlFromCache = AppCacheManager.getElementFromCache("xmlcache", "scrxmlroot");
 					
 			if(scrXmlFromCache == null){
-				String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
+//				String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
+				URL url = getClass().getResource("/map");
+				String screenpath = url.getPath();
+				
 				InputStream scrxml = new BufferedInputStream(new FileInputStream(screenpath+"/screenmap.xml"));
 			
 				doc = new SAXReader().read(scrxml);
@@ -61,7 +65,9 @@ public class ScreenMapRepo {
 			}
 			
 			path = n.attributeValue("mappingxml");
-			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
+			URL url = getClass().getResource("/map");
+			String tplpath = new File(url.getPath()).getParent();
+//			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
 			
 			File f = new File(tplpath+"/"+path);
 			path = f.getAbsolutePath();
@@ -108,7 +114,9 @@ public class ScreenMapRepo {
 		net.sf.ehcache.Element scrXmlFromCache = AppCacheManager.getElementFromCache("xmlcache", "scrxmlroot");
 			
 		if(scrXmlFromCache == null){
-			String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
+//			String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
+			URL url = getClass().getResource("/map");
+			String screenpath = url.getPath();
 			InputStream scrxml = new BufferedInputStream(new FileInputStream(screenpath+"/screenmap.xml"));
 		
 			doc = new SAXReader().read(scrxml);

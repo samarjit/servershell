@@ -32,8 +32,8 @@ public class BEScreenAction extends ActionSupport{
 	public InputStream inputStream;
 	public String data;
 	
-	@Action(value="becreatescreen")
-	public String becreatescreen(){
+	@Action(value="berevengg")
+	public String berevengg(){
 		String message = "Before processing in BE ";
 		ReverseEngineerXml re = new ReverseEngineerXml();
 		try {

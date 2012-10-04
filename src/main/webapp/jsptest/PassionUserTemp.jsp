@@ -1,33 +1,25 @@
-<!DOCTYPE>
+<!DOCTYPE script PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@taglib prefix="s"  uri="/struts-tags" %>
-<%@taglib prefix="sj"  uri="/struts-jquery-tags"  %>
-
+<%@taglib prefix="sj"  uri="/struts-jquery-tags" %>
 <%--@taglib prefix="sjg"  uri="/struts-jquery-grid-tags" --%>
 <html>
 <head>
-<title>Passion User Temp</title> 
-<s:head />
-<sj:head jqueryui="true" jquerytheme="redmond" loadAtOnce="true" debug="true"  />
-
-<s:set var="ctx"  >${pageContext.request.contextPath}</s:set>
-
-<link rel="stylesheet" type="text/css" href="${ctx }/css/ui.jqgrid.css">
-<!--<script src="../js/jquery.validate.js" > </script>
-<script src="../js/additional-methods.js" > </script>-->
-<script src="${ctx}/struts/i18n/grid.locale-en.js" > </script>
+ <title>PassionUserTemp</title>
+<sj:head jqueryui="true" jquerytheme="redmond"  />
+<s:set var="ctx"  >${pageContext.request.contextPath}</s:set><link rel="stylesheet" type="text/css" href="${ctx}/css/ui.jqgrid.css">
+<!--script src="../js/jquery.validate.js" > </script>
+<script src="../js/additional-methods.js" > </script-->
+<script src="../js/i18n/grid.locale-en.js" > </script>
 <script src="../js/jquery.jqGrid.min.js" > </script>
-<!--<script src="../js/json2.js" > </script>  -->
-
-
+<!--script src="../js/json2.js" > </script-->
 
 <script>
 	var rulesframework = {}; 
 	<s:if test = "jsrule != null" >
 		 rulesframework =  ${jsrule};
 	</s:if>
-        	var fieldlist = "cardno, idvalue, idtype, actionflag, validcard, alreadyregistered, registrationcompleted, inputfilename, returnfilecreated, errorcode, fileprocessedflag, nationality, errormsg".split(",");
+        	var fieldlist = "cardno, idvalue, idtype, actionflag, validcard, alreadyregistered, registrationcompleted, inputfilename, returnfilecreated, errorcode, fileprocessedflag, nationality, errormsg, regcompleteddate".split(",");
    $(document).ready(function(){
-	   jQuery.struts2_jquery.require("js/struts2/jquery.grid.struts2-3.2.1"+jQuery.struts2_jquery.minSuffix+".js");
 	//iadt.setFieldlist(fieldlist);
 	globalAjaxErrorSetup();
 	//$("#form1").validate($.extend(rulesframework,{debug: true}));
@@ -68,21 +60,22 @@
       	url:'<%= request.getContextPath() %>/jqgrid.action?command=true&screenName=PassionUserTemp&submitdata={bulkcmd="gridonload"}',
       	datatype: "json",
       	height:350, 
-      	colNames:['Card No','Id Value','Id Type','Action Flag','Valid Card','Already Registered','Registration Completed','Input File Name','Return File Created','Error Code','File Processed Flag','Nationality','Error Msg'      	],
+      	colNames:['Card No','Id Value','Id Type','Action Flag','Valid Card','Already Registered','Registration Completed','Input File Name','Return File Created','Error Code','File Processed Flag','Nationality','Error Msg','Reg Completed Date'      	],
       	colModel:[
-	{name: 'cardno', index: 'cardno' , width:176, editable:true },
-	{name: 'idvalue', index: 'idvalue' , width:175, editable:true },
-	{name: 'idtype', index: 'idtype' , width:110, editable:true },
-	{name: 'actionflag', index: 'actionflag' , width:140, editable:true },
-	{name: 'validcard', index: 'validcard' , width:11, editable:true },
-	{name: 'alreadyregistered', index: 'alreadyregistered' , width:11, editable:true },
-	{name: 'registrationcompleted', index: 'registrationcompleted' , width:11, editable:true },
-	{name: 'inputfilename', index: 'inputfilename' , width:250, editable:true },
-	{name: 'returnfilecreated', index: 'returnfilecreated' , width:11, editable:true },
-	{name: 'errorcode', index: 'errorcode' , width:110, editable:true },
-	{name: 'fileprocessedflag', index: 'fileprocessedflag' , width:11, editable:true },
-	{name: 'nationality', index: 'nationality' , width:55, editable:true },
-	{name: 'errormsg', index: 'errormsg' , width:210, editable:true }
+      	{name: 'cardno', index: 'cardno' , width:176, editable:true },
+      	{name: 'idvalue', index: 'idvalue' , width:200, editable:true },
+      	{name: 'idtype', index: 'idtype' , width:138, editable:true },
+      	{name: 'actionflag', index: 'actionflag' , width:160, editable:true },
+      	{name: 'validcard', index: 'validcard' , width:11, editable:true },
+      	{name: 'alreadyregistered', index: 'alreadyregistered' , width:11, editable:true },
+      	{name: 'registrationcompleted', index: 'registrationcompleted' , width:11, editable:true },
+      	{name: 'inputfilename', index: 'inputfilename' , width:400, editable:true },
+      	{name: 'returnfilecreated', index: 'returnfilecreated' , width:11, editable:true },
+      	{name: 'errorcode', index: 'errorcode' , width:138, editable:true },
+      	{name: 'fileprocessedflag', index: 'fileprocessedflag' , width:11, editable:true },
+      	{name: 'nationality', index: 'nationality' , width:55, editable:true },
+      	{name: 'errormsg', index: 'errormsg' , width:240, editable:true },
+      	{name: 'regcompleteddate', index: 'regcompleteddate' , width:138, editable:true }
       	],
       	rowNum: 15,
       	rowList: [ 15, 25, 50],
@@ -105,12 +98,10 @@
 			    	},
 	    loadComplete: function(){
 			    		var ret;
-          				
  						$("#messagegrid").text(JSON.stringify(jQuery("#listid").getGridParam('userData'), null, 2));
-                        //alert(JSON.stringify(jQuery("#listid").getGridParam('userData'), null, 2));
 			    	},
 			       editurl: "${pageContext.request.contextPath}/html/simpleform.action?screenName=PassionUserTemp&bulkcmd=grid",
-       caption: "Type the Caption here"
+       caption: "PassionUserTemp"
    } ).navGrid('#pagerid',{edit:true,add:true,del:true},{},{},{},{multipleSearch:true, multipleGroup:true});
    jQuery("#listid").jqGrid('navButtonAdd','#pagerid',{caption:"Edit",
 		onClickButton:function(){
@@ -136,10 +127,6 @@
 </head>
 
 <body>
-  
-
-    
-    
   <table id="listid" ></table>
   <div id="pagerid"></div>  <div id="messagegrid"></div>
 <!--Submit Form -->
@@ -158,7 +145,24 @@
         	   <tr><td>File Processed Flag </td><td><input name="fileprocessedflag" id="fileprocessedflag" value="${resultDTO.data.formonload[0].fileprocessedflag}"/></td></tr>
         	   <tr><td>Nationality </td><td><input name="nationality" id="nationality" value="${resultDTO.data.formonload[0].nationality}"/></td></tr>
         	   <tr><td>Error Msg </td><td><input name="errormsg" id="errormsg" value="${resultDTO.data.formonload[0].errormsg}"/></td></tr>
+        	   <tr><td>Reg Completed Date </td><td><input name="regcompleteddate" id="regcompleteddate" value="${resultDTO.data.formonload[0].regcompleteddate}"/></td></tr>
         	   
+
+
+        	   <tr><td>Card No </td><td><s:property value="#resultDTO.data.formonload[0].cardno"  /></td></tr>
+        	   <tr><td>Id Value </td><td><s:property value="#resultDTO.data.formonload[0].idvalue"  /></td></tr>
+        	   <tr><td>Id Type </td><td><s:property value="#resultDTO.data.formonload[0].idtype"  /></td></tr>
+        	   <tr><td>Action Flag </td><td><s:property value="#resultDTO.data.formonload[0].actionflag"  /></td></tr>
+        	   <tr><td>Valid Card </td><td><s:property value="#resultDTO.data.formonload[0].validcard"  /></td></tr>
+        	   <tr><td>Already Registered </td><td><s:property value="#resultDTO.data.formonload[0].alreadyregistered"  /></td></tr>
+        	   <tr><td>Registration Completed </td><td><s:property value="#resultDTO.data.formonload[0].registrationcompleted"  /></td></tr>
+        	   <tr><td>Input File Name </td><td><s:property value="#resultDTO.data.formonload[0].inputfilename"  /></td></tr>
+        	   <tr><td>Return File Created </td><td><s:property value="#resultDTO.data.formonload[0].returnfilecreated"  /></td></tr>
+        	   <tr><td>Error Code </td><td><s:property value="#resultDTO.data.formonload[0].errorcode"  /></td></tr>
+        	   <tr><td>File Processed Flag </td><td><s:property value="#resultDTO.data.formonload[0].fileprocessedflag"  /></td></tr>
+        	   <tr><td>Nationality </td><td><s:property value="#resultDTO.data.formonload[0].nationality"  /></td></tr>
+        	   <tr><td>Error Msg </td><td><s:property value="#resultDTO.data.formonload[0].errormsg"  /></td></tr>
+        	   <tr><td>Reg Completed Date </td><td><s:property value="#resultDTO.data.formonload[0].regcompleteddate"  /></td></tr>
         	 </table>
         	 bulkcmd: <input name="bulkcmd" value="frmgridedit"/>
         	 <button >submit</button>

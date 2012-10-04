@@ -72,7 +72,7 @@ public class JqgridRpc extends ActionSupport {
 	public String execute(){
 		
 		JSONObject jobj = null;
-		if("true".equals(command)){
+//		if("true".equals(command)){
 			JSONObject oResult = new JSONObject();
 //http://www.trirand.com/blog/jqgrid/server.php?q=2&_search=false&nd=1313507637422&rows=10&page=1&sidx=id&sord=desc			
 //submitdata={form1:[{row:0,}],pagination:{form1:{currentpage:1,pagecount:200}}, bulkcmd:''...}
@@ -178,7 +178,7 @@ public class JqgridRpc extends ActionSupport {
 				//error occurred. 
 				jobj = new JSONObject();
 			}
-		}
+//		}
 		logger.debug(jobj.toString());
 //		JSONObject jobj = JSONObject.fromObject(resDTO);
 //		try {

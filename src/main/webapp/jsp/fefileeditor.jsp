@@ -60,9 +60,9 @@ Result: <pre id="resultdiv" style="height:40px;width:900px">d</pre>
  
 
 Edit File: <s:form action="loadfefile" id="fefileloadform">
-<input name="filepath" id="filepath" value="src\main\webapp\jsptest"  size="100" />
-<input name="filename" id="filename" value="PassionUserTemp.jsp"  size="70" />
-<sj:submit targets="resultdiv" formIds="fefileloadform" onCompleteTopics="pageloaded" button="true">load FE file</sj:submit>
+<input name="filepath" id="filepath" value="${param.filepath}"  size="100" />
+<input name="filename" id="filename" value="${param.filename}"  size="70" />
+<sj:submit targets="resultdiv" formIds="fefileloadform" onCompleteTopics="pageloaded" button="true" value="load FE file"></sj:submit>
 
 </s:form> 
 
@@ -71,9 +71,7 @@ Edit File: <s:form action="loadfefile" id="fefileloadform">
 
 <s:form id="fefilesavefrm">
 <s:url action="savefefile" var="vsavefefile"/> 
-<sj:submit type="button" href="%{vsavefefile}" targets="resultdiv" 
-onclick="beforefilesave()"
-formIds="fefilesavefrm,fefileloadform">Save ftl file</sj:submit><br/>
+<sj:submit button="true" href="%{vsavefefile}" targets="resultdiv" onclick="beforefilesave()"formIds="fefilesavefrm,fefileloadform" value="Save file"></sj:submit><br/>
 FE file:<textarea rows="10" cols="80" name="fefile" id="fefile"></textarea>
 </s:form>
 

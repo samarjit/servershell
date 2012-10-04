@@ -4,5 +4,6 @@
 <screen name="AlertQueuep" mappingxml="map/jsptest/AlertQueuep.xml" /> 
 <screen name="PassionUserTemp" mappingxml="map/jsptest/PassionUserTemp.xml" />
 <screen name="AlertQueue" mappingxml="map/jsptest/AlertQueue.xml" />
+<screen name="AlertTemplateMaster" mappingxml="map/jsptest/AlertTemplateMaster.xml" />
 
 </root>

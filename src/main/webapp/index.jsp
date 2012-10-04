@@ -35,6 +35,20 @@ Name: <input name="name" /> Password: <input type="password" name="password" />
 <div id="index_divlogin"></div>
 <sj:submit button="true" href="#" value="hide" onclick="javascript:$('#logindiv').hide();"></sj:submit>
 </div>
+
+<script type="text/javascript">
+function showconf(){
+	var pagekey = document.title.replace(/\s/g,"");
+	  
+		$("#userconfig").load("${pageContext.request.contextPath}/jsp/showconfig.jsp", function (){
+			$("#userconfig").show();
+			$("#userconfig").dialog();
+		});
+		
+	 
+}
+</script>
+
 <div id="menu"  >
 <a href="#" onclick="javascript:document.getElementById('logindiv').style.display='block';" >login</a>
 <a href="${pageContext.request.contextPath}/jsp/monitoring.jsp" >monitoring</a>
@@ -51,6 +65,9 @@ Name: <input name="name" /> Password: <input type="password" name="password" />
 <a href="${pageContext.request.contextPath}/jsp/revenggquery.jsp" >revenggquery</a>
 <a href="${pageContext.request.contextPath}/jsp/fefileeditor.jsp" >fefileeditor</a>
 <a href="${pageContext.request.contextPath}/jsp/befileeditor.jsp" >befileeditor</a>
+<a href="javascript:showconf();">Save config</a>
 <a href="${pageContext.request.contextPath}/bconfig.action">Designate FE/BE</a>
 <a href="${pageContext.request.contextPath}/logout.action">Logout</a>
 </div>
+
+<div id="userconfig" style="display:none"></div>

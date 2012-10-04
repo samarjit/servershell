@@ -39,7 +39,7 @@ response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
       		var qry = $("#query").val().replace(";","");
       		if(window.getSelection().toString() != "")
       			qry = window.getSelection().toString().replace(";","");
-			$.get("${pageContext.request.contextPath}/bcreatescreen.action",{sqlstring: qry},function (data) {
+			$.get("${pageContext.request.contextPath}/brevengg.action",{sqlstring: qry},function (data) {
 				var json = $.parseJSON(data);
 				if(json.tabledetails){
 					$("#queryresult").text(json.tabledetails);

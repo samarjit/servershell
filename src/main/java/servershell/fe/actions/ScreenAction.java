@@ -1,5 +1,6 @@
 package servershell.fe.actions;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,10 +8,10 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -25,8 +26,6 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.apache.struts2.interceptor.RequestAware;
-import org.apache.struts2.interceptor.SessionAware;
 
 import servershell.util.AccessRights;
 import servershell.util.CompoundResource;
@@ -53,12 +52,12 @@ public class ScreenAction extends ActionSupport{
 	public String sqlstring;
 	
 	@SuppressWarnings("deprecation")
-	@Action(value="bcreatescreen")
-	public String bcreatescreen(){
+	@Action(value="brevengg")
+	public String brevengg(){
 		String message = "Before processing in FE ";
 		 
 		try {
-			message = SendToBE.sendToBE(sqlstring, "becreatescreen.action");
+			message = SendToBE.sendToBE(sqlstring, "berevengg.action");
 			 
 		} catch (Exception e) {
 			logger.error(e.toString());
@@ -93,36 +92,37 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+ftlbasepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
 	
-	public String xmlscreenpath;
-	public String xmlscreenname;
-	public String screenxml;
-	
+	public String fepagexmlpath;
+	public String bepagexmlpath;
+	public String pagexmlfilename;
+	public String pagexml;
 	@Action(value="createxml")
 	public String createxml(){
 		String message= "Not processed!";
-		System.out.println(xmlscreenpath);
-		System.out.println(xmlscreenname);
-		System.out.println(screenxml);
-		File dir = new File(xmlscreenpath);
+		System.out.println(fepagexmlpath);
+		System.out.println(bepagexmlpath);
+		System.out.println(pagexmlfilename);
+		System.out.println(pagexml);
+		File dir = new File(fepagexmlpath);
 		if(dir.exists()){
-			File f = new File(dir,xmlscreenname);
+			File f = new File(dir,pagexmlfilename);
 			try {
 				FileWriter fw = new FileWriter(f);
-				fw.write(screenxml);
+				fw.write(pagexml);
 				fw.close();
 				
 				///saving config to BE//
 				JSONObject jobj = new JSONObject();
-				jobj.put("filepath", filepath);
-				jobj.put("filename", xmlscreenname);
-				jobj.put("fefile", screenxml);
+				jobj.put("filepath", bepagexmlpath);
+				jobj.put("filename", pagexmlfilename);
+				jobj.put("fefile", pagexml);
 				jobj.put("create", "true");
 				
 				message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
@@ -136,27 +136,28 @@ public class ScreenAction extends ActionSupport{
 			}
 			
 		}else{
-			message = "Directory "+ftlbasepath+" does not exist.";
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
 		}
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
 	}
 
-	public String screenmappath;
+	public String fescreenmappath;
+	public String bescreenmappath;
 	public String screenmapfilename;
 	public String screenmapxml;
 	@Action(value="loadscreenmap")
 	public String loadscreenmap(){
 		String message= "Not processed!";
-		logger.debug("FE:"+screenmappath);
-		logger.debug("BE:"+filepath);
+		logger.debug("FE:"+fescreenmappath);
+		logger.debug("BE:"+bescreenmappath);
 		logger.debug(screenmapfilename);
 		logger.debug("loadding...");
 		
 		
 		JSONObject jres =new JSONObject();
-		File dir = new File(screenmappath);
+		File dir = new File(fescreenmappath);
 		if(dir.exists()){
 			File f = new File(dir,screenmapfilename);
 			try {
@@ -187,13 +188,13 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="screenmapsave")
 	public String screenmapsave(){
 		String message= "Not processed!";
-		logger.debug("FE:"+screenmappath);
-		logger.debug("BE:"+filepath);
+		logger.debug("FE:"+fescreenmappath);
+		logger.debug("BE:"+bescreenmappath);
 		logger.debug(screenmapfilename);
 		logger.debug(screenmapxml);
 		logger.debug("saving...");
 		
-		File dir = new File(screenmappath);
+		File dir = new File(fescreenmappath);
 		if(dir.exists()){
 			File f = new File(dir,screenmapfilename);
 			try {
@@ -204,7 +205,7 @@ public class ScreenAction extends ActionSupport{
 					
 					///saving config to BE//
 					JSONObject jobj = new JSONObject();
-					jobj.put("filepath", filepath);
+					jobj.put("filepath", bescreenmappath);
 					jobj.put("filename", screenmapfilename);
 					jobj.put("fefile", screenmapxml);
 					jobj.put("create", "false");
@@ -451,15 +452,14 @@ public class ScreenAction extends ActionSupport{
 		return "json";
 	}
 	
+	
 	@Validations(requiredFields  ={
-			@RequiredFieldValidator(fieldName="filepath",message="filepath is required"),
-			@RequiredFieldValidator(fieldName="screenmappath",message="filepath is required"),
-			@RequiredFieldValidator(fieldName="ftlbasepath",message="filepath is required")
+			@RequiredFieldValidator(fieldName="fefile",message="fefile is required, it should contain all the data to be saved")
 	})
 	@Action("saveuserpref")
 	public String saveuserpref(){
 		String f = filepath;
-		String sm = screenmappath;
+		String sm = fescreenmappath;
 		String ftlbase = ftlbasepath;
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
@@ -476,11 +476,67 @@ public class ScreenAction extends ActionSupport{
 				prop.load(fis);
 				fis.close();
 				
-				prop.setProperty("filepath", filepath);
-				prop.setProperty("screenmappath", screenmappath);
-				prop.setProperty("ftlbasepath", ftlbasepath);
+				BufferedReader sr = new BufferedReader(new StringReader(fefile));
+				String line = null;
+				while((line = sr.readLine()) != null){
+					System.out.println("line="+line+" "+fefile);
+					int idx = line.indexOf('=');
+					
+					String part1 = line.substring(0,idx);
+					String part2 = line.substring(idx+1);
+					
+					prop.setProperty(part1,part2);
+					
+				}
+				FileOutputStream fos  = new FileOutputStream (pathinfoFile); 
+				prop.store(fos, "Records saved on "+new Date().toString());
+				fos.close();
 				
+				jobj.put("success", "data saved as on "+new Date().toString()+"  in "+ pathinfoFile.getAbsolutePath());
+			}else{
+				addActionError(appf.getAbsolutePath()+" as specified in config does not exist.");
+			}
+			
+		} catch (Exception e) {
+			logger.error("exception ",e);
+			addActionError("exception "+e.toString());
+		}
+		
+		return "json";
+	}
+	
+	@Validations(requiredFields  ={
+			@RequiredFieldValidator(fieldName="fefile",message="fefile is required, it should contain title_configname to be removed from this pagedata")
+	})
+	@Action("removeuserpref")
+	public String removeuserpref(){
+		String f = filepath;
+		String sm = fescreenmappath;
+		String ftlbase = ftlbasepath;
+		
+		ResourceBundle rb = ResourceBundle.getBundle("config");
+		String apppath = CompoundResource.getString(rb, "application_home");
+		File appf = new File(apppath);
+		try {
+			
+			if(appf.exists()){
+				File pathinfoFile = new File(appf.getAbsoluteFile(),"userprop.txt");
+				if(!pathinfoFile.exists())pathinfoFile.createNewFile();
 				
+				Properties prop = new Properties();
+				FileInputStream fis = new FileInputStream(pathinfoFile); 
+				prop.load(fis);
+				fis.close();
+				
+				BufferedReader sr = new BufferedReader(new StringReader(fefile));
+				String keyLine = null;
+				Properties cloneProp = (Properties) prop.clone();
+				for (Object keyObj : cloneProp.keySet()) {
+					keyLine = (String)keyObj;
+					if(keyLine.contains(fefile)){
+						prop.remove(keyObj);
+					}
+				}
 				FileOutputStream fos  = new FileOutputStream (pathinfoFile); 
 				prop.store(fos, "Records saved on "+new Date().toString());
 				fos.close();
@@ -499,6 +555,9 @@ public class ScreenAction extends ActionSupport{
 	}
 	
 	@Action("finduserpref")
+	@Validations(requiredFields = {
+			@RequiredFieldValidator(fieldName="fefile",message="fefile is required, it should contain pagetitle")
+	})
 	public String finduserpref(){
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
@@ -514,13 +573,33 @@ public class ScreenAction extends ActionSupport{
 				prop.load(fis);
 				fis.close();
 				
-				filepath = prop.getProperty("filepath");
-				screenmappath = prop.getProperty("screenmappath");
-				ftlbasepath = prop.getProperty("ftlbasepath" );
+				JSONObject jsonres = new JSONObject();
+				JSONObject fieldValues = null;
+				String keyLine = null;
+				String configName = null;
+				String filedName = null;
 				
-				jobj.put("filepath", filepath);
-				jobj.put("screenmappath", screenmappath);
-				jobj.put("ftlbasepath", ftlbasepath);
+				for (Object keyObj : prop.keySet()) {
+					keyLine = (String)keyObj;
+					if(keyLine.contains(fefile)){
+						
+						if (keyLine.indexOf('_') > -1 && keyLine.indexOf('.') > -1) {
+							configName = keyLine.substring(keyLine.indexOf('_') + 1, keyLine.indexOf('.'));
+							filedName = keyLine.substring(keyLine.indexOf('.') + 1);
+							if (!jsonres.containsKey(configName)) {
+								fieldValues = new JSONObject();
+							}else{
+								fieldValues = (JSONObject) jsonres.get(configName);
+							}
+							fieldValues.put(filedName, prop.getProperty(keyLine));
+							jsonres.put(configName, fieldValues);
+						}
+					}
+				}
+				
+				
+				jobj.put("props", jsonres);
+				 
 				
 				jobj.put("success", "data as on "+new Date().toString()+" from "+pathinfoFile.getAbsolutePath());
 			}else{
