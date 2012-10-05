@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config.xsd">
+  <screen name="AlertTemplateMaster">
+    <htmltemplate></htmltemplate>
+    <includedjsp></includedjsp>
+    <callbackclass></callbackclass>
+    <scripts>
+      <scriptinclude></scriptinclude>
+    </scripts>
+    <stylesheets>
+      <styleinclude></styleinclude>
+    </stylesheets>
+    <sessionvars>sessionvars</sessionvars>
+    <crud>
+	   <jsonrpc outstack="formonload" id="onloadqry1">SELECT ALERT_TEMPLATE_ID "alerttemplateid",ALERT_TYPE "alerttype",ALERT_CONTENT "alertcontent",SMS_PASSWORD "smspassword",SMS_USERID "smsuserid",TECH_STUDIO_CAMPAIGN_ID "techstudiocampaignid",EMAIL_SUBJECT "emailsubject",CONTENT_TYPE "contenttype",VARIABLE_NAMES "variablenames",CREATED_BY "createdby",TEMPLATE_FILE_NAME "templatefilename",CREATED_DATE "createddate" FROM ALERT_TEMPLATE_MASTER 
+			<countquery pagesize="10">select count('x') from ALERT_TEMPLATE_MASTER </countquery>
+	   </jsonrpc>
+       <jsonrpc outstack="formpagination" id="gridonload">SELECT ALERT_TEMPLATE_ID "alerttemplateid",ALERT_TYPE "alerttype",ALERT_CONTENT "alertcontent",SMS_PASSWORD "smspassword",SMS_USERID "smsuserid",TECH_STUDIO_CAMPAIGN_ID "techstudiocampaignid",EMAIL_SUBJECT "emailsubject",CONTENT_TYPE "contenttype",VARIABLE_NAMES "variablenames",CREATED_BY "createdby",TEMPLATE_FILE_NAME "templatefilename",CREATED_DATE "createddate" FROM ALERT_TEMPLATE_MASTER 
+			<countquery pagesize="10">select count('x') from ALERT_TEMPLATE_MASTER </countquery>
+	   </jsonrpc>
+<!--NORMAL SQLs
+      <sqlinsert id="frmnrmladd" outstack="inst">insert into ALERT_TEMPLATE_MASTER( ALERT_TEMPLATE_ID, ALERT_TYPE, ALERT_CONTENT, SMS_PASSWORD, SMS_USERID, TECH_STUDIO_CAMPAIGN_ID, EMAIL_SUBJECT, CONTENT_TYPE, VARIABLE_NAMES, CREATED_BY, TEMPLATE_FILE_NAME, CREATED_DATE) values ( #inp.form1[0].alerttemplateid, #inp.form1[0].alerttype, #inp.form1[0].alertcontent, #inp.form1[0].smspassword, #inp.form1[0].smsuserid, #inp.form1[0].techstudiocampaignid, #inp.form1[0].emailsubject, #inp.form1[0].contenttype, #inp.form1[0].variablenames, #inp.form1[0].createdby, #inp.form1[0].templatefilename, #inp.form1[0].createddate)</sqlinsert>
+      <sqldelete id="frmnrmldel" outstack="delt">delete from ALERT_TEMPLATE_MASTER WHERE ALERT_TEMPLATE_ID = #inp.form1[0].alerttemplateid</sqldelete>
+      <sqlupdate id="frmnrmledit" outstack="updt">update ALERT_TEMPLATE_MASTER set  ALERT_TYPE = #inp.form1[0].alerttype, ALERT_CONTENT = #inp.form1[0].alertcontent, SMS_PASSWORD = #inp.form1[0].smspassword, SMS_USERID = #inp.form1[0].smsuserid, TECH_STUDIO_CAMPAIGN_ID = #inp.form1[0].techstudiocampaignid, EMAIL_SUBJECT = #inp.form1[0].emailsubject, CONTENT_TYPE = #inp.form1[0].contenttype, VARIABLE_NAMES = #inp.form1[0].variablenames, CREATED_BY = #inp.form1[0].createdby, TEMPLATE_FILE_NAME = #inp.form1[0].templatefilename, CREATED_DATE = #inp.form1[0].createddate WHERE ALERT_TEMPLATE_ID=#inp.form1[0].alerttemplateid</sqlupdate>
+-->
+<!--GRID INSERTS (check out which alias is required-->
+      <sqlinsert id="frmgridadd" outstack="inst">insert into ALERT_TEMPLATE_MASTER( ALERT_TEMPLATE_ID, ALERT_TYPE, ALERT_CONTENT, SMS_PASSWORD, SMS_USERID, TECH_STUDIO_CAMPAIGN_ID, EMAIL_SUBJECT, CONTENT_TYPE, VARIABLE_NAMES, CREATED_BY, TEMPLATE_FILE_NAME, CREATED_DATE) values ( #inp.form1[0].ALERT_TEMPLATE_ID, #inp.form1[0].ALERT_TYPE, #inp.form1[0].ALERT_CONTENT, #inp.form1[0].SMS_PASSWORD, #inp.form1[0].SMS_USERID, #inp.form1[0].TECH_STUDIO_CAMPAIGN_ID, #inp.form1[0].EMAIL_SUBJECT, #inp.form1[0].CONTENT_TYPE, #inp.form1[0].VARIABLE_NAMES, #inp.form1[0].CREATED_BY, #inp.form1[0].TEMPLATE_FILE_NAME, #inp.form1[0].CREATED_DATE )</sqlinsert>
+      <sqlinsert id="gridadd" outstack="inst">insert into ALERT_TEMPLATE_MASTER( ALERT_TEMPLATE_ID, ALERT_TYPE, ALERT_CONTENT, SMS_PASSWORD, SMS_USERID, TECH_STUDIO_CAMPAIGN_ID, EMAIL_SUBJECT, CONTENT_TYPE, VARIABLE_NAMES, CREATED_BY, TEMPLATE_FILE_NAME, CREATED_DATE) values ( #inp.form1[0].ALERT_TEMPLATE_ID, #inp.form1[0].ALERT_TYPE, #inp.form1[0].ALERT_CONTENT, #inp.form1[0].SMS_PASSWORD, #inp.form1[0].SMS_USERID, #inp.form1[0].TECH_STUDIO_CAMPAIGN_ID, #inp.form1[0].EMAIL_SUBJECT, #inp.form1[0].CONTENT_TYPE, #inp.form1[0].VARIABLE_NAMES, #inp.form1[0].CREATED_BY, #inp.form1[0].TEMPLATE_FILE_NAME, #inp.form1[0].CREATED_DATE )</sqlinsert>
+      <sqldelete id="frmgriddel" outstack="delt">delete from ALERT_TEMPLATE_MASTER WHERE ALERT_TEMPLATE_ID = #inp.form1[0].ALERT_TEMPLATE_ID|STRING</sqldelete>
+      <sqldelete id="griddel" outstack="delt">delete from ALERT_TEMPLATE_MASTER WHERE ALERT_TEMPLATE_ID = #inp.form1[0].id|STRING</sqldelete>
+      <sqlupdate id="frmgridedit" outstack="updt">update ALERT_TEMPLATE_MASTER set  ALERT_TYPE = #inp.form1[0].ALERT_TYPE, ALERT_CONTENT = #inp.form1[0].ALERT_CONTENT, SMS_PASSWORD = #inp.form1[0].SMS_PASSWORD, SMS_USERID = #inp.form1[0].SMS_USERID, TECH_STUDIO_CAMPAIGN_ID = #inp.form1[0].TECH_STUDIO_CAMPAIGN_ID, EMAIL_SUBJECT = #inp.form1[0].EMAIL_SUBJECT, CONTENT_TYPE = #inp.form1[0].CONTENT_TYPE, VARIABLE_NAMES = #inp.form1[0].VARIABLE_NAMES, CREATED_BY = #inp.form1[0].CREATED_BY, TEMPLATE_FILE_NAME = #inp.form1[0].TEMPLATE_FILE_NAME, CREATED_DATE = #inp.form1[0].CREATED_DATE WHERE ALERT_TEMPLATE_ID=#inp.form1[0].ALERT_TEMPLATE_ID</sqlupdate>
+      <sqlupdate id="gridedit" outstack="updt">update ALERT_TEMPLATE_MASTER set  ALERT_TYPE = #inp.form1[0].ALERT_TYPE, ALERT_CONTENT = #inp.form1[0].ALERT_CONTENT, SMS_PASSWORD = #inp.form1[0].SMS_PASSWORD, SMS_USERID = #inp.form1[0].SMS_USERID, TECH_STUDIO_CAMPAIGN_ID = #inp.form1[0].TECH_STUDIO_CAMPAIGN_ID, EMAIL_SUBJECT = #inp.form1[0].EMAIL_SUBJECT, CONTENT_TYPE = #inp.form1[0].CONTENT_TYPE, VARIABLE_NAMES = #inp.form1[0].VARIABLE_NAMES, CREATED_BY = #inp.form1[0].CREATED_BY, TEMPLATE_FILE_NAME = #inp.form1[0].TEMPLATE_FILE_NAME, CREATED_DATE = #inp.form1[0].CREATED_DATE WHERE ALERT_TEMPLATE_ID=#inp.form1[0].id|STRING</sqlupdate>
+    </crud>
+    <dm>
+      <txnproc id="" outstack=""/>
+    </dm>
+    <bl id="">
+      <buslogic id="" method=""/>
+    </bl>
+    <anyprocs>
+      <proc id="" outstack=""/>
+    </anyprocs>
+    <commands>
+      <cmd instack="" name="" opt=""  result="" />
+      <bulkcmd name="fromViewTransition" opt="" result="ajax" resultScrName="AlertTemplateMaster" />
+      <bulkcmd name="frmgridadd" opt="sqlinsert:frmgridadd" result="ajax" resultScrName="AlertTemplateMaster"/>
+      <bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="ajax"/>
+      <bulkcmd name="frmgriddel" opt="sqldelete:frmgriddel" result="ajax"/>
+      <bulkcmd name="griddel" opt="sqldelete:griddel" result="ajax"/>
+      <bulkcmd name="gridedit" opt="sqlupdate:gridedit" result="ajax"/>
+      <bulkcmd name="gridadd" opt="sqlinsert:gridadd" result="ajax"/>
+      <bulkcmd name="gridonload" opt="jsonrpc:gridonload" result="ajax"/>
+      <onload opt="jsonrpc:onloadqry1" result="/jsptest/AlertTemplateMaster.jsp"/>
+    </commands>
+  </screen>
+  <panels>
+    <panel id="">
+       <fields>
+          <field>
+          	<validationfld dbcolsize="50" name="alerttemplateid" column="ALERT_TEMPLATE_ID" mandatory="yes" forid="alerttemplateid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="50" name="alerttype" column="ALERT_TYPE" mandatory="yes" forid="alerttype" dbdatatype="STRING" />
+          	<validationfld dbcolsize="4000" name="alertcontent" column="ALERT_CONTENT" mandatory="yes" forid="alertcontent" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="smspassword" column="SMS_PASSWORD" mandatory="yes" forid="smspassword" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="smsuserid" column="SMS_USERID" mandatory="yes" forid="smsuserid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="techstudiocampaignid" column="TECH_STUDIO_CAMPAIGN_ID" mandatory="yes" forid="techstudiocampaignid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="200" name="emailsubject" column="EMAIL_SUBJECT" mandatory="yes" forid="emailsubject" dbdatatype="STRING" />
+          	<validationfld dbcolsize="10" name="contenttype" column="CONTENT_TYPE" mandatory="yes" forid="contenttype" dbdatatype="STRING" />
+          	<validationfld dbcolsize="1000" name="variablenames" column="VARIABLE_NAMES" mandatory="yes" forid="variablenames" dbdatatype="STRING" />
+          	<validationfld dbcolsize="25" name="createdby" column="CREATED_BY" mandatory="yes" forid="createdby" dbdatatype="STRING" />
+          	<validationfld dbcolsize="100" name="templatefilename" column="TEMPLATE_FILE_NAME" mandatory="yes" forid="templatefilename" dbdatatype="STRING" />
+          	<validationfld dbcolsize="10" name="createddate" column="CREATED_DATE" mandatory="yes" forid="createddate" dbdatatype="DATE_NS" />
+
+          	<label replace="modify" key="alerttemplateid" value="Alert Template Id" forname="alerttemplateid"/>
+          	<label replace="modify" key="alerttype" value="Alert Type" forname="alerttype"/>
+          	<label replace="modify" key="alertcontent" value="Alert Content" forname="alertcontent"/>
+          	<label replace="modify" key="smspassword" value="Sms Password" forname="smspassword"/>
+          	<label replace="modify" key="smsuserid" value="Sms Userid" forname="smsuserid"/>
+          	<label replace="modify" key="techstudiocampaignid" value="Tech Studio Campaign Id" forname="techstudiocampaignid"/>
+          	<label replace="modify" key="emailsubject" value="Email Subject" forname="emailsubject"/>
+          	<label replace="modify" key="contenttype" value="Content Type" forname="contenttype"/>
+          	<label replace="modify" key="variablenames" value="Variable Names" forname="variablenames"/>
+          	<label replace="modify" key="createdby" value="Created By" forname="createdby"/>
+          	<label replace="modify" key="templatefilename" value="Template File Name" forname="templatefilename"/>
+          	<label replace="modify" key="createddate" value="Created Date" forname="createddate"/>
+
+          </field>
+       </fields>
+      <button forid="" id="" onclick="" replace="modify" type="">button</button>
+    </panel>
+  </panels>
+</root>
+

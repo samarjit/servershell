@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config.xsd">
+  <screen name="AlertQueue">
+    <htmltemplate></htmltemplate>
+    <includedjsp></includedjsp>
+    <callbackclass></callbackclass>
+    <scripts>
+      <scriptinclude></scriptinclude>
+    </scripts>
+    <stylesheets>
+      <styleinclude></styleinclude>
+    </stylesheets>
+    <sessionvars>sessionvars</sessionvars>
+    <crud>
+	   <jsonrpc outstack="formonload" id="onloadqry1">SELECT ALERT_Q_ID "alertqid",ALERT_TYPE "alerttype",USER_ID "userid",SMS_TEXT "smstext",EMAIL_TEXT "emailtext",TO_CHAR(CREATE_TIME,'YYYY-MM-DD hh24:mi:ss')||'.0' "createtime",TO_CHAR(SCHEDULED_TIME,'YYYY-MM-DD hh24:mi:ss')||'.0' "scheduledtime",DELIVERED_STATUS "deliveredstatus",RETRY_COUNT "retrycount",MOBILE_NO "mobileno",EMAIL_TO "emailto",EMAIL_TEMPLATE_ID "emailtemplateid",BULK_EMAIL_MEMBER_NO "bulkemailmemberno" FROM ALERT_QUEUE 
+			<countquery pagesize="10">select count('x') from ALERT_QUEUE </countquery>
+	   </jsonrpc>
+       <jsonrpc outstack="formpagination" id="gridonload">SELECT ALERT_Q_ID "alertqid",ALERT_TYPE "alerttype",USER_ID "userid",SMS_TEXT "smstext",EMAIL_TEXT "emailtext",TO_CHAR(CREATE_TIME,'YYYY-MM-DD hh24:mi:ss')||'.0' "createtime",TO_CHAR(SCHEDULED_TIME,'YYYY-MM-DD hh24:mi:ss')||'.0' "scheduledtime",DELIVERED_STATUS "deliveredstatus",RETRY_COUNT "retrycount",MOBILE_NO "mobileno",EMAIL_TO "emailto",EMAIL_TEMPLATE_ID "emailtemplateid",BULK_EMAIL_MEMBER_NO "bulkemailmemberno" FROM ALERT_QUEUE 
+			<countquery pagesize="10">select count('x') from ALERT_QUEUE </countquery>
+	   </jsonrpc>
+<!--NORMAL SQLs
+      <sqlinsert id="frmnrmladd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, ALERT_TYPE, USER_ID, SMS_TEXT, EMAIL_TEXT, CREATE_TIME, SCHEDULED_TIME, DELIVERED_STATUS, RETRY_COUNT, MOBILE_NO, EMAIL_TO, EMAIL_TEMPLATE_ID, BULK_EMAIL_MEMBER_NO) values ( #inp.form1[0].alertqid, #inp.form1[0].alerttype, #inp.form1[0].userid, #inp.form1[0].smstext, #inp.form1[0].emailtext, #inp.form1[0].createtime, #inp.form1[0].scheduledtime, #inp.form1[0].deliveredstatus, #inp.form1[0].retrycount, #inp.form1[0].mobileno, #inp.form1[0].emailto, #inp.form1[0].emailtemplateid, #inp.form1[0].bulkemailmemberno)</sqlinsert>
+      <sqldelete id="frmnrmldel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].alertqid</sqldelete>
+      <sqlupdate id="frmnrmledit" outstack="updt">update ALERT_QUEUE set  ALERT_TYPE = #inp.form1[0].alerttype, USER_ID = #inp.form1[0].userid, SMS_TEXT = #inp.form1[0].smstext, EMAIL_TEXT = #inp.form1[0].emailtext, CREATE_TIME = #inp.form1[0].createtime, SCHEDULED_TIME = #inp.form1[0].scheduledtime, DELIVERED_STATUS = #inp.form1[0].deliveredstatus, RETRY_COUNT = #inp.form1[0].retrycount, MOBILE_NO = #inp.form1[0].mobileno, EMAIL_TO = #inp.form1[0].emailto, EMAIL_TEMPLATE_ID = #inp.form1[0].emailtemplateid, BULK_EMAIL_MEMBER_NO = #inp.form1[0].bulkemailmemberno WHERE ALERT_Q_ID=#inp.form1[0].alertqid</sqlupdate>
+-->
+<!--GRID INSERTS (check out which alias is required-->
+      <sqlinsert id="frmgridadd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, ALERT_TYPE, USER_ID, SMS_TEXT, EMAIL_TEXT, CREATE_TIME, SCHEDULED_TIME, DELIVERED_STATUS, RETRY_COUNT, MOBILE_NO, EMAIL_TO, EMAIL_TEMPLATE_ID, BULK_EMAIL_MEMBER_NO) values ( #inp.form1[0].ALERT_Q_ID, #inp.form1[0].ALERT_TYPE, #inp.form1[0].USER_ID, #inp.form1[0].SMS_TEXT, #inp.form1[0].EMAIL_TEXT, #inp.form1[0].CREATE_TIME, #inp.form1[0].SCHEDULED_TIME, #inp.form1[0].DELIVERED_STATUS, #inp.form1[0].RETRY_COUNT, #inp.form1[0].MOBILE_NO, #inp.form1[0].EMAIL_TO, #inp.form1[0].EMAIL_TEMPLATE_ID, #inp.form1[0].BULK_EMAIL_MEMBER_NO )</sqlinsert>
+      <sqlinsert id="gridadd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, ALERT_TYPE, USER_ID, SMS_TEXT, EMAIL_TEXT, CREATE_TIME, SCHEDULED_TIME, DELIVERED_STATUS, RETRY_COUNT, MOBILE_NO, EMAIL_TO, EMAIL_TEMPLATE_ID, BULK_EMAIL_MEMBER_NO) values ( #inp.form1[0].ALERT_Q_ID, #inp.form1[0].ALERT_TYPE, #inp.form1[0].USER_ID, #inp.form1[0].SMS_TEXT, #inp.form1[0].EMAIL_TEXT, #inp.form1[0].CREATE_TIME, #inp.form1[0].SCHEDULED_TIME, #inp.form1[0].DELIVERED_STATUS, #inp.form1[0].RETRY_COUNT, #inp.form1[0].MOBILE_NO, #inp.form1[0].EMAIL_TO, #inp.form1[0].EMAIL_TEMPLATE_ID, #inp.form1[0].BULK_EMAIL_MEMBER_NO )</sqlinsert>
+      <sqldelete id="frmgriddel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].ALERT_Q_ID|STRING</sqldelete>
+      <sqldelete id="griddel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].id|STRING</sqldelete>
+      <sqlupdate id="frmgridedit" outstack="updt">update ALERT_QUEUE set  ALERT_TYPE = #inp.form1[0].ALERT_TYPE, USER_ID = #inp.form1[0].USER_ID, SMS_TEXT = #inp.form1[0].SMS_TEXT, EMAIL_TEXT = #inp.form1[0].EMAIL_TEXT, CREATE_TIME = #inp.form1[0].CREATE_TIME, SCHEDULED_TIME = #inp.form1[0].SCHEDULED_TIME, DELIVERED_STATUS = #inp.form1[0].DELIVERED_STATUS, RETRY_COUNT = #inp.form1[0].RETRY_COUNT, MOBILE_NO = #inp.form1[0].MOBILE_NO, EMAIL_TO = #inp.form1[0].EMAIL_TO, EMAIL_TEMPLATE_ID = #inp.form1[0].EMAIL_TEMPLATE_ID, BULK_EMAIL_MEMBER_NO = #inp.form1[0].BULK_EMAIL_MEMBER_NO WHERE ALERT_Q_ID=#inp.form1[0].ALERT_Q_ID</sqlupdate>
+      <sqlupdate id="gridedit" outstack="updt">update ALERT_QUEUE set  ALERT_TYPE = #inp.form1[0].ALERT_TYPE, USER_ID = #inp.form1[0].USER_ID, SMS_TEXT = #inp.form1[0].SMS_TEXT, EMAIL_TEXT = #inp.form1[0].EMAIL_TEXT, CREATE_TIME = #inp.form1[0].CREATE_TIME, SCHEDULED_TIME = #inp.form1[0].SCHEDULED_TIME, DELIVERED_STATUS = #inp.form1[0].DELIVERED_STATUS, RETRY_COUNT = #inp.form1[0].RETRY_COUNT, MOBILE_NO = #inp.form1[0].MOBILE_NO, EMAIL_TO = #inp.form1[0].EMAIL_TO, EMAIL_TEMPLATE_ID = #inp.form1[0].EMAIL_TEMPLATE_ID, BULK_EMAIL_MEMBER_NO = #inp.form1[0].BULK_EMAIL_MEMBER_NO WHERE ALERT_Q_ID=#inp.form1[0].id|STRING</sqlupdate>
+    </crud>
+    <dm>
+      <txnproc id="" outstack=""/>
+    </dm>
+    <bl id="">
+      <buslogic id="" method=""/>
+    </bl>
+    <anyprocs>
+      <proc id="" outstack=""/>
+    </anyprocs>
+    <commands>
+      <cmd instack="" name="" opt=""  result="" />
+      <bulkcmd name="fromViewTransition" opt="" result="ajax" resultScrName="AlertQueue" />
+      <bulkcmd name="frmgridadd" opt="sqlinsert:frmgridadd" result="ajax" resultScrName="AlertQueue"/>
+      <bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="ajax"/>
+      <bulkcmd name="frmgriddel" opt="sqldelete:frmgriddel" result="ajax"/>
+      <bulkcmd name="griddel" opt="sqldelete:griddel" result="ajax"/>
+      <bulkcmd name="gridedit" opt="sqlupdate:gridedit" result="ajax"/>
+      <bulkcmd name="gridadd" opt="sqlinsert:gridadd" result="ajax"/>
+      <bulkcmd name="gridonload" opt="jsonrpc:gridonload" result="ajax"/>
+      <onload opt="jsonrpc:onloadqry1" result="/jsptest/AlertQueue.jsp"/>
+    </commands>
+  </screen>
+  <panels>
+    <panel id="">
+       <fields>
+          <field>
+          	<validationfld dbcolsize="8" name="alertqid" column="ALERT_Q_ID" mandatory="yes" forid="alertqid" dbdatatype="INT" />
+          	<validationfld dbcolsize="20" name="alerttype" column="ALERT_TYPE" mandatory="yes" forid="alerttype" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="userid" column="USER_ID" mandatory="yes" forid="userid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="4000" name="smstext" column="SMS_TEXT" mandatory="yes" forid="smstext" dbdatatype="STRING" />
+          	<validationfld dbcolsize="4000" name="emailtext" column="EMAIL_TEXT" mandatory="yes" forid="emailtext" dbdatatype="STRING" />
+          	<validationfld dbcolsize="10" name="createtime" column="CREATE_TIME" mandatory="yes" forid="createtime" dbdatatype="TIMESTAMP" />
+          	<validationfld dbcolsize="10" name="scheduledtime" column="SCHEDULED_TIME" mandatory="yes" forid="scheduledtime" dbdatatype="TIMESTAMP" />
+          	<validationfld dbcolsize="100" name="deliveredstatus" column="DELIVERED_STATUS" mandatory="yes" forid="deliveredstatus" dbdatatype="STRING" />
+          	<validationfld dbcolsize="2" name="retrycount" column="RETRY_COUNT" mandatory="yes" forid="retrycount" dbdatatype="INT" />
+          	<validationfld dbcolsize="25" name="mobileno" column="MOBILE_NO" mandatory="yes" forid="mobileno" dbdatatype="STRING" />
+          	<validationfld dbcolsize="100" name="emailto" column="EMAIL_TO" mandatory="yes" forid="emailto" dbdatatype="STRING" />
+          	<validationfld dbcolsize="50" name="emailtemplateid" column="EMAIL_TEMPLATE_ID" mandatory="yes" forid="emailtemplateid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="100" name="bulkemailmemberno" column="BULK_EMAIL_MEMBER_NO" mandatory="yes" forid="bulkemailmemberno" dbdatatype="STRING" />
+
+          	<label replace="modify" key="alertqid" value="Alert Q Id" forname="alertqid"/>
+          	<label replace="modify" key="alerttype" value="Alert Type" forname="alerttype"/>
+          	<label replace="modify" key="userid" value="User Id" forname="userid"/>
+          	<label replace="modify" key="smstext" value="Sms Text" forname="smstext"/>
+          	<label replace="modify" key="emailtext" value="Email Text" forname="emailtext"/>
+          	<label replace="modify" key="createtime" value="Create Time" forname="createtime"/>
+          	<label replace="modify" key="scheduledtime" value="Scheduled Time" forname="scheduledtime"/>
+          	<label replace="modify" key="deliveredstatus" value="Delivered Status" forname="deliveredstatus"/>
+          	<label replace="modify" key="retrycount" value="Retry Count" forname="retrycount"/>
+          	<label replace="modify" key="mobileno" value="Mobile No" forname="mobileno"/>
+          	<label replace="modify" key="emailto" value="Email To" forname="emailto"/>
+          	<label replace="modify" key="emailtemplateid" value="Email Template Id" forname="emailtemplateid"/>
+          	<label replace="modify" key="bulkemailmemberno" value="Bulk Email Member No" forname="bulkemailmemberno"/>
+
+          </field>
+       </fields>
+      <button forid="" id="" onclick="" replace="modify" type="">button</button>
+    </panel>
+  </panels>
+</root>
+
