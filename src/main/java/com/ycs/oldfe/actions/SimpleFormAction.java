@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -14,9 +14,11 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.ParameterAware;
 
-import com.ycs.fe.dto.PageReturnType;
-import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.util.ReplaceAlias;
+import servershell.be.dto.InputDTO;
+import servershell.be.dto.PageReturnType;
+import servershell.be.dto.ResultDTO;
+
+import com.opensymphony.xwork2.ActionContext;
 
 
 
@@ -28,13 +30,13 @@ import com.ycs.fe.util.ReplaceAlias;
  *
  */
 public class SimpleFormAction extends CommonActionSupport implements ParameterAware {
-	private static Logger logger = Logger.getLogger(SimpleFormAction.class);
+	private  Logger logger = Logger.getLogger(SimpleFormAction.class);
 	private String bulkcmd;
 	private static final long serialVersionUID = 1L;
 	private Map<String, String[]> parameters;
 
-//	@Action(value="simpleform",results={@Result(name="success",type="stream",params={"contentType","text/html","inputName","inputStream"})}
-//	)
+	@Action(value="simpleform",results={@Result(name="ajax",type="stream",params={"contentType","text/html","inputName","inputStream"})}
+	)
 	public String execute() throws Exception{
 		String resultHtml = "{}";
 		ResultDTO resDTO = new ResultDTO() ;
@@ -48,7 +50,7 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				for (Entry<String, String[]> entry : parameters.entrySet()) {
 					String[] val = entry.getValue();
 					String key = entry.getKey();
-					key = ReplaceAlias.replaceAlias(screenName, key);
+					key = new ReplaceAlias().replaceAlias(screenName, key);
 					if(!key.equals("bulkcmd") && !key.equals("screenName") && !key.equals("oper")){
 						if(val.length== 1){
 							form1obj.put(key, val[0]);
@@ -69,6 +71,10 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				submitdata = submitdataObj.toString();
 				System.out.println("Suitable to send to BE? screenName:"+screenName+" submitdata:"+submitdataObj.toString());
 				JSONObject jsonRecord =   submitdataObj;
+				//for local processing
+				InputDTO inputDTO = new InputDTO();
+				inputDTO.setData((JSONObject) jsonRecord);
+				ActionContext.getContext().getValueStack().getContext().put("inputDTO", inputDTO);
 				
 				resDTO = validate(jsonRecord);
 				resDTO = commandProcessor(jsonRecord, resDTO);

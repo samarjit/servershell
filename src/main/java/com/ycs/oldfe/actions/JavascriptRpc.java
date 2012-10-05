@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
@@ -10,19 +10,16 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import com.google.gson.Gson;
+import servershell.be.dto.InputDTO;
+import servershell.be.dto.ResultDTO;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.ycs.fe.businesslogic.BaseBL;
-import com.ycs.fe.cache.BusinessLogicFactory;
-import com.ycs.fe.commandprocessor.CommandProcessor;
-import com.ycs.fe.dto.InputDTO;
-import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.exception.ValidationException;
-import com.ycs.fe.util.FEValidator;
+import com.ycs.oldfe.commandprocessor.CommandProcessor;
+import com.ycs.oldfe.commandprocessor.ValidationException;
 
-@ParentPackage(value = "debug-default")
+
 public class JavascriptRpc extends ActionSupport {
 	 
 	private static final long serialVersionUID = -623830420192157346L;
@@ -53,10 +50,10 @@ public class JavascriptRpc extends ActionSupport {
 	)
 	public String execute(){
 		System.out.println("js RPC called with command:"+command+" for screen:"+screenName);
-		BaseBL bl = BusinessLogicFactory.getBusinessLogic(screenName);
-		
-		if(bl != null)
-		  bl.preJsRPCListerner(ActionContext.getContext().getActionInvocation());
+//		BaseBL bl = BusinessLogicFactory.getBusinessLogic(screenName);
+//		
+//		if(bl != null)
+//		  bl.preJsRPCListerner(ActionContext.getContext().getActionInvocation());
 		
 		String parsedquery = "";
 		ResultDTO resDTO = new ResultDTO();
@@ -97,12 +94,12 @@ public class JavascriptRpc extends ActionSupport {
 
 		logger.debug(stack.getContext().get("resultDTO"));
 		
-		if(bl !=null)
-		 bl.postJsRPCListerner(ActionContext.getContext().getActionInvocation());
-		
-		Gson gson = new Gson();
-		String json1 = gson.toJson(stack.getContext().get("resultDTO"));
-		logger.debug("Gson result(not sent back to client):"+json1);
+//		if(bl !=null)
+//		 bl.postJsRPCListerner(ActionContext.getContext().getActionInvocation());
+//		
+	//		Gson gson = new Gson();
+	//		String json1 = gson.toJson(stack.getContext().get("resultDTO"));
+	//		logger.debug("Gson result(not sent back to client):"+json1);
 //		setResultDTO((ResultDTO)stack.getContext().get("resultDTO"));
 		
 //		try {

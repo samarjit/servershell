@@ -21,8 +21,8 @@ import servershell.util.ReverseEngineerXml;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.ycs.fe.commandprocessor.AppCacheManager;
-import com.ycs.fe.commandprocessor.Constants;
+import com.ycs.oldfe.commandprocessor.AppCacheManager;
+import com.ycs.oldfe.commandprocessor.Constants;
 
 @Result(type="stream", name="success")
 public class BEScreenAction extends ActionSupport{

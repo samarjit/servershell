@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.util.Locale;
 
@@ -8,10 +8,10 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.LocaleProvider;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.TextProviderFactory;
-import com.ycs.fe.commandprocessor.FrontendException;
-import com.ycs.fe.commandprocessor.ScreenDetails;
-import com.ycs.fe.commandprocessor.ScreenDetails.Label;
-import com.ycs.fe.commandprocessor.ScreenMapRepo;
+import com.ycs.oldfe.commandprocessor.FrontendException;
+import com.ycs.oldfe.commandprocessor.ScreenDetails;
+import com.ycs.oldfe.commandprocessor.ScreenMapRepo;
+import com.ycs.oldfe.commandprocessor.ScreenDetails.Label;
 
 public class LabelFactory implements LocaleProvider{
 	private Logger logger = Logger.getLogger(LabelFactory.class);

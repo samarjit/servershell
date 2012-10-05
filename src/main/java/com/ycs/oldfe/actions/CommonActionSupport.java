@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -10,16 +10,15 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
+import servershell.be.dto.InputDTO;
+import servershell.be.dto.PageReturnType;
+import servershell.be.dto.ResultDTO;
+
 import com.opensymphony.xwork2.ActionSupport;
-import com.ycs.fe.commandprocessor.CommandProcessor;
-import com.ycs.fe.commandprocessor.ReturnCommandProcessor;
-import com.ycs.fe.dto.InputDTO;
-import com.ycs.fe.dto.PageReturnType;
-import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.exception.FrontendException;
-import com.ycs.fe.exception.ValidationException;
-import com.ycs.fe.util.FEValidator;
-import com.ycs.fe.util.LabelFactory;
+import com.ycs.oldfe.commandprocessor.CommandProcessor;
+import com.ycs.oldfe.commandprocessor.FrontendException;
+import com.ycs.oldfe.commandprocessor.ReturnCommandProcessor;
+import com.ycs.oldfe.commandprocessor.ValidationException;
 
 
 public class CommonActionSupport extends ActionSupport {
@@ -170,10 +169,10 @@ public class CommonActionSupport extends ActionSupport {
 			}
 		}catch(FrontendException e){
 			logger.error("error.processingresult",e);
-			throw new FrontendException("error.nextpagenotfound");
+			throw new FrontendException("error.nextpagenotfound",e);
 		}catch (Exception e){
 			logger.error("error.processingresult",e);
-			throw new Exception("error.global");
+			throw new Exception("error.global",e);
 		}
 		logger.debug("resultName = "+pg.resultName);
 		logger.debug("screenName = "+pg.nextScreenName);

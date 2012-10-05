@@ -1,4 +1,4 @@
-package com.ycs.fe.commandprocessor;
+package com.ycs.oldfe.commandprocessor;
 
 public class QueryParseException extends Exception {
 

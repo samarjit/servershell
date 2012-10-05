@@ -5,7 +5,7 @@ import java.text.ParseException;
 
 import ognl.OgnlException;
 
-import com.ycs.fe.commandprocessor.QueryParseException;
+import com.ycs.oldfe.commandprocessor.QueryParseException;
 
 public class BackendException extends Exception {
 

@@ -1,4 +1,4 @@
-package com.ycs.fe.commandprocessor;
+package com.ycs.oldfe.commandprocessor;
 
 import java.util.Set;
 
@@ -8,10 +8,8 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
 
-import com.ycs.fe.dto.PageReturnType;
-import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.exception.FrontendException;
-import com.ycs.fe.util.ScreenMapRepo;
+import servershell.be.dto.PageReturnType;
+import servershell.be.dto.ResultDTO;
 
 /**
  * The first command of the dataset is processed to resolve result, all the subsequent rows of data-sets are ignored.
@@ -22,7 +20,10 @@ import com.ycs.fe.util.ScreenMapRepo;
 public class ReturnCommandProcessor {
 	private static Logger logger =   Logger.getLogger(ReturnCommandProcessor.class);
 	/**
-	 * @param screenName
+	 * @param screenName used to search the xml for bulkcmd and onload
+	 * nextScreenName will be assigned to screenName after returning to action class. This will be used only if 
+	 *  decorator Interceptor (pre-result)-> populateValueStack() for next page will get called. It has nothing to do with cusotm XML result
+     *
 	 * @param submitdataObj from which the command or bulkcmd will match with &lt;cmd .. result="ajax" /> 
 	 * to resolve a return struts name, nextScreenName (if *.page) and result pages  ajax,  *.ftl, *.vm, custom *.page everything else is dispatcher (*.jsp)
 	 * @param resDTO if result is coming back from Backend then use that result to override the result of mapping XML
@@ -32,7 +33,7 @@ public class ReturnCommandProcessor {
 	public PageReturnType getReturnType(String screenName, JSONObject submitdataObj, ResultDTO resDTO) throws FrontendException{
 		PageReturnType pgReturnType = new PageReturnType();
 		
-		Element rootXml = ScreenMapRepo.findMapXMLRoot(screenName);
+		Element rootXml = new ScreenMapRepo().findMapXMLRoot(screenName);
 		@SuppressWarnings("unchecked")
 		Set<String>  itr =  ( (JSONObject) submitdataObj).keySet(); 
 		pgReturnType.nextScreenName = screenName;
@@ -97,41 +98,40 @@ public class ReturnCommandProcessor {
 	public void resolveResult(PageReturnType pgReturnType, String strResult){
 		if("".equals(strResult) || "ajax".equals(strResult)){
 			pgReturnType.resultName = strResult;
-		}else if(strResult.endsWith("page")){
+		}else if(strResult.endsWith(".page")){
 			pgReturnType.resultName = "customXMLRes";
 			pgReturnType.resultPage = strResult;
 			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 5);
-		}else if(strResult.endsWith("ftl")){
+		}else if(strResult.endsWith(".ftl")){
 			pgReturnType.resultName = "freemarker";
 			pgReturnType.resultPage = strResult;
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 4);
-		}else if(strResult.endsWith("vm")){
+		}else if(strResult.endsWith(".vm")){
 			pgReturnType.resultName = "velocity";
 			pgReturnType.resultPage = strResult;
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 3);
-		}else if(strResult.endsWith("jsp")){
+		}else if(strResult.endsWith(".jsp")){
 			pgReturnType.resultName = "dispatcher";
 			pgReturnType.resultPage = strResult;
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 4);
-		}else if(strResult.endsWith("html")){
+		}else if(strResult.endsWith(".html")){
 			pgReturnType.resultName = "dispatcher";
 			pgReturnType.resultPage = strResult;
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 5);
-		}else if(strResult.endsWith("htm")){
+		}else if(strResult.endsWith(".htm")){
 			pgReturnType.resultName = "dispatcher";
 			pgReturnType.resultPage = strResult;
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.length() - 4);
 		}else{
-//			pgReturnType.resultName = strResult;
-//			pgReturnType.resultName = strResult;
+			pgReturnType.resultName = strResult;
+			pgReturnType.resultPage = strResult;
 //			if(strResult.lastIndexOf('.') >-1){
 //			pgReturnType.nextScreenName = strResult.substring(0,strResult.lastIndexOf('.'));
 //			}else{
 //				pgReturnType.nextScreenName = strResult;
 //			}
-			logger.error("There is no result type mapping for "+strResult);
+			logger.error("Make sure result is defined in struts.xml for "+strResult);
 		}
-		
 	}
 	
 }

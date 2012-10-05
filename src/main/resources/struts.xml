@@ -4,6 +4,7 @@
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 
 <struts>
+<bean class="org.apache.struts2.views.velocity.VelocityManager" name="struts"  optional="true" />
 <package name="default" extends="json-default">
     <interceptors>
       <interceptor-stack name="content">

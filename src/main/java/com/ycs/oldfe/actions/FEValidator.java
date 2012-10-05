@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,9 +26,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.LocaleProvider;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.TextProviderFactory;
-import com.ycs.fe.commandprocessor.FrontendException;
-import com.ycs.fe.commandprocessor.ScreenMapRepo;
-import com.ycs.fe.commandprocessor.ValidationException;
+import com.ycs.oldfe.commandprocessor.FrontendException;
+import com.ycs.oldfe.commandprocessor.ScreenMapRepo;
+import com.ycs.oldfe.commandprocessor.ValidationException;
 
 public class FEValidator  implements LocaleProvider{
 

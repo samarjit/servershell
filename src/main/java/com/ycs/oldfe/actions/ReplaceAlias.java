@@ -1,10 +1,10 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import org.apache.log4j.Logger;
 
-import com.ycs.fe.commandprocessor.FrontendException;
-import com.ycs.fe.commandprocessor.ScreenDetails;
-import com.ycs.fe.commandprocessor.ScreenMapRepo;
+import com.ycs.oldfe.commandprocessor.FrontendException;
+import com.ycs.oldfe.commandprocessor.ScreenDetails;
+import com.ycs.oldfe.commandprocessor.ScreenMapRepo;
 
 public class ReplaceAlias {
 	private Logger logger = Logger.getLogger(ReplaceAlias.class);

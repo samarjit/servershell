@@ -1,13 +1,11 @@
-package com.ycs.fe.commandprocessor;
+package com.ycs.oldfe.commandprocessor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -15,23 +13,16 @@ import javax.xml.namespace.QName;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import servershell.be.dto.InputDTO;
+import servershell.be.dto.ResultDTO;
+
 import com.opensymphony.xwork2.ActionContext;
-import com.ycs.fe.dto.InputDTO;
-import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.exception.BackendException;
-import com.ycs.fe.exception.FrontendException;
-import com.ycs.fe.exception.ProcessorNotFoundException;
-import com.ycs.fe.util.Constants;
-import com.ycs.fe.util.ScreenMapRepo;
-import com.ycs.ws.beclient.QueryService;
-import com.ycs.ws.beclient.QueryServiceService;
 
 public class CommandProcessor {
 
@@ -45,7 +36,7 @@ public class CommandProcessor {
 	 * {"row":1,"programname":"TRACARD","txtnewprogname":"TRACARD","txtprogramdesc":"Travel Card Program","issuername":"HSBC Bank","countryofissue":"SINGAPORE",
 	 * "txtstatus":"Modify",
 	 * command:"jrpcCmd1"}],
-	 * �txnrec�:{single:��,multiple:[{aaa:��},{aaa:��}]}, 
+	 * "txnrec":{single:"",multiple:[{aaa:''},{aaa:''}]}, 
 	 * bulkcmd:'',
 	 * sessionvars: {key:'value',sessionkey:'sessiondata'} //This part is dynamically inserted
 	 * }
@@ -70,7 +61,7 @@ public class CommandProcessor {
 		ResultDTO resDTO = null;
 		try{
 		if(Constants.APP_LAYER == Constants.FRONTEND){	
-			Element rootXml = ScreenMapRepo.findMapXMLRoot(screenName);
+			Element rootXml = new ScreenMapRepo().findMapXMLRoot(screenName);
 			Node sessionVar = rootXml.selectSingleNode("/root/screen/sessionvars");
 		   if(sessionVar != null){
 			   String strSessionVar = sessionVar.getText();
@@ -103,7 +94,7 @@ public class CommandProcessor {
 		
 		if(Constants.CMD_PROCESSOR == Constants.APP_LAYER){
 			
-			Element rootXml = ScreenMapRepo.findMapXMLRoot(screenName);
+			Element rootXml = new ScreenMapRepo().findMapXMLRoot(screenName);
 			
 		    @SuppressWarnings("unchecked")
 			Set<String>  itr =  ( (JSONObject) submitdataObj).keySet(); 
@@ -185,15 +176,15 @@ public class CommandProcessor {
 			resDTO.addError("error.processornotfound");
 		}catch(Exception e){
 			if(resDTO == null)resDTO= new ResultDTO();
-			resDTO.addError("system.error");
-			logger.error(e);
+			resDTO.addError("system.error"+e.toString());
+			logger.error("",e);
 		}
 		
 		return resDTO;
 	}
 	
 	private String remoteCommandProcessor(String submitdataObj, String screenName) {
-		ResourceBundle rb = ResourceBundle.getBundle("path_config");
+		ResourceBundle rb = ResourceBundle.getBundle("config");
 		String wsbasepath = rb.getString("be.webservice.basepath");
 		URL url = null;
 		try {
@@ -203,9 +194,16 @@ public class CommandProcessor {
 		}
 		QueryServiceService qss = new QueryServiceService(url, new QName("http://ws.ycs.com/", "QueryServiceService"));
 		 QueryService queryServicePort = qss.getQueryServicePort();
-		 logger.info("Sent to BE WebService: screenName:"+screenName+" submitdata:"+submitdataObj  );
+
+		 logger.debug("Before remoteCommandProcessor processor call");
 		 String strResDTO = queryServicePort.remoteCommandProcessor(submitdataObj, screenName);
-		 logger.info("Ret from BE webservice: "+StringUtils.abbreviate(strResDTO, 100) );
+		 
+		 qss = null;
+		 url = null;
+		 wsbasepath = null;
+		 rb = null;
+		 
+		 logger.debug("Ret from BE: "+StringUtils.abbreviate(strResDTO, 100) );
 		return strResDTO;
 	}
 

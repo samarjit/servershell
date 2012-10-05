@@ -1,10 +1,8 @@
-package com.ycs.fe.commandprocessor;
+package com.ycs.oldfe.commandprocessor;
 
 import net.sf.json.JSONObject;
-
-import com.ycs.fe.crud.JsrpcPojo;
-import com.ycs.fe.dto.InputDTO;
-import com.ycs.fe.dto.ResultDTO;
+import servershell.be.dto.InputDTO;
+import servershell.be.dto.ResultDTO;
 
 public class CrudCommandProcessor implements BaseCommandProcessor {
 

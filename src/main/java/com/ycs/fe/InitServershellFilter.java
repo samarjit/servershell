@@ -10,7 +10,7 @@ import net.sf.ehcache.CacheException;
 
 import org.apache.log4j.Logger;
 
-import com.ycs.fe.commandprocessor.AppCacheManager;
+import com.ycs.oldfe.commandprocessor.AppCacheManager;
 
  
 /**

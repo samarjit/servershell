@@ -1,4 +1,4 @@
-package com.ycs.fe.actions;
+package com.ycs.oldfe.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -19,9 +19,9 @@ import servershell.be.dto.ResultDTO;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.ycs.fe.commandprocessor.CommandProcessor;
-import com.ycs.fe.commandprocessor.FrontendException;
-import com.ycs.fe.commandprocessor.SelectOnLoad;
+import com.ycs.oldfe.commandprocessor.CommandProcessor;
+import com.ycs.oldfe.commandprocessor.FrontendException;
+import com.ycs.oldfe.commandprocessor.SelectOnLoad;
 
 public class CmdServiceAction extends ActionSupport{
 	

@@ -34,8 +34,8 @@ import servershell.util.SendToBE;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.Validations;
-import com.ycs.fe.commandprocessor.AppCacheManager;
-import com.ycs.fe.commandprocessor.Constants;
+import com.ycs.oldfe.commandprocessor.AppCacheManager;
+import com.ycs.oldfe.commandprocessor.Constants;
 
 @ParentPackage("default")
 @Results(value={
