@@ -101,8 +101,8 @@ function screenMapSave(){
 }
 
 function editXml(){
-	window.open('fefileeditor.jsp?filepath='+$(":input[name='fepagexmlpath']").val()+'&filename='+$("#pagexmlfilename").val(),'_blank');	
 	window.open('befileeditor.jsp?filepath='+$(":input[name='bepagexmlpath']").val()+'&filename='+$("#pagexmlfilename").val(),'_blank');	
+	window.open('fefileeditor.jsp?filepath='+$(":input[name='fepagexmlpath']").val()+'&filename='+$("#pagexmlfilename").val(),'_blank');	
 }
 function editFtl(){
 	window.open('fefileeditor.jsp?filepath='+$(":input[name='ftlbasepath']").val()+'&filename='+$("#ftlfilename").val(),'_blank');	

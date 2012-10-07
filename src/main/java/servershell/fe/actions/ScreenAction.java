@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -29,6 +30,7 @@ import org.apache.struts2.convention.annotation.Results;
 
 import servershell.util.AccessRights;
 import servershell.util.CompoundResource;
+import servershell.util.ResourceBundleReloader;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -609,6 +611,79 @@ public class ScreenAction extends ActionSupport{
 		} catch (Exception e) {
 			logger.error("exception ",e);
 			addActionError("exception "+e.toString());
+		}
+		return "json";
+	}
+	
+	@Action(value="fedeletefile")
+	public String fedeletefile(){
+		String message= "Not processed!";
+		
+		File dir = new File(filepath);
+		if(dir.exists()){
+			File f = new File(dir,filename);
+			try {
+				if(f.exists()){
+					ResourceBundle rb = ResourceBundle.getBundle("config");
+					File deleteDir = new File(CompoundResource.getString(rb,"application_home"));
+					SimpleDateFormat sm = new SimpleDateFormat("yyyyMMddhhmmss");
+					String dt = sm.format(new Date());
+					if(deleteDir.exists()){
+						File deletedFile =  new File(deleteDir,filename+"."+dt+".DELETED");
+						message = "Rename to "+deletedFile.getAbsolutePath()+" succeeded "+f.renameTo(deletedFile);
+					}else{
+						message = "Renameto "+deleteDir.getAbsolutePath()+" directory not found";
+					}
+					
+				}else{
+					 
+					message = "File not found at "+f.getAbsolutePath() + " "+new Date();
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (Exception e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action(value="bdeletefile")
+	public String bdeletefile(){
+		String message= "Not processed!";
+		JSONObject jobj = new JSONObject();//.fromObject(data);
+		 jobj.put("filepath", filepath);
+		 jobj.put("filename", filename);
+		
+			try {
+				String res = SendToBE.sendToBE(jobj.toString(), "bedeletefile.action");
+				message = res;
+			} catch (Exception e) {
+				logger.error(e.toString());
+				message = "BE process error "+e.toString();
+			}
+			
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	
+	@Action(value="breloadconfig")
+	public String breloadconfig(){
+		jobj.put("fereloaded", "true");
+		ResourceBundleReloader.reloadBundles();
+		
+		try {
+			String res = SendToBE.sendToBE("reload", "bereloadconfig.action");
+			jobj.put("bereloaded", res);
+		} catch (IOException e) {
+			addActionError("BE relaod failed, "+e);
 		}
 		return "json";
 	}

@@ -185,15 +185,15 @@ public class CommandProcessor {
 			resDTO.addError("error.processornotfound");
 		}catch(Exception e){
 			if(resDTO == null)resDTO= new ResultDTO();
-			resDTO.addError("system.error");
-			logger.error(e);
+			resDTO.addError("system.error"+e.toString());
+			logger.error("",e);
 		}
 		
 		return resDTO;
 	}
 	
 	private String remoteCommandProcessor(String submitdataObj, String screenName) {
-		ResourceBundle rb = ResourceBundle.getBundle("path_config");
+		ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
 		String wsbasepath = rb.getString("be.webservice.basepath");
 		URL url = null;
 		try {
@@ -205,7 +205,11 @@ public class CommandProcessor {
 		 QueryService queryServicePort = qss.getQueryServicePort();
 		 logger.info("Sent to BE WebService: screenName:"+screenName+" submitdata:"+submitdataObj  );
 		 String strResDTO = queryServicePort.remoteCommandProcessor(submitdataObj, screenName);
-		 logger.info("Ret from BE webservice: "+StringUtils.abbreviate(strResDTO, 100) );
+		 qss = null;
+		 url = null;
+		 wsbasepath = null;
+		 rb = null;
+		 logger.info("Ret from BE screenName:"+screenName+" webservice: "+StringUtils.abbreviate(strResDTO, 100) );
 		return strResDTO;
 	}
 

@@ -33,8 +33,11 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 	private static final long serialVersionUID = 1L;
 	private Map<String, String[]> parameters;
 
-//	@Action(value="simpleform",results={@Result(name="success",type="stream",params={"contentType","text/html","inputName","inputStream"})}
-//	)
+	@Action(value="simpleform",results={
+			@Result(name="success",type="stream",params={"contentType","text/html","inputName","inputStream"}),
+			@Result(name="ajax",type="stream",params={"contentType","text/html","inputName","inputStream"})
+			}
+	)
 	public String execute() throws Exception{
 		String resultHtml = "{}";
 		ResultDTO resDTO = new ResultDTO() ;

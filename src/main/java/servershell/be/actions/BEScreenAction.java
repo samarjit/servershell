@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import net.sf.json.JSONObject;
 
@@ -16,11 +18,14 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
-import servershell.be.dto.ResultDTO;
+
+import servershell.util.CompoundResource;
+import servershell.util.ResourceBundleReloader;
 import servershell.util.ReverseEngineerXml;
-import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
+
+
 import com.ycs.oldfe.commandprocessor.AppCacheManager;
 import com.ycs.oldfe.commandprocessor.Constants;
 
@@ -225,6 +230,56 @@ public class BEScreenAction extends ActionSupport{
 		
 		inputStream = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
+	}
+	
+	@Action(value="bedeletefile")
+	public String bedeletefile(){
+		String message= "Not processed!";
+		String filepath;
+		String filename;
+		JSONObject jobj = JSONObject.fromObject(data);
+		filepath = jobj.getString("filepath");
+		filename = jobj.getString("filename");
+		
+		File dir = new File(filepath);
+		if(dir.exists()){
+			File f = new File(dir,filename);
+			try {
+				if(f.exists()){
+					ResourceBundle rb = ResourceBundle.getBundle("config");
+					File deleteDir = new File(CompoundResource.getString(rb,"beapplication_home"));
+					SimpleDateFormat sm = new SimpleDateFormat("yyyyMMddhhmmss");
+					String dt = sm.format(new Date());
+					if(deleteDir.exists()){
+						File deletedFile =  new File(deleteDir,filename+"."+dt+".DELETED");
+						message = "Rename to "+deletedFile.getAbsolutePath()+" succeeded "+f.renameTo(deletedFile);
+					}else{
+						message = "Renameto "+deleteDir.getAbsolutePath()+" directory not found";
+					} 
+					
+				}else{
+					 
+					message = "File not found at "+f.getAbsolutePath() + " "+new Date();
+				}
+//				message = " File "+f.getAbsolutePath() +" created successfully, length="+f.length()+ new Date();
+			} catch (Exception e) {
+				logger.error(e.toString());
+				message = "File writing error "+e.toString();
+			}
+			
+		}else{
+			message = "Directory "+dir.getAbsolutePath()+" does not exist.";
+		}
+		
+		inputStream = new ByteArrayInputStream(message.getBytes());
+		return SUCCESS;
+	}
+	
+	@Action("bereloadconfig")
+	public String bereloadconfig(){
+		ResourceBundleReloader.reloadBundles();
+		inputStream = new ByteArrayInputStream("true".getBytes());
+		return "success"; 
 	}
 	
 	public InputStream getInputStream() {

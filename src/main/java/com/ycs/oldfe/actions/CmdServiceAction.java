@@ -32,7 +32,7 @@ public class CmdServiceAction extends ActionSupport{
 	private String screenName;
 	private String submitdataObj;
 	
-	@Action(value="remoteCommandProcessor", results ={@Result(name="success",type="stream")})
+	@Action(value="remoteCommandProcessor_old", results ={@Result(name="success",type="stream")})
 	public String remoteCommandProcessor() throws Exception{
 		System.out.println(">>>>incoming value : +++ "+ submitdataObj);
 		logger.debug(">>>>incoming value : +++ "+ submitdataObj);
@@ -62,7 +62,7 @@ public class CmdServiceAction extends ActionSupport{
 		return SUCCESS ;
 	}
 	
-	@Action(value="selectOnLoad", results ={@Result(name="success",type="stream")})
+	@Action(value="selectOnLoad_old", results ={@Result(name="success",type="stream")})
 	public String selectOnLoad(){
 		
 		String tmpResDTO = "Query Service Error in selectOnLoad";

@@ -195,7 +195,7 @@ public class CommandProcessor {
 		QueryServiceService qss = new QueryServiceService(url, new QName("http://ws.ycs.com/", "QueryServiceService"));
 		 QueryService queryServicePort = qss.getQueryServicePort();
 
-		 logger.debug("Before remoteCommandProcessor processor call");
+		 logger.info("Sent to BE WebService: screenName:"+screenName+" submitdata:"+submitdataObj  );
 		 String strResDTO = queryServicePort.remoteCommandProcessor(submitdataObj, screenName);
 		 
 		 qss = null;
@@ -203,7 +203,7 @@ public class CommandProcessor {
 		 wsbasepath = null;
 		 rb = null;
 		 
-		 logger.debug("Ret from BE: "+StringUtils.abbreviate(strResDTO, 100) );
+		 logger.info("Ret from BE: "+StringUtils.abbreviate(strResDTO, 100) );
 		return strResDTO;
 	}
 

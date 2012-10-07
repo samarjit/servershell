@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config.xsd">
+  <screen name="AlertQueue">
+    <htmltemplate></htmltemplate>
+    <includedjsp></includedjsp>
+    <callbackclass></callbackclass>
+    <scripts>
+      <scriptinclude></scriptinclude>
+    </scripts>
+    <stylesheets>
+      <styleinclude></styleinclude>
+    </stylesheets>
+    <sessionvars>sessionvars</sessionvars>
+    <crud>
+	   <jsonrpc outstack="formonload" id="onloadqry1">SELECT ALERT_Q_ID "alertqid",NAME "name",EMAIL "email" FROM ALERT_QUEUE 
+			<countquery pagesize="10">select count('x') from ALERT_QUEUE </countquery>
+	   </jsonrpc>
+       <jsonrpc outstack="formpagination" id="gridonload">SELECT ALERT_Q_ID "alertqid",NAME "name",EMAIL "email" FROM ALERT_QUEUE 
+			<countquery pagesize="10">select count('x') from ALERT_QUEUE </countquery>
+	   </jsonrpc>
+<!--NORMAL SQLs
+      <sqlinsert id="frmnrmladd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, NAME, EMAIL) values ( #inp.form1[0].alertqid, #inp.form1[0].name, #inp.form1[0].email)</sqlinsert>
+      <sqldelete id="frmnrmldel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].alertqid</sqldelete>
+      <sqlupdate id="frmnrmledit" outstack="updt">update ALERT_QUEUE set  NAME = #inp.form1[0].name, EMAIL = #inp.form1[0].email WHERE ALERT_Q_ID=#inp.form1[0].alertqid</sqlupdate>
+-->
+<!--GRID INSERTS (check out which alias is required-->
+      <sqlinsert id="frmgridadd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, NAME, EMAIL) values ( #inp.form1[0].ALERT_Q_ID, #inp.form1[0].NAME, #inp.form1[0].EMAIL )</sqlinsert>
+      <sqlinsert id="gridadd" outstack="inst">insert into ALERT_QUEUE( ALERT_Q_ID, NAME, EMAIL) values ( #inp.form1[0].ALERT_Q_ID, #inp.form1[0].NAME, #inp.form1[0].EMAIL )</sqlinsert>
+      <sqldelete id="frmgriddel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].ALERT_Q_ID|STRING</sqldelete>
+      <sqldelete id="griddel" outstack="delt">delete from ALERT_QUEUE WHERE ALERT_Q_ID = #inp.form1[0].id|STRING</sqldelete>
+      <sqlupdate id="frmgridedit" outstack="updt">update ALERT_QUEUE set  NAME = #inp.form1[0].NAME, EMAIL = #inp.form1[0].EMAIL WHERE ALERT_Q_ID=#inp.form1[0].ALERT_Q_ID</sqlupdate>
+      <sqlupdate id="gridedit" outstack="updt">update ALERT_QUEUE set  NAME = #inp.form1[0].NAME, EMAIL = #inp.form1[0].EMAIL WHERE ALERT_Q_ID=#inp.form1[0].id|STRING</sqlupdate>
+    </crud>
+    <dm>
+      <txnproc id="" outstack=""/>
+    </dm>
+    <bl id="">
+      <buslogic id="" method=""/>
+    </bl>
+    <anyprocs>
+      <proc id="" outstack=""/>
+    </anyprocs>
+    <commands>
+      <cmd instack="" name="" opt=""  result="" />
+      <bulkcmd name="fromViewTransition" opt="" result="ajax" resultScrName="AlertQueue" />
+      <bulkcmd name="frmgridadd" opt="sqlinsert:frmgridadd" result="ajax" resultScrName="AlertQueue"/>
+      <bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="ajax"/>
+      <bulkcmd name="frmgriddel" opt="sqldelete:frmgriddel" result="ajax"/>
+      <bulkcmd name="griddel" opt="sqldelete:griddel" result="ajax"/>
+      <bulkcmd name="gridedit" opt="sqlupdate:gridedit" result="ajax"/>
+      <bulkcmd name="gridadd" opt="sqlinsert:gridadd" result="ajax"/>
+      <bulkcmd name="gridonload" opt="jsonrpc:gridonload" result="ajax"/>
+      <onload opt="jsonrpc:onloadqry1" result="/jsptest/AlertQueue.jsp"/>
+    </commands>
+  </screen>
+  <panels>
+    <panel id="">
+       <fields>
+          <field>
+          	<validationfld dbcolsize="8" name="alertqid" column="ALERT_Q_ID" mandatory="yes" forid="alertqid" dbdatatype="INT" />
+          	<validationfld dbcolsize="20" name="name" column="NAME" mandatory="yes" forid="name" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="email" column="EMAIL" mandatory="yes" forid="email" dbdatatype="STRING" />
+
+          	<label replace="modify" key="alertqid" value="Alert Q Id" forname="alertqid"/>
+          	<label replace="modify" key="name" value="Name" forname="name"/>
+          	<label replace="modify" key="email" value="Email" forname="email"/>
+
+          </field>
+       </fields>
+      <button forid="" id="" onclick="" replace="modify" type="">button</button>
+    </panel>
+  </panels>
+</root>
+

@@ -6,4 +6,5 @@
 <screen name="AlertQueue" mappingxml="map/jsptest/AlertQueue.xml" />
 <screen name="AlertTemplateMaster" mappingxml="map/jsptest/AlertTemplateMaster.xml" />
 
+
 </root>
