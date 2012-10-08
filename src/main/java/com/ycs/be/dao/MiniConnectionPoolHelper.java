@@ -12,6 +12,8 @@ import oracle.jdbc.pool.OracleDataSource;
 
 import org.apache.log4j.Logger;
 
+import com.ycs.fe.util.Constants;
+
 public class MiniConnectionPoolHelper {
 	 
 	    private final  static String CACHE_NAME = "MYCACHE";
@@ -24,7 +26,7 @@ public class MiniConnectionPoolHelper {
 	                 
 	                ClassLoader loader = MiniConnectionPoolHelper.class.getClassLoader();	
 	                Properties prop = new Properties();
-	                prop.load(loader.getResourceAsStream("path_config.properties"));
+	                prop.load(loader.getResourceAsStream(Constants.PATH_CONFIG+".properties"));
 	                
 	                 
 	                PrintWriter pr = new PrintWriter( new OutputStreamWriter(System.err));

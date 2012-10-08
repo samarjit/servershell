@@ -66,7 +66,8 @@ function showconf(){
 <a href="${pageContext.request.contextPath}/jsp/fefileeditor.jsp" >fefileeditor</a>
 <a href="${pageContext.request.contextPath}/jsp/befileeditor.jsp" >befileeditor</a>
 <a href="javascript:showconf();">Save config</a>
-<a href="${pageContext.request.contextPath}/bconfig.action">Designate FE/BE</a>
+<a href="${pageContext.request.contextPath}/bconfig.action">designate FE/BE</a>
+<a href="${pageContext.request.contextPath}/breloadconfig.action">reloadconfig</a>
 <a href="${pageContext.request.contextPath}/logout.action">Logout</a>
 </div>
 

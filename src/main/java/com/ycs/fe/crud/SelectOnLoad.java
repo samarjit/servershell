@@ -222,7 +222,7 @@ public class SelectOnLoad {
 	
 	public void remoteSelectOnLoad(String screenName1, String jsonsubmitdata ){
 		logger.debug("Sent to BE:"+jsonsubmitdata);
-		ResourceBundle rb = ResourceBundle.getBundle("path_config");
+		ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
 		String wsbasepath = rb.getString("be.webservice.basepath");
 		URL url = null;
 		try {

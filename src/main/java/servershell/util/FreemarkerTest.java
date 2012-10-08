@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.ycs.fe.util.Constants;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -97,7 +99,7 @@ public class FreemarkerTest {
     
     
 	public String getString(String key) {
-		ResourceBundle rb = ResourceBundle.getBundle("path_config");
+		ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
 		String ret = "";
 		try {
 			Template t = new Template("name", new StringReader(rb.getString(key)), new Configuration());

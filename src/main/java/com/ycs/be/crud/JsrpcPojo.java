@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import com.google.gson.Gson;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.ycs.be.dao.FETranslatorDAO;
@@ -104,7 +104,8 @@ private Logger logger = Logger.getLogger(getClass());
 							PaginationDTO pageDTO= null; 
 							if(jobject.size()>0 ){
 								JSONObject	panel =  jobject.getJSONObject(outstack);
-								pageDTO = new Gson().fromJson(panel.toString(), PaginationDTO.class);
+//								pageDTO = new Gson().fromJson(panel.toString(), PaginationDTO.class);
+								pageDTO = (PaginationDTO) JSONObject.toBean(panel, PaginationDTO.class);
 								logger.debug("pagination :"+panel);
 								logger.debug("pagination pageDTO:"+pageDTO);
 								pageno =  pageDTO.getPage();// panel.getInt("currentpage");
@@ -149,7 +150,7 @@ private Logger logger = Logger.getLogger(getClass());
 									selectPart = selectWherePart;
 								}
 									
-								if(pageDTO.getSidx() != null && pageDTO.getSord() != null){
+								if(pageDTO.getSidx() != null && !"".equals(pageDTO.getSidx()) && pageDTO.getSord() != null && !"".equals(pageDTO.getSord() )){
 									orderByPart = pageDTO.getSidx() +" "+pageDTO.getSord();
 								}
 								updatequery = " " + selectPart;
@@ -259,7 +260,7 @@ private Logger logger = Logger.getLogger(getClass());
 							PrepstmtDTOArray  arparam = new PrepstmtDTOArray();
 							parsedquery = queryParser.parseQuery(countquery, outstack, jsonRecord, arparam, hmfielddbtype,jsonInput, prevResultDTO);
 							int reccount = fetranslatorDAO.executeCountQry(screenName, parsedquery, outstack, arparam);
-							logger.debug("Processing count query"+countquery);
+							logger.debug("Processing count query# "+countquery);
 												
 							
 							
@@ -272,9 +273,19 @@ private Logger logger = Logger.getLogger(getClass());
 									tempresDTO = new ResultDTO();
 								}
 								tempresDTO.setPageDetails(outstack, pageno, pagecount, reccount , pagesize);
-								logger.debug("Now setetting resultDTO in JsonRPC pojo="+JSONSerializer.toJSON(tempresDTO));
+								
+								if(reccount > 0){
+									tempresDTO.addMessage("TotalRec|"+reccount);
+									if(pageno == 0){
+										tempresDTO.addMessage("pageno requested is 0 consider adding page=1 in post data or URL");
+									}
+									if(pagesize == 0){
+										tempresDTO.addMessage("pagesize requested is 0 consider adding rows=10 in post data or URL");
+									}
+								}
+//								logger.debug("Now setetting pagination in resultDTO in JsonRPC pojo="+JSONSerializer.toJSON(tempresDTO));
 								stack.getContext().put("resultDTO",tempresDTO); 
-								logger.debug("Pagination set with pageno:"+pageno+"totalrec:"+reccount+" pagecount:"+pagecount+" pagesize:"+pagesize);
+								logger.info("Pagination set with pageno:"+pageno+"totalrec:"+reccount+" pagecount:"+pagecount+" pagesize:"+pagesize);
 								
 							
 						

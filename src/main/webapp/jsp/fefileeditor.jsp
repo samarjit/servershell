@@ -70,9 +70,14 @@ Edit File: <s:form action="loadfefile" id="fefileloadform">
 <sj:a button="true" href="%{createfefile1}" targets="resultdiv" formIds="fefileloadform" onCompleteTopics="pageloaded">create FE file</sj:a> 
 
 <s:form id="fefilesavefrm">
-<s:url action="savefefile" var="vsavefefile"/> 
+<s:url action="savefefile.action" var="vsavefefile"/> 
 <sj:submit button="true" href="%{vsavefefile}" targets="resultdiv" onclick="beforefilesave()"formIds="fefilesavefrm,fefileloadform" value="Save file"></sj:submit><br/>
 FE file:<textarea rows="10" cols="80" name="fefile" id="fefile"></textarea>
+</s:form>
+
+<s:form id="fefiledeletefrm">
+<s:url action="fedeletefile.action" var="vdeletefefile"/> 
+<sj:submit button="true" href="%{vdeletefefile}" targets="resultdiv"  formIds="fefiledeletefrm,fefileloadform" value="Delete file"></sj:submit><br/>
 </s:form>
 
  

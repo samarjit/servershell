@@ -66,7 +66,7 @@ public class JqgridRpc extends ActionSupport {
 	
 	
 	
-	@Action(value="jqgrid",
+	@Action(value="jqgrid_old",
 			results={@Result(name="success",type="stream",params={"contentType","application/json","inputName","inputStream"})}
 	)
 	public String execute(){

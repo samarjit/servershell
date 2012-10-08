@@ -26,7 +26,20 @@ public class ReturnCommandProcessor {
 	 * @param submitdataObj from which the command or bulkcmd will match with &lt;cmd .. result="ajax" /> 
 	 * to resolve a return struts name, nextScreenName (if *.page) and result pages  ajax,  *.ftl, *.vm, custom *.page everything else is dispatcher (*.jsp)
 	 * @param resDTO if result is coming back from Backend then use that result to override the result of mapping XML
-	 * @return PageReturnType object
+	 * @return PageReturnType object resultName, resultPage, nextScreenName
+	 * eg. For ajax result the nextScreenName is not required as there is no chance of calling &lt;onload /> cmd.
+	 * &lt;bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="ajax"/> <br/>
+	 * and struts.xml result is like <br/>
+	 *  &lt;result name="ajax" type="stream"> <br/>
+				&lt;param name="contentType">application/json&lt;/param><br/>
+				&lt;param name="inputName">inputStream&lt;/param><br/>
+			&lt;/result><br/>
+	 * <br/>
+	 * eg. If result is some_file.jsp then the parameters in bulkcmd and cmd can be defined like
+	 * &lt;bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="some_file.jsp" resultScrName="SomeOtherScreenName" /> <br/>
+	 * This will create resultName=>dispatcher, nextScreenName=>SomeOtherScreenName, resultPage=some_file.jsp <br/>
+	 * Action class# execute(){ return resultName; /*dispatcher* / } and struts.xml result will be defined like  <br/>
+	 * &lt;result name="dispatcher">${resultPage} -> some_file.jsp &lt;/result>
 	 * @throws FrontendException
 	 */
 	public PageReturnType getReturnType(String screenName, JSONObject submitdataObj, ResultDTO resDTO) throws FrontendException{
@@ -43,7 +56,7 @@ public class ReturnCommandProcessor {
 //			pgReturnType.resultName = screenName;
 //			pgReturnType.resultPage = screenName;
 			Element elmCmd = (Element) rootXml.selectSingleNode("/root/screen/commands/onload");
-    		System.out.println("/root/screen/commands/onload");
+    		//System.out.println("/root/screen/commands/onload");
     		String strResult  = elmCmd.attributeValue("result");
     		resolveResult(pgReturnType, strResult);
     		pgReturnType.nextScreenName = screenName;
@@ -86,6 +99,7 @@ public class ReturnCommandProcessor {
 		if(!(pgReturnType.resultName != null && !"".equals(pgReturnType.resultName)))
 				logger.error("The Result could not be resolved");
 		
+		logger.info("Resolved Return Page, nextScreenName="+pgReturnType.nextScreenName+", resultName="+pgReturnType.resultName+", resultPage="+pgReturnType.resultPage);
 		return pgReturnType;
 	}
 	

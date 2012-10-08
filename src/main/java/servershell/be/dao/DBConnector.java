@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import servershell.be.dto.PrepstmtDTO;
 import servershell.be.dto.PrepstmtDTOArray;
 
+import com.ycs.be.dao.C3P0Helper;
+
 /**
  * This class is used to connect to the database and execute queries.
  * 
@@ -128,10 +130,10 @@ public class DBConnector {
 //				}
 				try{
 					if(!poolinitialized){
-						JDBCUtils.setUp();
+						C3P0Helper.setUp();
 						poolinitialized = true;
 					}
-					conn =  JDBCUtils.getConnection();
+					conn =  C3P0Helper.getConnection();
 				}catch(Exception e){
 					logger.error("MiniConnectionPoolHelper connection error",e);
 				}

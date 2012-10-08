@@ -24,12 +24,12 @@ public ResultDTO() {
 	errors = new ArrayList<String>();
 	messages = new ArrayList<String>();
 	pagination = new HashMap<String, Map<String,Integer>>();
-	HashMap<String, Integer> hm = new HashMap<String, Integer>();
-	hm.put("currentpage",1);
-	hm.put("totalpage",1);
-	hm.put("totalrec",1);
-	hm.put("pagesize",1);
-	pagination.put("formx", hm);
+//	HashMap<String, Integer> hm = new HashMap<String, Integer>();
+//	hm.put("currentpage",1);
+//	hm.put("totalpage",1);
+//	hm.put("totalrec",1);
+//	hm.put("pagesize",1);
+//	pagination.put("formx", hm);
 }
 
 

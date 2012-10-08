@@ -74,6 +74,10 @@ Edit File: <s:form action="bloadfefile.action" id="fefileloadform">
 <sj:submit button="true" href="%{vsavefefile}" targets="resultdiv" onclick="beforefilesave()" formIds="fefilesavefrm,fefileloadform" value="Save  file"></sj:submit><br/>
 FE file:<textarea rows="10" cols="80" name="fefile" id="fefile"></textarea>
 </s:form>
+<s:form id="bfiledeletefrm">
+<s:url action="bdeletefile.action" var="vdeletefile"/> 
+<sj:submit button="true" href="%{vdeletefile}" targets="resultdiv" formIds="bfiledeletefrm,fefileloadform" value="Delete  file"></sj:submit><br/>
+</s:form>
 
  
 </body>

@@ -43,7 +43,7 @@ public class FileSyncImpl implements FileSync{
 		String returnJson = "{";
 		try {
 			AppCacheManager.removeCache("xmlcache");
-			ServletActionContext.create();
+//			ServletActionContext.create();
 			String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
 			System.out.println("screenpath="+screenpath);
 			scrxml = new BufferedInputStream(new FileInputStream(screenpath+"/screenmap.xml"));
@@ -65,7 +65,7 @@ public class FileSyncImpl implements FileSync{
 					logger.debug(screenName+" "+path+"  "+new Date(f.lastModified()));
 				}
 			} 
-			ServletActionContext.destroy();
+//			ServletActionContext.destroy();
 		} catch (FileNotFoundException e) {
 			logger.error("Local getTimestampsMapXML failed",e);
 		} catch (DocumentException e) {
@@ -81,7 +81,7 @@ public class FileSyncImpl implements FileSync{
 	@WebMethod    
 	public void uploadFile(String name, @XmlMimeType("application/octet-stream") DataHandler data) {
 	        try {
-	        	ServletActionContext.create();
+//	        	ServletActionContext.create();
 	        	String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
 	            // StreamingDataHandler dh = (StreamingDataHandler)data;
 	             File file = new File(tplpath+File.separatorChar+name);//File.createTempFile(name, "");
@@ -111,7 +111,7 @@ public class FileSyncImpl implements FileSync{
 	                 fos.close();
 	                 
 	             }
-	             ServletActionContext.destroy();
+//	             ServletActionContext.destroy();
 	        } catch(Exception e) {
 	        	logger.debug("unknown exception",e);
 	             throw new WebServiceException(e);

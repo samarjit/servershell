@@ -1,7 +1,6 @@
 package com.ycs.be.dao;
 
 import java.beans.PropertyVetoException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -13,6 +12,7 @@ import org.apache.log4j.Logger;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
 import com.mchange.v2.c3p0.PooledDataSource;
+import com.ycs.be.util.Constants;
 
 public class C3P0Helper {
     private final  static String CACHE_NAME = "MYCACHE";
@@ -25,7 +25,7 @@ public class C3P0Helper {
             initialized  = true;
             try {
                 
-            	final ResourceBundle prop = ResourceBundle.getBundle("path_config");
+            	final ResourceBundle prop = ResourceBundle.getBundle(Constants.PATH_CONFIG);
                 
                 // caching parms
                 ComboPooledDataSource cpds = new ComboPooledDataSource();

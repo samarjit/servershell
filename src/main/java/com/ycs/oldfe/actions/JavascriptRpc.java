@@ -44,7 +44,7 @@ public class JavascriptRpc extends ActionSupport {
 	
 	
 	
-	@Action(value="jsrpc",params={"configxml","ProductSetup.xml"},
+	@Action(value="jsrpc_old",params={"configxml","ProductSetup.xml"},
 			results={@Result(name="success",type="stream",params={"contentType","text/html","inputName","inputStream","resultxml","ProductSetup.xml"})}
 //	results={@Result(name="success",location="/test.jsp")}
 	)

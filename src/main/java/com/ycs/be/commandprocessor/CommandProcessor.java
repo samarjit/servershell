@@ -107,7 +107,7 @@ public class CommandProcessor {
 		    	else
 		    	  throw new ProcessorNotFoundException("bulkcmd resolution error /root/screen/commands/bulkcmd[@name='"+bulkcmd+"'] in screen:"+screenName);
 //	    		String strProcessor = elmBulkCmd.attributeValue("processor");
-	    		logger.debug("Command Processor: operation:" + operation);
+	    		logger.info("Command Processor: ScreenName:"+screenName+" operation:" + operation);
 	    		String[] opts = operation.split("\\|"); //get chained commands
 	    		for (String opt : opts) {
 	    			String[] sqlcmd = opt.split("\\:"); //get Id of query 

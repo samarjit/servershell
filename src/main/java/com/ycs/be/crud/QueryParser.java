@@ -110,7 +110,8 @@ public class QueryParser{
 	        			  parsedquery += "?";
 	        		   
 	        		  end = m1.end(); 
-	        		  logger.debug("This is not prefered Mode with dot"+m1.group(2)+". "+propname);
+	        		  logger.info("Ognl inp Expression result inp "+propname+" = "+propval);
+//	        		  logger.debug("This is not prefered Mode with dot"+m1.group(2)+". "+propname);
 	        	  }else  if("res".equals( m1.group(1))){ //:formXX[0].param
 	        		  logger.debug(" Processing with #resultDTO");
 	        		  //TODO: implement for object filling from related panels.
@@ -119,7 +120,7 @@ public class QueryParser{
 	        		  String propval = ActionContext.getContext().getValueStack().findString("#resultDTO.data."+expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
-	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
+	        		  logger.info("Ognl inp Expression result res "+propname+" = "+propval);
 	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
@@ -138,7 +139,7 @@ public class QueryParser{
 	        		  String propval = ActionContext.getContext().getValueStack().findString(expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
-	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
+	        		  logger.info("Ognl inp Expression result vs "+propname+" = "+propval);
 	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
@@ -156,7 +157,7 @@ public class QueryParser{
 	        		  String propval = (String) ActionContext.getContext().getSession().get(expr);
 	        		  String propname;
 	        		  propname = expr.substring(expr.lastIndexOf('.')+1, expr.length());
-	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
+	        		  logger.debug("Ognl inp Expression result sess "+propname+" = "+propval);
 	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
@@ -180,7 +181,7 @@ public class QueryParser{
 	        		  String propname = m1.group(2);
 	        		  propval = jsonObject.getString(m1.group(2));
 	        		  parsedquery += updatequery.substring(end,m1.start());//
-	        		  logger.debug("Ognl inp Expression result "+propname+" = "+propval);
+	        		  logger.info("Ognl inp Expression result "+propname+" = "+propval);
 	        		  
 	        		  if(!"".equals(m1.group(3)) ){
         				  arparam.add(PrepstmtDTO.getDataTypeFrmStr(m1.group(3)),propval);
@@ -211,9 +212,6 @@ public class QueryParser{
 	    	throw new BackendException("error.queryparsing",e);
 	    } catch (DataTypeException e) {
 	    	logger.error("error.queryparsing", e);
-	    	throw new BackendException("error.queryparsing",e);
-		} catch (OgnlException e) {
-			logger.error("error.queryparsing", e);
 	    	throw new BackendException("error.queryparsing",e);
 		}
 	       return parsedquery;

@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import com.ycs.be.dto.PrepstmtDTO;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.exception.BackendException;
+import com.ycs.be.util.Constants;
 
 /**
  * This class is used to connect to the database and execute queries.
@@ -48,7 +49,7 @@ public class DBConnector {
 	private static boolean poolinitialized = false; 
 	
 	public DBConnector() {
-			final ResourceBundle prop = ResourceBundle.getBundle("path_config");
+			final ResourceBundle prop = ResourceBundle.getBundle(Constants.PATH_CONFIG);
 			DBURL = prop.getString("DBURL");
 			DBUSER = prop.getString("DBUSER");
 			DBPASSWORD = prop.getString("DBPASSWORD");

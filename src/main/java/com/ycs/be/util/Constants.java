@@ -7,5 +7,5 @@ public class Constants{
 	public static final int BACKEND = 1;  //constant
 	public static  int CMD_PROCESSOR = BACKEND; //0 frontend, 1  backend, constant for each implementation 
 	public static int APP_LAYER = BACKEND; 
-	
+	public static final String PATH_CONFIG = "config";
 }
