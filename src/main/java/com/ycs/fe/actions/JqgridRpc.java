@@ -104,7 +104,10 @@ public class JqgridRpc extends ActionSupport {
 				  JSONObject filterJson = JSONObject.fromObject(filters);
 				  JsonConfig jcfg = new JsonConfig();
 				  jcfg.setRootClass(PagingFilters.class);
-				PagingFilters filter = (PagingFilters) JSONObject.toBean(filterJson, jcfg);
+				  Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
+				  classMap.put( "rules", PagingFilterRule.class );  
+				PagingFilters filter = (PagingFilters) JSONObject.toBean(filterJson, PagingFilters.class,classMap);//, jcfg);
+				//JSONObject job = org.json.JSONObject();
 				for (PagingFilterRule rule: filter.getRules()) {
 					if(screenDetails.nameColumnMap.get(rule.getField()) !=null){ //remove this for strict security
 						String aliasToColumn = screenDetails.nameColumnMap.get(rule.getField());

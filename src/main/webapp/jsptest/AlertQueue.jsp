@@ -18,7 +18,7 @@
 	<s:if test = "jsrule != null" >
 		 rulesframework =  ${jsrule};
 	</s:if>
-        	var fieldlist = "alertqid, name, email".split(",");
+        	var fieldlist = "alertqid, alerttype, userid, smstext, emailtext, createtime, scheduledtime, deliveredstatus, retrycount, mobileno, emailto, emailtemplateid, bulkemailmemberno".split(",");
    $(document).ready(function(){
 	//iadt.setFieldlist(fieldlist);
 	globalAjaxErrorSetup();
@@ -60,11 +60,21 @@
       	url:'<%= request.getContextPath() %>/jqgrid.action?command=true&screenName=AlertQueue&submitdata={bulkcmd="gridonload"}',
       	datatype: "json",
       	height:350, 
-      	colNames:['Alert Q Id','Name','Email'      	],
+      	colNames:['Alert Q Id','Alert Type','User Id','Sms Text','Email Text','Create Time','Scheduled Time','Delivered Status','Retry Count','Mobile No','Email To','Email Template Id','Bulk Email Member No'      	],
       	colModel:[
       	{name: 'alertqid', index: 'alertqid' , width:88, editable:true },
-      	{name: 'name', index: 'name' , width:160, editable:true },
-      	{name: 'email', index: 'email' , width:160, editable:true }
+      	{name: 'alerttype', index: 'alerttype' , width:160, editable:true },
+      	{name: 'userid', index: 'userid' , width:160, editable:true },
+      	{name: 'smstext', index: 'smstext' , width:400, editable:true },
+      	{name: 'emailtext', index: 'emailtext' , width:400, editable:true },
+      	{name: 'createtime', index: 'createtime' , width:138, editable:true },
+      	{name: 'scheduledtime', index: 'scheduledtime' , width:138, editable:true },
+      	{name: 'deliveredstatus', index: 'deliveredstatus' , width:400, editable:true },
+      	{name: 'retrycount', index: 'retrycount' , width:22, editable:true },
+      	{name: 'mobileno', index: 'mobileno' , width:200, editable:true },
+      	{name: 'emailto', index: 'emailto' , width:400, editable:true },
+      	{name: 'emailtemplateid', index: 'emailtemplateid' , width:400, editable:true },
+      	{name: 'bulkemailmemberno', index: 'bulkemailmemberno' , width:400, editable:true }
       	],
       	rowNum: 15,
       	rowList: [ 15, 25, 50],
@@ -122,14 +132,34 @@
 <form name="form1" id="form1" method="post" action="${pageContext.request.contextPath}/html/simpleform.action?screenName=AlertQueue">
         	 <table>
         	   <tr><td>Alert Q Id </td><td><input name="alertqid" id="alertqid" value="${resultDTO.data.formonload[0].alertqid}"/></td></tr>
-        	   <tr><td>Name </td><td><input name="name" id="name" value="${resultDTO.data.formonload[0].name}"/></td></tr>
-        	   <tr><td>Email </td><td><input name="email" id="email" value="${resultDTO.data.formonload[0].email}"/></td></tr>
+        	   <tr><td>Alert Type </td><td><input name="alerttype" id="alerttype" value="${resultDTO.data.formonload[0].alerttype}"/></td></tr>
+        	   <tr><td>User Id </td><td><input name="userid" id="userid" value="${resultDTO.data.formonload[0].userid}"/></td></tr>
+        	   <tr><td>Sms Text </td><td><input name="smstext" id="smstext" value="${resultDTO.data.formonload[0].smstext}"/></td></tr>
+        	   <tr><td>Email Text </td><td><input name="emailtext" id="emailtext" value="${resultDTO.data.formonload[0].emailtext}"/></td></tr>
+        	   <tr><td>Create Time </td><td><input name="createtime" id="createtime" value="${resultDTO.data.formonload[0].createtime}"/></td></tr>
+        	   <tr><td>Scheduled Time </td><td><input name="scheduledtime" id="scheduledtime" value="${resultDTO.data.formonload[0].scheduledtime}"/></td></tr>
+        	   <tr><td>Delivered Status </td><td><input name="deliveredstatus" id="deliveredstatus" value="${resultDTO.data.formonload[0].deliveredstatus}"/></td></tr>
+        	   <tr><td>Retry Count </td><td><input name="retrycount" id="retrycount" value="${resultDTO.data.formonload[0].retrycount}"/></td></tr>
+        	   <tr><td>Mobile No </td><td><input name="mobileno" id="mobileno" value="${resultDTO.data.formonload[0].mobileno}"/></td></tr>
+        	   <tr><td>Email To </td><td><input name="emailto" id="emailto" value="${resultDTO.data.formonload[0].emailto}"/></td></tr>
+        	   <tr><td>Email Template Id </td><td><input name="emailtemplateid" id="emailtemplateid" value="${resultDTO.data.formonload[0].emailtemplateid}"/></td></tr>
+        	   <tr><td>Bulk Email Member No </td><td><input name="bulkemailmemberno" id="bulkemailmemberno" value="${resultDTO.data.formonload[0].bulkemailmemberno}"/></td></tr>
         	   
 
 
         	   <tr><td>Alert Q Id </td><td><s:property value="#resultDTO.data.formonload[0].alertqid"  /></td></tr>
-        	   <tr><td>Name </td><td><s:property value="#resultDTO.data.formonload[0].name"  /></td></tr>
-        	   <tr><td>Email </td><td><s:property value="#resultDTO.data.formonload[0].email"  /></td></tr>
+        	   <tr><td>Alert Type </td><td><s:property value="#resultDTO.data.formonload[0].alerttype"  /></td></tr>
+        	   <tr><td>User Id </td><td><s:property value="#resultDTO.data.formonload[0].userid"  /></td></tr>
+        	   <tr><td>Sms Text </td><td><s:property value="#resultDTO.data.formonload[0].smstext"  /></td></tr>
+        	   <tr><td>Email Text </td><td><s:property value="#resultDTO.data.formonload[0].emailtext"  /></td></tr>
+        	   <tr><td>Create Time </td><td><s:property value="#resultDTO.data.formonload[0].createtime"  /></td></tr>
+        	   <tr><td>Scheduled Time </td><td><s:property value="#resultDTO.data.formonload[0].scheduledtime"  /></td></tr>
+        	   <tr><td>Delivered Status </td><td><s:property value="#resultDTO.data.formonload[0].deliveredstatus"  /></td></tr>
+        	   <tr><td>Retry Count </td><td><s:property value="#resultDTO.data.formonload[0].retrycount"  /></td></tr>
+        	   <tr><td>Mobile No </td><td><s:property value="#resultDTO.data.formonload[0].mobileno"  /></td></tr>
+        	   <tr><td>Email To </td><td><s:property value="#resultDTO.data.formonload[0].emailto"  /></td></tr>
+        	   <tr><td>Email Template Id </td><td><s:property value="#resultDTO.data.formonload[0].emailtemplateid"  /></td></tr>
+        	   <tr><td>Bulk Email Member No </td><td><s:property value="#resultDTO.data.formonload[0].bulkemailmemberno"  /></td></tr>
         	 </table>
         	 bulkcmd: <input name="bulkcmd" value="frmgridedit"/>
         	 <button >submit</button>

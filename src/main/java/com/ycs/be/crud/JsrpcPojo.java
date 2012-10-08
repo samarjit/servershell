@@ -2,6 +2,7 @@ package com.ycs.be.crud;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,7 @@ import com.ycs.be.dao.FETranslatorDAO;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.PaginationDTO;
 import com.ycs.be.dto.PagingFilterRule;
+import com.ycs.be.dto.PagingFilters;
 import com.ycs.be.dto.PrepstmtDTO;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
@@ -105,7 +107,12 @@ private Logger logger = Logger.getLogger(getClass());
 							if(jobject.size()>0 ){
 								JSONObject	panel =  jobject.getJSONObject(outstack);
 //								pageDTO = new Gson().fromJson(panel.toString(), PaginationDTO.class);
-								pageDTO = (PaginationDTO) JSONObject.toBean(panel, PaginationDTO.class);
+								
+								 Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
+								 classMap.put( "filters", PagingFilters.class );  
+								 classMap.put( "rules", PagingFilterRule.class );  
+								 classMap.put( "groups", PagingFilters.class );  
+								pageDTO = (PaginationDTO) JSONObject.toBean(panel, PaginationDTO.class,classMap);
 								logger.debug("pagination :"+panel);
 								logger.debug("pagination pageDTO:"+pageDTO);
 								pageno =  pageDTO.getPage();// panel.getInt("currentpage");

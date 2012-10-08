@@ -107,6 +107,13 @@ public class AppCacheManager {
 		return singletonManager.getCache(key);
 	}
 	
+	public static void removeCache(String cachename) {
+		logger.debug("removing cache: "+cachename);
+		singletonManager.removeCache(cachename);
+	}
+	public static void shutdown() {
+		singletonManager.shutdown( );
+	}
 	
 	/**
 	 * @param args

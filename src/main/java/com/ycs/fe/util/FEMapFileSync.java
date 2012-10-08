@@ -36,11 +36,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.sun.xml.internal.ws.developer.JAXWSProperties;
-<<<<<<< HEAD
-=======
 import com.ycs.fe.util.Constants;
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
+//import com.sun.xml.internal.ws.developer.JAXWSProperties;
 
  
 
@@ -126,6 +123,7 @@ public class FEMapFileSync {
 	
 	
 	
+	@SuppressWarnings("restriction")
 	public void uploadFiles(){
 		try {
 			Logger logger = Logger.getRootLogger();
@@ -147,11 +145,7 @@ public class FEMapFileSync {
 			}
 			
 			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
-<<<<<<< HEAD
-			ResourceBundle rb = ResourceBundle.getBundle("path_config");
-=======
 			ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			String wsbasepath = rb.getString("be.webservice.basepath");
 			
 			URL url = new URL(wsbasepath+"/fservice?wsdl");
@@ -161,7 +155,7 @@ public class FEMapFileSync {
 			FileSync fileServer = service1.getPort(FileSync.class, feature);
 			BindingProvider bp = (BindingProvider) fileServer;
 			 Map<String, Object> ctxt=((BindingProvider)fileServer).getRequestContext();
-		      ctxt.put(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE, 8192);
+		      ctxt.put(/*JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE*/"com.sun.xml.internal.ws.transport.http.client.streaming.chunk.size", 8192);
 		      
 			SOAPBinding binding = (SOAPBinding) bp.getBinding();
 			binding.setMTOMEnabled(true);
@@ -235,11 +229,7 @@ public class FEMapFileSync {
 	 */
 	public static void main(String[] args) {
 		try {
-<<<<<<< HEAD
-			ResourceBundle rb = ResourceBundle.getBundle("path_config");
-=======
 			ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			String wsbasepath = rb.getString("be.webservice.basepath");
 			URL url = new URL(wsbasepath+"/fservice?wsdl");
 			QName qname = new QName("http://util.fe.ycs.com/", "FileSyncImplService");

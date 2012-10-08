@@ -25,10 +25,7 @@ import oracle.jdbc.rowset.OracleCachedRowSet;
 
 import org.apache.log4j.Logger;
 
-<<<<<<< HEAD
-=======
 import com.ycs.fe.util.Constants;
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 import com.ycs.fe.dto.PrepstmtDTO;
 import com.ycs.fe.dto.PrepstmtDTOArray;
 import com.ycs.fe.exception.BackendException;
@@ -52,26 +49,18 @@ public class DBConnector {
 		Properties prop = new Properties();
 		try {
 			ClassLoader loader = this.getClass().getClassLoader();
-<<<<<<< HEAD
-			prop.load(loader.getResourceAsStream("path_config.properties"));
-=======
+
 			prop.load(loader.getResourceAsStream(Constants.PATH_CONFIG+".properties"));
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
+
 
 			DBURL = prop.getProperty("DBURL");
 			DBUSER = prop.getProperty("DBUSER");
 			DBPASSWORD = prop.getProperty("DBPASSWORD");
 			DRIVERNAME = prop.getProperty("DRIVERNAME");
 		} catch (FileNotFoundException e) {
-<<<<<<< HEAD
-			logger.error("path_config.properties file not found", e);
-		} catch (IOException e) {
-			logger.error("Error in reading path_config.properties", e);
-=======
 			logger.error(Constants.PATH_CONFIG+".properties file not found", e);
 		} catch (IOException e) {
 			logger.error("Error in reading "+Constants.PATH_CONFIG+".properties", e);
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 		}
 	}
 

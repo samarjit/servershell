@@ -45,7 +45,7 @@ public class CommandProcessor {
 	 * {"row":1,"programname":"TRACARD","txtnewprogname":"TRACARD","txtprogramdesc":"Travel Card Program","issuername":"HSBC Bank","countryofissue":"SINGAPORE",
 	 * "txtstatus":"Modify",
 	 * command:"jrpcCmd1"}],
-	 * �txnrec�:{single:��,multiple:[{aaa:��},{aaa:��}]}, 
+	 * txnrec:{single:,multiple:[{aaa:},{aaa:}]}, 
 	 * bulkcmd:'',
 	 * sessionvars: {key:'value',sessionkey:'sessiondata'} //This part is dynamically inserted
 	 * }

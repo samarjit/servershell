@@ -89,13 +89,13 @@ public class QueryAction extends ActionSupport implements SessionAware{
 					}
 				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:select)[\\S\\s]*") ){ //describe
 					String qr = query.substring(4).trim();
-					jsonString = SendToBE.sendToBE(qr, "becreatescreen.action");
+					jsonString = SendToBE.sendToBE(qr, "berevengg.action");
 					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
 					
 				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:\\w+)[\\S\\s]*") ){ //describe
 					String qr = query.substring(4).trim();
 					qr = "select * from "+qr+" where 1=2";
-					jsonString = SendToBE.sendToBE(qr, "becreatescreen.action");
+					jsonString = SendToBE.sendToBE(qr, "berevengg.action");
 					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
 				}else{
 					logger.debug("invalid query skipping..."+query);

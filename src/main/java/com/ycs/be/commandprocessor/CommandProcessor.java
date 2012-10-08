@@ -169,7 +169,7 @@ public class CommandProcessor {
 		}catch(Exception e){
 			if(resDTO == null)resDTO= new ResultDTO();
 			resDTO.addError("system.error");
-			logger.error(e);
+			logger.error("system.error",e);
 		}
 		
 		return resDTO;

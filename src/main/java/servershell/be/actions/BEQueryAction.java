@@ -59,7 +59,7 @@ public class BEQueryAction extends ActionSupport{
 				int countrec = 0;
 				if(query.matches("(?ims:select)[\\S\\s]*(?ims:from)([\\S\\s]*)")){
 					
-					Pattern p  = Pattern.compile("(?ims:select)[\\S\\s]*(?ims:from)([\\S\\s]*)");
+					Pattern p  = Pattern.compile("(?ims:select)[\\S\\s]*?(?ims:from)([\\S\\s]*)");
 					Matcher m = p.matcher(query);
 					m.find();
 					logger.debug("select query grp 1 grp 3"+m.group(1));

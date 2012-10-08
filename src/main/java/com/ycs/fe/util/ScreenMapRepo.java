@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-<<<<<<< HEAD
-=======
 import java.net.URL;
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -48,30 +45,18 @@ public class ScreenMapRepo {
 			net.sf.ehcache.Element scrXmlFromCache = AppCacheManager.getElementFromCache("xmlcache", "scrxmlroot");
 					
 			if(scrXmlFromCache == null){
-<<<<<<< HEAD
-				String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
-=======
 //				String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
 				URL url = ScreenMapRepo.class.getResource("/map");
 				String screenpath = url.getPath();
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 				InputStream scrxml = new BufferedInputStream(new FileInputStream(screenpath+"/screenmap.xml"));
 			
 				doc = new SAXReader().read(scrxml);
 				root = doc.getRootElement();
-<<<<<<< HEAD
-				System.out.println("xmlcache -> scrxmlroot cache miss");
-				AppCacheManager.putElementInCache("xmlcache", "scrxmlroot", root);
-			}else{
-				root = (Element) scrXmlFromCache.getObjectValue();
-				System.out.println("xmlcache -> scrxmlroot cache hit");
-=======
 //				System.out.println("xmlcache -> scrxmlroot cache miss");
 				AppCacheManager.putElementInCache("xmlcache", "scrxmlroot", root);
 			}else{
 				root = (Element) scrXmlFromCache.getObjectValue();
 //				System.out.println("xmlcache -> scrxmlroot cache hit");
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			}
 			
 			
@@ -82,14 +67,9 @@ public class ScreenMapRepo {
 			}
 			
 			path = n.attributeValue("mappingxml");
-<<<<<<< HEAD
-			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
-			
-=======
 //			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes");
 			URL url = ScreenMapRepo.class.getResource("/map");
 			String tplpath = new File(url.getPath()).getParent();
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			File f = new File(tplpath+"/"+path);
 			path = f.getAbsolutePath();
 			
@@ -135,30 +115,18 @@ public class ScreenMapRepo {
 		net.sf.ehcache.Element scrXmlFromCache = AppCacheManager.getElementFromCache("xmlcache", "scrxmlroot");
 			
 		if(scrXmlFromCache == null){
-<<<<<<< HEAD
-			String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
-=======
 //			String screenpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
 			URL url = ScreenMapRepo.class.getResource("/map");
 			String screenpath = url.getPath();
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			InputStream scrxml = new BufferedInputStream(new FileInputStream(screenpath+"/screenmap.xml"));
 		
 			doc = new SAXReader().read(scrxml);
 			root = doc.getRootElement();
-<<<<<<< HEAD
-			System.out.println("xmlcache -> scrxmlroot cache miss");
-			AppCacheManager.putElementInCache("xmlcache", "scrxmlroot", root);
-		}else{
-			root = (Element) scrXmlFromCache.getObjectValue();	
-			System.out.println("xmlcache -> scrxmlroot cache hit");
-=======
 			logger.debug("xmlcache -> scrxmlroot cache miss");
 			AppCacheManager.putElementInCache("xmlcache", "scrxmlroot", root);
 		}else{
 			root = (Element) scrXmlFromCache.getObjectValue();	
 			logger.debug("xmlcache -> scrxmlroot cache hit");
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 		}
 		
 		
@@ -183,19 +151,11 @@ public class ScreenMapRepo {
 				
 				screenDetails = new ScreenDetails();
 				screenDetails.populateScrDetails(scrName);// doc.getRootElement();
-<<<<<<< HEAD
-				System.out.println("xmlcache1 -> "+scrName+" cache miss");
-				AppCacheManager.putElementInCache("xmlcache", "SCR_DTL"+scrName, screenDetails);
-			}else{
-				screenDetails = (ScreenDetails) scrDtl.getObjectValue();	
-				System.out.println("xmlcache1 -> "+scrName+" cache hit");
-=======
 				logger.debug("xmlcache1 -> "+scrName+" cache miss");
 				AppCacheManager.putElementInCache("xmlcache", "SCR_DTL"+scrName, screenDetails);
 			}else{
 				screenDetails = (ScreenDetails) scrDtl.getObjectValue();	
 				logger.debug("xmlcache1 -> "+scrName+" cache hit");
->>>>>>> 737c1c1e52b7f74ba221e2e0e600f2df07eae153
 			}
 		} catch (FrontendException e) {
 			logger.error("XML Load Exception   ScreenName="+scrName);

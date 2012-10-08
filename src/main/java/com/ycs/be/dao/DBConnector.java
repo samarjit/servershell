@@ -349,14 +349,26 @@ public class DBConnector {
 					Timestamp newDate = new Timestamp(new SimpleDateFormat(SIMPLE_DATE_FORMAT).parse(pd.getData()).getTime());
 					stmt.setTimestamp(count, newDate);
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_NS) {
-					Date newDate = new Date((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setDate(count, newDate);
+					if(pd.getData() == null || pd.getData().equals("")){
+						stmt.setDate(count, null);
+					}else{
+						Timestamp newDate = new Timestamp((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
+						stmt.setTimestamp(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATEDDMMYYYY) {
-					Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATEDDMMYYYY_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setDate(count, newDate);
+					if(pd.getData() == null || pd.getData().equals("")){
+						stmt.setDate(count, null);
+					}else{
+						Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATEDDMMYYYY_FORMAT)).parse(pd.getData()).getTime());
+						stmt.setDate(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_TIME_MIN) {
-					Timestamp newDate = new Timestamp((new SimpleDateFormat(PrepstmtDTO.DATE_TIME_MIN_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setTimestamp(count, newDate);
+					if(pd.getData() == null || pd.getData().equals("")){
+						stmt.setDate(count, null);
+					}else{
+						Timestamp newDate = new Timestamp((new SimpleDateFormat(PrepstmtDTO.DATE_TIME_MIN_FORMAT)).parse(pd.getData()).getTime());
+						stmt.setTimestamp(count, newDate);
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DOUBLE) {
 					String in = pd.getData();
 					if (in == null || "".equals(in))

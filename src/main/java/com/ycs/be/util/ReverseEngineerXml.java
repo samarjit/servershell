@@ -1,7 +1,5 @@
 package com.ycs.be.util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -9,10 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import javax.mail.Header;
-
 import com.ycs.be.dao.DBConnector;
-import com.ycs.be.dto.PrepstmtDTO;
 
 public class ReverseEngineerXml {
 	private String globalSQL = "  SELECT PRODUCT_CODE ,  PRODUCT_NAME ,  PLASTIC_CODE,   PLASTIC_DESC    FROM PRODUCT_DETAILS ";
