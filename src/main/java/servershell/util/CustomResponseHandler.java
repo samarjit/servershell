@@ -43,7 +43,7 @@ public class CustomResponseHandler  implements ResponseHandler<String> {
 		if (statusLine.getStatusCode() >= 300) {
 			String serverStack = "";
 			if(entityString.length() > 1450){
-				serverStack = entityString.substring(932, 1450);
+				serverStack = entityString.substring(0, 1450);
 			}else{
 				serverStack = entityString;
 			}

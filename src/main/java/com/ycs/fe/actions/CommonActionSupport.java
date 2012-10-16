@@ -136,7 +136,7 @@ public class CommonActionSupport extends ActionSupport {
 	 * @return resultDTO with error, message, pagination
 	 */
 	protected ResultDTO commandProcessor(JSONObject jsonRecord, ResultDTO validationResultDTO) {
-		if (validationResultDTO != null && validationResultDTO.getErrors() != null && validationResultDTO.getErrors().size() > 0) {
+		if (validationResultDTO != null && validationResultDTO.getErrors() != null && validationResultDTO.getErrors().size() > 0 || validationResultDTO.getFieldErrors().size() >0) {
 			return validationResultDTO;
 		}
 		CommandProcessor cmdpr = new CommandProcessor();

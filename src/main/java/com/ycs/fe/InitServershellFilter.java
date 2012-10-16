@@ -26,7 +26,7 @@ public class InitServershellFilter implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent contextEvent) {
 		context = contextEvent.getServletContext();
 		System.out.println("servershell Servlet context shutting down...");
-//		AppCacheManager.shutdown();
+		AppCacheManager.shutdown();
 		com.ycs.be.cache.AppCacheManager.shutdown();
 		com.ycs.fe.cache.AppCacheManager.shutdown();
 	}
@@ -40,15 +40,15 @@ public class InitServershellFilter implements ServletContextListener {
 		Logger logger = Logger.getLogger(InitServershellFilter.class);
 		logger.debug("servershell servlet starting...");
 
-//		AppCacheManager appcache;
+		AppCacheManager appcache;
 		com.ycs.be.cache.AppCacheManager appcachebe;
 		com.ycs.fe.cache.AppCacheManager appcachefe;
 		try {
-//			appcache = AppCacheManager.getInstance();
+			appcache = AppCacheManager.getInstance();
 			appcachebe = com.ycs.be.cache.AppCacheManager.getInstance();
 			appcachefe = com.ycs.fe.cache.AppCacheManager.getInstance();
-			appcachebe.initCache();
-			appcachefe.initCache();
+//			appcachebe.initCache();
+//			appcachefe.initCache();
 		} catch (CacheException e) {
 			e.printStackTrace();
 		}

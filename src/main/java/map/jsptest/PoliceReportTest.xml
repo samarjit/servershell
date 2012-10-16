@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config.xsd">
+  <screen name="PoliceReportTest">
+    <htmltemplate></htmltemplate>
+    <includedjsp></includedjsp>
+    <callbackclass></callbackclass>
+    <scripts>
+      <scriptinclude></scriptinclude>
+    </scripts>
+    <stylesheets>
+      <styleinclude></styleinclude>
+    </stylesheets>
+    <sessionvars>sessionvars</sessionvars>
+    <crud>
+	   <jsonrpc outstack="formonload" id="onloadqry1">SELECT CARD_NO "cardno",USER_ID "userid",BAL_AT_REPORTING "balatreporting",SPENT_AFT_REPORT_TRANS "spentaftreporttrans",SPENT_AFT_REPORT_NONTRANS "spentaftreportnontrans",BAL_AT_BLOCKING "balatblocking",CARD_STATUS "cardstatus",CARD_INSURE_AVAIL "cardinsureavail",INS_POLICY_NO "inspolicyno",REFUND_MODE "refundmode",REPLACE_CARD_NO "replacecardno",REFUND_EXPIRY_DATE "refundexpirydate",REFUND_STATUS "refundstatus",BLOCKED_BY "blockedby",REPORTING_TIME "reportingtime",BLOCKING_TIME "blockingtime",BLOCK_REASON "blockreason",POLICE_REPORT_NUMBER "policereportnumber",POLICE_REPORT_DUE_DATE "policereportduedate",INS_AMOUNT_CLAIMED "insamountclaimed",REFUND_CHANNEL "refundchannel",POLICE_REPORT_FILE_NAME "policereportfilename",TOTAL_MISUSED_AMOUNT "totalmisusedamount",UNSYNC_SETTLED "unsyncsettled",SAW_FILE_REF_ID "sawfilerefid",SAW_RESULT "sawresult",INSUR_FILE_REF_ID "insurfilerefid",INSUR_RESULT "insurresult",MTR_FILE_REF_ID "mtrfilerefid",PREV_REFUND_STATUS "prevrefundstatus",PREV_REFUND_CHANNEL "prevrefundchannel",UPDATE_DATE "updatedate",UPDATED_BY "updatedby",REJECT_REASON "rejectreason",EMAIL_NOTIFIED "emailnotified",SAW_TXN_REF "sawtxnref",INSUR_FILE_RECV_DATE "insurfilerecvdate",SAW_FILE_RECV_DATE "sawfilerecvdate",MTR_FILE_RECV_DATE "mtrfilerecvdate",REPLACE_CARD_NO_TMP "replacecardnotmp" FROM CARD_BLOCK_REFUND 
+			<countquery pagesize="10">select count('x') from CARD_BLOCK_REFUND </countquery>
+	   </jsonrpc>
+       <jsonrpc outstack="formpagination" id="gridonload">SELECT CARD_NO "cardno",USER_ID "userid",BAL_AT_REPORTING "balatreporting",SPENT_AFT_REPORT_TRANS "spentaftreporttrans",SPENT_AFT_REPORT_NONTRANS "spentaftreportnontrans",BAL_AT_BLOCKING "balatblocking",CARD_STATUS "cardstatus",CARD_INSURE_AVAIL "cardinsureavail",INS_POLICY_NO "inspolicyno",REFUND_MODE "refundmode",REPLACE_CARD_NO "replacecardno",REFUND_EXPIRY_DATE "refundexpirydate",REFUND_STATUS "refundstatus",BLOCKED_BY "blockedby",REPORTING_TIME "reportingtime",BLOCKING_TIME "blockingtime",BLOCK_REASON "blockreason",POLICE_REPORT_NUMBER "policereportnumber",POLICE_REPORT_DUE_DATE "policereportduedate",INS_AMOUNT_CLAIMED "insamountclaimed",REFUND_CHANNEL "refundchannel",POLICE_REPORT_FILE_NAME "policereportfilename",TOTAL_MISUSED_AMOUNT "totalmisusedamount",UNSYNC_SETTLED "unsyncsettled",SAW_FILE_REF_ID "sawfilerefid",SAW_RESULT "sawresult",INSUR_FILE_REF_ID "insurfilerefid",INSUR_RESULT "insurresult",MTR_FILE_REF_ID "mtrfilerefid",PREV_REFUND_STATUS "prevrefundstatus",PREV_REFUND_CHANNEL "prevrefundchannel",UPDATE_DATE "updatedate",UPDATED_BY "updatedby",REJECT_REASON "rejectreason",EMAIL_NOTIFIED "emailnotified",SAW_TXN_REF "sawtxnref",INSUR_FILE_RECV_DATE "insurfilerecvdate",SAW_FILE_RECV_DATE "sawfilerecvdate",MTR_FILE_RECV_DATE "mtrfilerecvdate",REPLACE_CARD_NO_TMP "replacecardnotmp" FROM CARD_BLOCK_REFUND 
+			<countquery pagesize="10">select count('x') from CARD_BLOCK_REFUND </countquery>
+	   </jsonrpc>
+<!--NORMAL SQLs
+      <sqlinsert id="frmnrmladd" outstack="inst">insert into CARD_BLOCK_REFUND( CARD_NO, USER_ID, BAL_AT_REPORTING, SPENT_AFT_REPORT_TRANS, SPENT_AFT_REPORT_NONTRANS, BAL_AT_BLOCKING, CARD_STATUS, CARD_INSURE_AVAIL, INS_POLICY_NO, REFUND_MODE, REPLACE_CARD_NO, REFUND_EXPIRY_DATE, REFUND_STATUS, BLOCKED_BY, REPORTING_TIME, BLOCKING_TIME, BLOCK_REASON, POLICE_REPORT_NUMBER, POLICE_REPORT_DUE_DATE, INS_AMOUNT_CLAIMED, REFUND_CHANNEL, POLICE_REPORT_FILE_NAME, TOTAL_MISUSED_AMOUNT, UNSYNC_SETTLED, SAW_FILE_REF_ID, SAW_RESULT, INSUR_FILE_REF_ID, INSUR_RESULT, MTR_FILE_REF_ID, PREV_REFUND_STATUS, PREV_REFUND_CHANNEL, UPDATE_DATE, UPDATED_BY, REJECT_REASON, EMAIL_NOTIFIED, SAW_TXN_REF, INSUR_FILE_RECV_DATE, SAW_FILE_RECV_DATE, MTR_FILE_RECV_DATE, REPLACE_CARD_NO_TMP) values ( #inp.form1[0].cardno, #inp.form1[0].userid, #inp.form1[0].balatreporting, #inp.form1[0].spentaftreporttrans, #inp.form1[0].spentaftreportnontrans, #inp.form1[0].balatblocking, #inp.form1[0].cardstatus, #inp.form1[0].cardinsureavail, #inp.form1[0].inspolicyno, #inp.form1[0].refundmode, #inp.form1[0].replacecardno, #inp.form1[0].refundexpirydate, #inp.form1[0].refundstatus, #inp.form1[0].blockedby, #inp.form1[0].reportingtime, #inp.form1[0].blockingtime, #inp.form1[0].blockreason, #inp.form1[0].policereportnumber, #inp.form1[0].policereportduedate, #inp.form1[0].insamountclaimed, #inp.form1[0].refundchannel, #inp.form1[0].policereportfilename, #inp.form1[0].totalmisusedamount, #inp.form1[0].unsyncsettled, #inp.form1[0].sawfilerefid, #inp.form1[0].sawresult, #inp.form1[0].insurfilerefid, #inp.form1[0].insurresult, #inp.form1[0].mtrfilerefid, #inp.form1[0].prevrefundstatus, #inp.form1[0].prevrefundchannel, #inp.form1[0].updatedate, #inp.form1[0].updatedby, #inp.form1[0].rejectreason, #inp.form1[0].emailnotified, #inp.form1[0].sawtxnref, #inp.form1[0].insurfilerecvdate, #inp.form1[0].sawfilerecvdate, #inp.form1[0].mtrfilerecvdate, #inp.form1[0].replacecardnotmp)</sqlinsert>
+      <sqldelete id="frmnrmldel" outstack="delt">delete from CARD_BLOCK_REFUND WHERE CARD_NO = #inp.form1[0].cardno</sqldelete>
+      <sqlupdate id="frmnrmledit" outstack="updt">update CARD_BLOCK_REFUND set  USER_ID = #inp.form1[0].userid, BAL_AT_REPORTING = #inp.form1[0].balatreporting, SPENT_AFT_REPORT_TRANS = #inp.form1[0].spentaftreporttrans, SPENT_AFT_REPORT_NONTRANS = #inp.form1[0].spentaftreportnontrans, BAL_AT_BLOCKING = #inp.form1[0].balatblocking, CARD_STATUS = #inp.form1[0].cardstatus, CARD_INSURE_AVAIL = #inp.form1[0].cardinsureavail, INS_POLICY_NO = #inp.form1[0].inspolicyno, REFUND_MODE = #inp.form1[0].refundmode, REPLACE_CARD_NO = #inp.form1[0].replacecardno, REFUND_EXPIRY_DATE = #inp.form1[0].refundexpirydate, REFUND_STATUS = #inp.form1[0].refundstatus, BLOCKED_BY = #inp.form1[0].blockedby, REPORTING_TIME = #inp.form1[0].reportingtime, BLOCKING_TIME = #inp.form1[0].blockingtime, BLOCK_REASON = #inp.form1[0].blockreason, POLICE_REPORT_NUMBER = #inp.form1[0].policereportnumber, POLICE_REPORT_DUE_DATE = #inp.form1[0].policereportduedate, INS_AMOUNT_CLAIMED = #inp.form1[0].insamountclaimed, REFUND_CHANNEL = #inp.form1[0].refundchannel, POLICE_REPORT_FILE_NAME = #inp.form1[0].policereportfilename, TOTAL_MISUSED_AMOUNT = #inp.form1[0].totalmisusedamount, UNSYNC_SETTLED = #inp.form1[0].unsyncsettled, SAW_FILE_REF_ID = #inp.form1[0].sawfilerefid, SAW_RESULT = #inp.form1[0].sawresult, INSUR_FILE_REF_ID = #inp.form1[0].insurfilerefid, INSUR_RESULT = #inp.form1[0].insurresult, MTR_FILE_REF_ID = #inp.form1[0].mtrfilerefid, PREV_REFUND_STATUS = #inp.form1[0].prevrefundstatus, PREV_REFUND_CHANNEL = #inp.form1[0].prevrefundchannel, UPDATE_DATE = #inp.form1[0].updatedate, UPDATED_BY = #inp.form1[0].updatedby, REJECT_REASON = #inp.form1[0].rejectreason, EMAIL_NOTIFIED = #inp.form1[0].emailnotified, SAW_TXN_REF = #inp.form1[0].sawtxnref, INSUR_FILE_RECV_DATE = #inp.form1[0].insurfilerecvdate, SAW_FILE_RECV_DATE = #inp.form1[0].sawfilerecvdate, MTR_FILE_RECV_DATE = #inp.form1[0].mtrfilerecvdate, REPLACE_CARD_NO_TMP = #inp.form1[0].replacecardnotmp WHERE CARD_NO=#inp.form1[0].cardno<message message="Record(s) got updated." /><error message="Record(s) update failed." /></sqlupdate>
+-->
+<!--GRID INSERTS (check out which alias is required-->
+      <sqlinsert id="frmgridadd"  outstack="inst">insert into CARD_BLOCK_REFUND( CARD_NO, USER_ID, BAL_AT_REPORTING, SPENT_AFT_REPORT_TRANS, SPENT_AFT_REPORT_NONTRANS, BAL_AT_BLOCKING, CARD_STATUS, CARD_INSURE_AVAIL, INS_POLICY_NO, REFUND_MODE, REPLACE_CARD_NO, REFUND_EXPIRY_DATE, REFUND_STATUS, BLOCKED_BY, REPORTING_TIME, BLOCKING_TIME, BLOCK_REASON, POLICE_REPORT_NUMBER, POLICE_REPORT_DUE_DATE, INS_AMOUNT_CLAIMED, REFUND_CHANNEL, POLICE_REPORT_FILE_NAME, TOTAL_MISUSED_AMOUNT, UNSYNC_SETTLED, SAW_FILE_REF_ID, SAW_RESULT, INSUR_FILE_REF_ID, INSUR_RESULT, MTR_FILE_REF_ID, PREV_REFUND_STATUS, PREV_REFUND_CHANNEL, UPDATE_DATE, UPDATED_BY, REJECT_REASON, EMAIL_NOTIFIED, SAW_TXN_REF, INSUR_FILE_RECV_DATE, SAW_FILE_RECV_DATE, MTR_FILE_RECV_DATE, REPLACE_CARD_NO_TMP) values ( #inp.form1[0].cardno, #inp.form1[0].userid, #inp.form1[0].balatreporting, #inp.form1[0].spentaftreporttrans, #inp.form1[0].spentaftreportnontrans, #inp.form1[0].balatblocking, #inp.form1[0].cardstatus, #inp.form1[0].cardinsureavail, #inp.form1[0].inspolicyno, #inp.form1[0].refundmode, #inp.form1[0].replacecardno, #inp.form1[0].refundexpirydate, #inp.form1[0].refundstatus, #inp.form1[0].blockedby, #inp.form1[0].reportingtime, #inp.form1[0].blockingtime, #inp.form1[0].blockreason, #inp.form1[0].policereportnumber, #inp.form1[0].policereportduedate, #inp.form1[0].insamountclaimed, #inp.form1[0].refundchannel, #inp.form1[0].policereportfilename, #inp.form1[0].totalmisusedamount, #inp.form1[0].unsyncsettled, #inp.form1[0].sawfilerefid, #inp.form1[0].sawresult, #inp.form1[0].insurfilerefid, #inp.form1[0].insurresult, #inp.form1[0].mtrfilerefid, #inp.form1[0].prevrefundstatus, #inp.form1[0].prevrefundchannel, #inp.form1[0].updatedate, #inp.form1[0].updatedby, #inp.form1[0].rejectreason, #inp.form1[0].emailnotified, #inp.form1[0].sawtxnref, #inp.form1[0].insurfilerecvdate, #inp.form1[0].sawfilerecvdate, #inp.form1[0].mtrfilerecvdate, #inp.form1[0].replacecardnotmp )</sqlinsert>
+      <sqlinsert id="gridadd"     outstack="inst">insert into CARD_BLOCK_REFUND( CARD_NO, USER_ID, BAL_AT_REPORTING, SPENT_AFT_REPORT_TRANS, SPENT_AFT_REPORT_NONTRANS, BAL_AT_BLOCKING, CARD_STATUS, CARD_INSURE_AVAIL, INS_POLICY_NO, REFUND_MODE, REPLACE_CARD_NO, REFUND_EXPIRY_DATE, REFUND_STATUS, BLOCKED_BY, REPORTING_TIME, BLOCKING_TIME, BLOCK_REASON, POLICE_REPORT_NUMBER, POLICE_REPORT_DUE_DATE, INS_AMOUNT_CLAIMED, REFUND_CHANNEL, POLICE_REPORT_FILE_NAME, TOTAL_MISUSED_AMOUNT, UNSYNC_SETTLED, SAW_FILE_REF_ID, SAW_RESULT, INSUR_FILE_REF_ID, INSUR_RESULT, MTR_FILE_REF_ID, PREV_REFUND_STATUS, PREV_REFUND_CHANNEL, UPDATE_DATE, UPDATED_BY, REJECT_REASON, EMAIL_NOTIFIED, SAW_TXN_REF, INSUR_FILE_RECV_DATE, SAW_FILE_RECV_DATE, MTR_FILE_RECV_DATE, REPLACE_CARD_NO_TMP) values ( #inp.form1[0].cardno, #inp.form1[0].userid, #inp.form1[0].balatreporting, #inp.form1[0].spentaftreporttrans, #inp.form1[0].spentaftreportnontrans, #inp.form1[0].balatblocking, #inp.form1[0].cardstatus, #inp.form1[0].cardinsureavail, #inp.form1[0].inspolicyno, #inp.form1[0].refundmode, #inp.form1[0].replacecardno, #inp.form1[0].refundexpirydate, #inp.form1[0].refundstatus, #inp.form1[0].blockedby, #inp.form1[0].reportingtime, #inp.form1[0].blockingtime, #inp.form1[0].blockreason, #inp.form1[0].policereportnumber, #inp.form1[0].policereportduedate, #inp.form1[0].insamountclaimed, #inp.form1[0].refundchannel, #inp.form1[0].policereportfilename, #inp.form1[0].totalmisusedamount, #inp.form1[0].unsyncsettled, #inp.form1[0].sawfilerefid, #inp.form1[0].sawresult, #inp.form1[0].insurfilerefid, #inp.form1[0].insurresult, #inp.form1[0].mtrfilerefid, #inp.form1[0].prevrefundstatus, #inp.form1[0].prevrefundchannel, #inp.form1[0].updatedate, #inp.form1[0].updatedby, #inp.form1[0].rejectreason, #inp.form1[0].emailnotified, #inp.form1[0].sawtxnref, #inp.form1[0].insurfilerecvdate, #inp.form1[0].sawfilerecvdate, #inp.form1[0].mtrfilerecvdate, #inp.form1[0].replacecardnotmp )</sqlinsert>
+      <sqldelete id="frmgriddel"  outstack="delt">delete from CARD_BLOCK_REFUND WHERE CARD_NO = #inp.form1[0].cardno|STRING</sqldelete>
+      <sqldelete id="griddel"     outstack="delt">delete from CARD_BLOCK_REFUND WHERE CARD_NO = #inp.form1[0].id|STRING</sqldelete>
+      <sqlupdate id="frmgridedit" outstack="updt">update CARD_BLOCK_REFUND set  USER_ID = #inp.form1[0].userid, BAL_AT_REPORTING = #inp.form1[0].balatreporting, SPENT_AFT_REPORT_TRANS = #inp.form1[0].spentaftreporttrans, SPENT_AFT_REPORT_NONTRANS = #inp.form1[0].spentaftreportnontrans, BAL_AT_BLOCKING = #inp.form1[0].balatblocking, CARD_STATUS = #inp.form1[0].cardstatus, CARD_INSURE_AVAIL = #inp.form1[0].cardinsureavail, INS_POLICY_NO = #inp.form1[0].inspolicyno, REFUND_MODE = #inp.form1[0].refundmode, REPLACE_CARD_NO = #inp.form1[0].replacecardno, REFUND_EXPIRY_DATE = #inp.form1[0].refundexpirydate, REFUND_STATUS = #inp.form1[0].refundstatus, BLOCKED_BY = #inp.form1[0].blockedby, REPORTING_TIME = #inp.form1[0].reportingtime, BLOCKING_TIME = #inp.form1[0].blockingtime, BLOCK_REASON = #inp.form1[0].blockreason, POLICE_REPORT_NUMBER = #inp.form1[0].policereportnumber, POLICE_REPORT_DUE_DATE = #inp.form1[0].policereportduedate, INS_AMOUNT_CLAIMED = #inp.form1[0].insamountclaimed, REFUND_CHANNEL = #inp.form1[0].refundchannel, POLICE_REPORT_FILE_NAME = #inp.form1[0].policereportfilename, TOTAL_MISUSED_AMOUNT = #inp.form1[0].totalmisusedamount, UNSYNC_SETTLED = #inp.form1[0].unsyncsettled, SAW_FILE_REF_ID = #inp.form1[0].sawfilerefid, SAW_RESULT = #inp.form1[0].sawresult, INSUR_FILE_REF_ID = #inp.form1[0].insurfilerefid, INSUR_RESULT = #inp.form1[0].insurresult, MTR_FILE_REF_ID = #inp.form1[0].mtrfilerefid, PREV_REFUND_STATUS = #inp.form1[0].prevrefundstatus, PREV_REFUND_CHANNEL = #inp.form1[0].prevrefundchannel, UPDATE_DATE = #inp.form1[0].updatedate, UPDATED_BY = #inp.form1[0].updatedby, REJECT_REASON = #inp.form1[0].rejectreason, EMAIL_NOTIFIED = #inp.form1[0].emailnotified, SAW_TXN_REF = #inp.form1[0].sawtxnref, INSUR_FILE_RECV_DATE = #inp.form1[0].insurfilerecvdate, SAW_FILE_RECV_DATE = #inp.form1[0].sawfilerecvdate, MTR_FILE_RECV_DATE = #inp.form1[0].mtrfilerecvdate, REPLACE_CARD_NO_TMP = #inp.form1[0].replacecardnotmp WHERE CARD_NO=#inp.form1[0].cardno
+      	<error message="Record(s) update failed." /><message message="Record(s) got updated." /></sqlupdate>
+      <sqlupdate id="gridedit"    outstack="updt">update CARD_BLOCK_REFUND set  USER_ID = #inp.form1[0].userid, BAL_AT_REPORTING = #inp.form1[0].balatreporting, SPENT_AFT_REPORT_TRANS = #inp.form1[0].spentaftreporttrans, SPENT_AFT_REPORT_NONTRANS = #inp.form1[0].spentaftreportnontrans, BAL_AT_BLOCKING = #inp.form1[0].balatblocking, CARD_STATUS = #inp.form1[0].cardstatus, CARD_INSURE_AVAIL = #inp.form1[0].cardinsureavail, INS_POLICY_NO = #inp.form1[0].inspolicyno, REFUND_MODE = #inp.form1[0].refundmode, REPLACE_CARD_NO = #inp.form1[0].replacecardno, REFUND_EXPIRY_DATE = #inp.form1[0].refundexpirydate, REFUND_STATUS = #inp.form1[0].refundstatus, BLOCKED_BY = #inp.form1[0].blockedby, REPORTING_TIME = #inp.form1[0].reportingtime, BLOCKING_TIME = #inp.form1[0].blockingtime, BLOCK_REASON = #inp.form1[0].blockreason, POLICE_REPORT_NUMBER = #inp.form1[0].policereportnumber, POLICE_REPORT_DUE_DATE = #inp.form1[0].policereportduedate, INS_AMOUNT_CLAIMED = #inp.form1[0].insamountclaimed, REFUND_CHANNEL = #inp.form1[0].refundchannel, POLICE_REPORT_FILE_NAME = #inp.form1[0].policereportfilename, TOTAL_MISUSED_AMOUNT = #inp.form1[0].totalmisusedamount, UNSYNC_SETTLED = #inp.form1[0].unsyncsettled, SAW_FILE_REF_ID = #inp.form1[0].sawfilerefid, SAW_RESULT = #inp.form1[0].sawresult, INSUR_FILE_REF_ID = #inp.form1[0].insurfilerefid, INSUR_RESULT = #inp.form1[0].insurresult, MTR_FILE_REF_ID = #inp.form1[0].mtrfilerefid, PREV_REFUND_STATUS = #inp.form1[0].prevrefundstatus, PREV_REFUND_CHANNEL = #inp.form1[0].prevrefundchannel, UPDATE_DATE = #inp.form1[0].updatedate, UPDATED_BY = #inp.form1[0].updatedby, REJECT_REASON = #inp.form1[0].rejectreason, EMAIL_NOTIFIED = #inp.form1[0].emailnotified, SAW_TXN_REF = #inp.form1[0].sawtxnref, INSUR_FILE_RECV_DATE = #inp.form1[0].insurfilerecvdate, SAW_FILE_RECV_DATE = #inp.form1[0].sawfilerecvdate, MTR_FILE_RECV_DATE = #inp.form1[0].mtrfilerecvdate, REPLACE_CARD_NO_TMP = #inp.form1[0].replacecardnotmp WHERE CARD_NO=#inp.form1[0].id|STRING
+      	<error message="Record(s) update failed." /><message message="Record(s) got updated." /></sqlupdate>
+    </crud>
+    <dm>
+      <txnproc id="" outstack=""/>
+    </dm>
+    <bl id="">
+      <buslogic id="" method=""/>
+    </bl>
+    <anyprocs>
+      <proc id="" outstack=""/>
+    </anyprocs>
+    <commands>
+      <cmd instack="" name="" opt=""  result="" />
+      <bulkcmd name="fromViewTransition" opt="" result="ajax" resultScrName="PoliceReportTest" />
+      <bulkcmd name="frmgridadd" opt="sqlinsert:frmgridadd" result="ajax" resultScrName="PoliceReportTest"/>
+      <bulkcmd name="frmgridedit" opt="sqlupdate:frmgridedit" result="ajax"/>
+      <bulkcmd name="frmgriddel" opt="sqldelete:frmgriddel" result="ajax"/>
+      <bulkcmd name="griddel" opt="sqldelete:griddel" result="ajax"/>
+      <bulkcmd name="gridedit" opt="sqlupdate:gridedit" result="ajax"/>
+      <bulkcmd name="gridadd" opt="sqlinsert:gridadd" result="ajax"/>
+      <bulkcmd name="gridonload" opt="jsonrpc:gridonload" result="ajax"/>
+      <onload opt="jsonrpc:onloadqry1" result="/jsptest/PoliceReportTest.jsp"/>
+    </commands>
+  </screen>
+  <panels>
+    <panel id="">
+       <fields>
+          <field>
+          	<validationfld dbcolsize="16" name="cardno" column="CARD_NO" mandatory="no" forid="cardno" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="userid" column="USER_ID" mandatory="no" forid="userid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="8" name="balatreporting" column="BAL_AT_REPORTING" mandatory="no" forid="balatreporting" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="8" name="spentaftreporttrans" column="SPENT_AFT_REPORT_TRANS" mandatory="no" forid="spentaftreporttrans" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="8" name="spentaftreportnontrans" column="SPENT_AFT_REPORT_NONTRANS" mandatory="no" forid="spentaftreportnontrans" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="8" name="balatblocking" column="BAL_AT_BLOCKING" mandatory="no" forid="balatblocking" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="20" name="cardstatus" column="CARD_STATUS" mandatory="no" forid="cardstatus" dbdatatype="STRING" />
+          	<validationfld dbcolsize="1" name="cardinsureavail" column="CARD_INSURE_AVAIL" mandatory="no" forid="cardinsureavail" dbdatatype="STRING" />
+          	<validationfld dbcolsize="10" name="inspolicyno" column="INS_POLICY_NO" mandatory="no" forid="inspolicyno" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="refundmode" column="REFUND_MODE" mandatory="no" forid="refundmode" dbdatatype="STRING" />
+          	<validationfld dbcolsize="16" name="replacecardno" column="REPLACE_CARD_NO" mandatory="no" forid="replacecardno" dbdatatype="LONG" />
+          	<validationfld dbcolsize="23" name="refundexpirydate" column="REFUND_EXPIRY_DATE" mandatory="no" forid="refundexpirydate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="30" name="refundstatus" column="REFUND_STATUS" mandatory="no" forid="refundstatus" dbdatatype="STRING" />
+          	<validationfld dbcolsize="25" name="blockedby" column="BLOCKED_BY" mandatory="no" forid="blockedby" dbdatatype="STRING" />
+          	<validationfld dbcolsize="23" name="reportingtime" column="REPORTING_TIME" mandatory="no" forid="reportingtime" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="23" name="blockingtime" column="BLOCKING_TIME" mandatory="no" forid="blockingtime" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="50" name="blockreason" column="BLOCK_REASON" mandatory="no" forid="blockreason" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="policereportnumber" column="POLICE_REPORT_NUMBER" mandatory="no" forid="policereportnumber" dbdatatype="STRING" />
+          	<validationfld dbcolsize="23" name="policereportduedate" column="POLICE_REPORT_DUE_DATE" mandatory="no" forid="policereportduedate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="8" name="insamountclaimed" column="INS_AMOUNT_CLAIMED" mandatory="no" forid="insamountclaimed" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="20" name="refundchannel" column="REFUND_CHANNEL" mandatory="no" forid="refundchannel" dbdatatype="STRING" />
+          	<validationfld dbcolsize="50" name="policereportfilename" column="POLICE_REPORT_FILE_NAME" mandatory="no" forid="policereportfilename" dbdatatype="STRING" />
+          	<validationfld dbcolsize="8" name="totalmisusedamount" column="TOTAL_MISUSED_AMOUNT" mandatory="no" forid="totalmisusedamount" dbdatatype="FLOAT" />
+          	<validationfld dbcolsize="1" name="unsyncsettled" column="UNSYNC_SETTLED" mandatory="no" forid="unsyncsettled" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="sawfilerefid" column="SAW_FILE_REF_ID" mandatory="no" forid="sawfilerefid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="100" name="sawresult" column="SAW_RESULT" mandatory="no" forid="sawresult" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="insurfilerefid" column="INSUR_FILE_REF_ID" mandatory="no" forid="insurfilerefid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="10" name="insurresult" column="INSUR_RESULT" mandatory="no" forid="insurresult" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="mtrfilerefid" column="MTR_FILE_REF_ID" mandatory="no" forid="mtrfilerefid" dbdatatype="STRING" />
+          	<validationfld dbcolsize="30" name="prevrefundstatus" column="PREV_REFUND_STATUS" mandatory="no" forid="prevrefundstatus" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="prevrefundchannel" column="PREV_REFUND_CHANNEL" mandatory="no" forid="prevrefundchannel" dbdatatype="STRING" />
+          	<validationfld dbcolsize="23" name="updatedate" column="UPDATE_DATE" mandatory="no" forid="updatedate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="20" name="updatedby" column="UPDATED_BY" mandatory="no" forid="updatedby" dbdatatype="STRING" />
+          	<validationfld dbcolsize="100" name="rejectreason" column="REJECT_REASON" mandatory="no" forid="rejectreason" dbdatatype="STRING" />
+          	<validationfld dbcolsize="1" name="emailnotified" column="EMAIL_NOTIFIED" mandatory="no" forid="emailnotified" dbdatatype="STRING" />
+          	<validationfld dbcolsize="20" name="sawtxnref" column="SAW_TXN_REF" mandatory="no" forid="sawtxnref" dbdatatype="STRING" />
+          	<validationfld dbcolsize="23" name="insurfilerecvdate" column="INSUR_FILE_RECV_DATE" mandatory="no" forid="insurfilerecvdate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="23" name="sawfilerecvdate" column="SAW_FILE_RECV_DATE" mandatory="no" forid="sawfilerecvdate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="23" name="mtrfilerecvdate" column="MTR_FILE_RECV_DATE" mandatory="no" forid="mtrfilerecvdate" dbdatatype="DATE_NS" />
+          	<validationfld dbcolsize="16" name="replacecardnotmp" column="REPLACE_CARD_NO_TMP" mandatory="no" forid="replacecardnotmp" dbdatatype="STRING" />
+
+          	<label replace="modify" key="cardno" value="Card No" forname="cardno"/>
+          	<label replace="modify" key="userid" value="User Id" forname="userid"/>
+          	<label replace="modify" key="balatreporting" value="Bal At Reporting" forname="balatreporting"/>
+          	<label replace="modify" key="spentaftreporttrans" value="Spent Aft Report Trans" forname="spentaftreporttrans"/>
+          	<label replace="modify" key="spentaftreportnontrans" value="Spent Aft Report Nontrans" forname="spentaftreportnontrans"/>
+          	<label replace="modify" key="balatblocking" value="Bal At Blocking" forname="balatblocking"/>
+          	<label replace="modify" key="cardstatus" value="Card Status" forname="cardstatus"/>
+          	<label replace="modify" key="cardinsureavail" value="Card Insure Avail" forname="cardinsureavail"/>
+          	<label replace="modify" key="inspolicyno" value="Ins Policy No" forname="inspolicyno"/>
+          	<label replace="modify" key="refundmode" value="Refund Mode" forname="refundmode"/>
+          	<label replace="modify" key="replacecardno" value="Replace Card No" forname="replacecardno"/>
+          	<label replace="modify" key="refundexpirydate" value="Refund Expiry Date" forname="refundexpirydate"/>
+          	<label replace="modify" key="refundstatus" value="Refund Status" forname="refundstatus"/>
+          	<label replace="modify" key="blockedby" value="Blocked By" forname="blockedby"/>
+          	<label replace="modify" key="reportingtime" value="Reporting Time" forname="reportingtime"/>
+          	<label replace="modify" key="blockingtime" value="Blocking Time" forname="blockingtime"/>
+          	<label replace="modify" key="blockreason" value="Block Reason" forname="blockreason"/>
+          	<label replace="modify" key="policereportnumber" value="Police Report Number" forname="policereportnumber"/>
+          	<label replace="modify" key="policereportduedate" value="Police Report Due Date" forname="policereportduedate"/>
+          	<label replace="modify" key="insamountclaimed" value="Ins Amount Claimed" forname="insamountclaimed"/>
+          	<label replace="modify" key="refundchannel" value="Refund Channel" forname="refundchannel"/>
+          	<label replace="modify" key="policereportfilename" value="Police Report File Name" forname="policereportfilename"/>
+          	<label replace="modify" key="totalmisusedamount" value="Total Misused Amount" forname="totalmisusedamount"/>
+          	<label replace="modify" key="unsyncsettled" value="Unsync Settled" forname="unsyncsettled"/>
+          	<label replace="modify" key="sawfilerefid" value="Saw File Ref Id" forname="sawfilerefid"/>
+          	<label replace="modify" key="sawresult" value="Saw Result" forname="sawresult"/>
+          	<label replace="modify" key="insurfilerefid" value="Insur File Ref Id" forname="insurfilerefid"/>
+          	<label replace="modify" key="insurresult" value="Insur Result" forname="insurresult"/>
+          	<label replace="modify" key="mtrfilerefid" value="Mtr File Ref Id" forname="mtrfilerefid"/>
+          	<label replace="modify" key="prevrefundstatus" value="Prev Refund Status" forname="prevrefundstatus"/>
+          	<label replace="modify" key="prevrefundchannel" value="Prev Refund Channel" forname="prevrefundchannel"/>
+          	<label replace="modify" key="updatedate" value="Update Date" forname="updatedate"/>
+          	<label replace="modify" key="updatedby" value="Updated By" forname="updatedby"/>
+          	<label replace="modify" key="rejectreason" value="Reject Reason" forname="rejectreason"/>
+          	<label replace="modify" key="emailnotified" value="Email Notified" forname="emailnotified"/>
+          	<label replace="modify" key="sawtxnref" value="Saw Txn Ref" forname="sawtxnref"/>
+          	<label replace="modify" key="insurfilerecvdate" value="Insur File Recv Date" forname="insurfilerecvdate"/>
+          	<label replace="modify" key="sawfilerecvdate" value="Saw File Recv Date" forname="sawfilerecvdate"/>
+          	<label replace="modify" key="mtrfilerecvdate" value="Mtr File Recv Date" forname="mtrfilerecvdate"/>
+          	<label replace="modify" key="replacecardnotmp" value="Replace Card No Tmp" forname="replacecardnotmp"/>
+
+          </field>
+       </fields>
+      <button forid="" id="" onclick="" replace="modify" type="">button</button>
+    </panel>
+  </panels>
+</root>
+

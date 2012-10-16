@@ -134,7 +134,7 @@ Reverse Engg. Add Column: <form> <input name="revenggqry" id="revenggqry" /><but
 <div class="ui-widget-header">screenmapxml (Add to existing	screenmap.xml):</div>
 <s:form id="frmscreenmap">
 FE screenmappath:  <input name="fescreenmappath"    id="fescreenmappath" 			value="target/classes/map" size="100" />    <br />
-BE screenmappath:  <input name="bescreenmappath"			value="target/classes/map/jsptest" size="100" />
+BE screenmappath:  <input name="bescreenmappath"			value="target/classes/map" size="100" />
 screenmapfilename: <input name="screenmapfilename" 	id="screenmapfilename" value="screenmap.xml" /> <textarea name="screenmapxml" id="screenmapxml" rows="1" cols="1" style="display:none"></textarea>
 		
 		<s:url var="loadscreenmap" action="loadscreenmap.action"></s:url>

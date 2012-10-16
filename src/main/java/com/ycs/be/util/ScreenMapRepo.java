@@ -61,7 +61,7 @@ public class ScreenMapRepo {
 			
 			Element n = (Element) root.selectSingleNode("screen[@name='"+scrName+"']");
 			if(n == null){
-				logger.debug("Mapping of <screen name="+scrName+" /> is not defined in screenmap.xml!");
+				logger.error("Mapping of <screen name="+scrName+" /> is not defined in screenmap.xml!");
 				return null;
 			}
 			

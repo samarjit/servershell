@@ -32,7 +32,7 @@ public class FEValidator  implements LocaleProvider{
 
 	private static Logger logger = Logger.getLogger(FEValidator.class);
 	private TextProvider textProvider;
-	private ResultDTO resultDTO = null;
+	private ResultDTO resultDTO = new ResultDTO();
 	public ResultDTO validate(String screenName, JSONObject submitdataObj) throws ValidationException{
 		try{
 		Element rootElm = ScreenMapRepo.findMapXMLRoot(screenName);
@@ -136,12 +136,12 @@ public class FEValidator  implements LocaleProvider{
 				DataType dbdatatype = PrepstmtDTO
 						.getDataTypeFrmStr(strdbdatatype);
 				if (dbdatatype == DataType.STRING) {
-					System.out.println("Validating string.....");
-					addError("error.numberformat", keystr, strLabel,
-							singlerec.getString(keystr));
+//					System.out.println("Validating string.....");
+//					addError("error.numberformat", keystr, strLabel,							singlerec.getString(keystr));
 					// filtering criterion required?
 				} else if (dbdatatype == DataType.INT) {
 					try {
+						if(singlerec.getString(keystr)!=null && !"".equals(singlerec.getString(keystr)))
 						Integer.parseInt(singlerec.getString(keystr));
 					} catch (NumberFormatException e) {
 						addError("error.numberformat", keystr, strLabel,
@@ -149,6 +149,7 @@ public class FEValidator  implements LocaleProvider{
 					}
 				} else if (dbdatatype == DataType.FLOAT) {
 					try {
+						if(singlerec.getString(keystr)!=null && !"".equals(singlerec.getString(keystr)))
 						Float.parseFloat(singlerec.getString(keystr));
 					} catch (NumberFormatException e) {
 						addError("error.float", keystr, strLabel,
@@ -156,7 +157,7 @@ public class FEValidator  implements LocaleProvider{
 					}
 				} else if (dbdatatype == DataType.DOUBLE) {
 					try {
-						if (singlerec.getString(keystr) != null)
+						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
 							Double.parseDouble(singlerec.getString(keystr));
 					} catch (NumberFormatException e) {
 						addError("error.double", keystr, strLabel,
@@ -164,7 +165,7 @@ public class FEValidator  implements LocaleProvider{
 					}
 				} else if (dbdatatype == DataType.DATEDDMMYYYY) {
 					try {
-						if (singlerec.getString(keystr) != null)
+						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
 							new SimpleDateFormat("DD/MM/yyyy").parse(singlerec
 									.getString(keystr));
 					} catch (ParseException e) {
@@ -173,7 +174,7 @@ public class FEValidator  implements LocaleProvider{
 					}
 				} else if (dbdatatype == DataType.DATE_NS) {
 					try {
-						if (singlerec.getString(keystr) != null)
+						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
 							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 									.parse(singlerec.getString(keystr));
 					} catch (ParseException e) {
@@ -182,7 +183,7 @@ public class FEValidator  implements LocaleProvider{
 					}
 				} else if (dbdatatype == DataType.TIMESTAMP) {
 					try {
-						if (singlerec.getString(keystr) != null)
+						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
 							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 									.parse(singlerec.getString(keystr));
 					} catch (ParseException e) {
@@ -212,12 +213,10 @@ public class FEValidator  implements LocaleProvider{
 	}
 	
 	private void addError(String messageKey, String fieldName, String fieldLabel, String fieldValue) {
-		if(fieldLabel != null && !"".equals(fieldLabel))fieldName = fieldLabel;
+//		if(fieldLabel != null && !"".equals(fieldLabel))fieldName = fieldLabel;
 		
-		String [] str2 = new String[]{ fieldName, fieldValue };
-		logger.error("validation :"+getTextProvider().getText(messageKey,str2 ));
-		
-		if(resultDTO == null)resultDTO = new ResultDTO();
+		String [] str2 = new String[]{ fieldLabel, fieldValue };
+		logger.error("validation :"+getTextProvider().getText(messageKey,str2 )+" field=["+fieldName+"] val="+fieldValue);
 		
 		resultDTO.addFieldError(fieldName, getTextProvider().getText(messageKey,str2 ));
 	}

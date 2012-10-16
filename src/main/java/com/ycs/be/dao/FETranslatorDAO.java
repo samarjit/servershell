@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
+import javax.xml.stream.events.Characters;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -167,18 +171,38 @@ public class FETranslatorDAO {
 					
 						if(jsonObject !=null) 
 							text = ParseSentenceOgnl.parse(messageTemplate, jsonObject);
+						else if(messageTemplate != null && !"".equals(messageTemplate))
+							text = messageTemplate;
+						else 
+							text = "Fetched records.";
 					resultDTO.addMessage("SUCCESS:"+String.valueOf(countrec)+"|"+text);
 				}else if(sqlquery.matches("[\\S\\s]*(?ims:insert)[\\S\\s]*(?ims:into)[\\S\\s]*")){
 					logger.debug("valid query processing insert...");
 					countrec = dbconn.executePreparedUpdate(sqlquery, prepar);
 					if(jsonObject !=null) 
 						text = ParseSentenceOgnl.parse(messageTemplate, jsonObject);
+					else if(messageTemplate != null && !"".equals(messageTemplate))
+						text = messageTemplate;
+					else 
+						text = "Inserted records.";
 					resultDTO.addMessage("SUCCESS:"+String.valueOf(countrec)+"|"+text);
 				}else if(sqlquery.matches("[\\S\\s]*(?ims:update|delete)[\\S\\s]*(?ims:where)[\\S\\s]*")){
 					logger.debug("valid query processing update...");
 					countrec = dbconn.executePreparedUpdate(sqlquery, prepar);
+					Pattern p = Pattern.compile("[\\S\\s]*(?ims)(update|delete)[\\S\\s]*(?ims:where)[\\S\\s]*");
+					Matcher m = p.matcher(sqlquery);
+					m.find();
+					text = m.group(1);
 					if(jsonObject !=null) 
 						text = ParseSentenceOgnl.parse(messageTemplate, jsonObject);
+					else if(messageTemplate != null && !"".equals(messageTemplate))
+						text = messageTemplate;
+					else {
+						if(text.equalsIgnoreCase("update"))
+							text = "Updated records.";
+						else
+							text = "Deleted records.";
+					}
 					resultDTO.addMessage("SUCCESS:"+String.valueOf(countrec)+"|"+text);
 				
 				}else{

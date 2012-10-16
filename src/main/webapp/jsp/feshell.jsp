@@ -7,7 +7,7 @@
 <title>FE Shell</title>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
-<%@include file="../index.jsp" %>
+
 <s:head/>
 <sj:head debug="true" defaultLoadingText="loading..." defaultErrorText="Error occurred.." loadAtOnce="true" compressed="false" />
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/json2.js"></script>
@@ -70,7 +70,7 @@ function changedir(){
 	json.rootPath = escape($('#rootpath').val());
 	json.cdpath = $('#cdpath').val();
 	
-	$.get("${pageContext.request.contextPath}/becd.action?data="+$('#cdpath').val(),
+	$.get("${pageContext.request.contextPath}/becd.action?data="+$('#rootpath').val()+"/"+$('#cdpath').val(),
 //	$.get("${pageContext.request.contextPath}/becd.action?rootPath="+$('#rootpath').val()+"&cdpath="+$('#cdpath').val(),
 	 function(data){
 		$("#result").text(data);
@@ -99,6 +99,7 @@ function copytoLogpath(){
 </script>
 </head>
 <body>
+<%@include file="../index.jsp" %>
 <br/>
 <button type="button" onclick="gotoHome()">goto home dir</button>
 <s:url  action="behome.action" var="bhome1" />
@@ -107,12 +108,12 @@ function copytoLogpath(){
 pwd:<textarea id="rootpath" rows="2" cols="100"></textarea>
 <button onclick="copytoLogpath()">copy to logpath</button>
 <br/>
-List:<input name="relPath" id="relPath"/><button type="button" onclick="ls()">ls</button>
+List:<input name="relPath" id="relPath" size="100"/><button type="button" onclick="ls()">ls</button>
 
 <br/>
 CD Path:<input name="cdpath" id="cdpath" size="100"><button type="button" onclick="changedir()">cd</button>
 <br/> 
-grep exp <input name="exp" id="exp">file<input name="grepfile" id="grepfile" /><button type="button" onclick="grep()">grep</button>
+grep exp <input name="exp" id="exp" size="50" >file<input name="grepfile" id="grepfile" size="50" /><button type="button" onclick="grep()">grep</button>
 <br/>
 <button type="button" onclick="autorefresh()">autorefresh</button>
 <button type="button" onclick="stopautorefresh()">stopautorefresh</button>

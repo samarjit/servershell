@@ -118,7 +118,7 @@ public class CommandProcessor {
 		    	else
 		    	  throw new ProcessorNotFoundException("bulkcmd resolution error /root/screen/commands/bulkcmd[@name='"+bulkcmd+"'] in screen:"+screenName);
 //	    		String strProcessor = elmBulkCmd.attributeValue("processor");
-	    		logger.debug("Command Processor: operation:" + operation);
+		    	logger.info("Command Processor: ScreenName="+screenName+" operation=" + operation);
 	    		String[] opts = operation.split("\\|"); //get chained commands
 	    		for (String opt : opts) {
 	    			String[] sqlcmd = opt.split("\\:"); //get Id of query 
@@ -203,13 +203,13 @@ public class CommandProcessor {
 		}
 		QueryServiceService qss = new QueryServiceService(url, new QName("http://ws.ycs.com/", "QueryServiceService"));
 		 QueryService queryServicePort = qss.getQueryServicePort();
-		 logger.info("Sent to BE WebService: screenName:"+screenName+" submitdata:"+submitdataObj  );
+		 logger.info("Sent to BE WebService: screenName="+screenName+" submitdata="+submitdataObj  );
 		 String strResDTO = queryServicePort.remoteCommandProcessor(submitdataObj, screenName);
 		 qss = null;
 		 url = null;
 		 wsbasepath = null;
 		 rb = null;
-		 logger.info("Ret from BE screenName:"+screenName+" webservice: "+StringUtils.abbreviate(strResDTO, 100) );
+		 logger.info("Ret from BE screenName="+screenName+" returned data= "+StringUtils.abbreviate(strResDTO, 100) );
 		return strResDTO;
 	}
 

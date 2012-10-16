@@ -69,7 +69,7 @@ public class BEShellAction extends ActionSupport {
 		if(sendtobe == null ||  "".equals(sendtobe)){
 			String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
 			String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
-			System.out.println("Role = "+role+" User="+user);
+			//System.out.println("Role = "+role+" User="+user);
 			String actionName = ServletActionContext.getActionMapping().getName();
 			
 			if(user == null){

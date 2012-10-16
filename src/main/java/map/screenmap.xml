@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <root>
- 
 <screen name="AlertQueuep" mappingxml="map/jsptest/AlertQueuep.xml" /> 
 <screen name="PassionUserTemp" mappingxml="map/jsptest/PassionUserTemp.xml" />
 <screen name="AlertQueue" mappingxml="map/jsptest/AlertQueue.xml" />
-<screen name="AlertTemplateMaster" mappingxml="map/jsptest/AlertTemplateMaster.xml" />
-
-
+<screen name="CardBlockRefund" mappingxml="map/jsptest/CardBlockRefund.xml" />
+<screen name="CardMaster" mappingxml="map/jsptest/CardMaster.xml" />
+<screen name="CustomerMaster" mappingxml="map/jsptest/CustomerMaster.xml" />
+<screen name="CardBlockRefund" mappingxml="map/jsptest/PoliceReportTest.xml" />
 </root>

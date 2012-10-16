@@ -27,6 +27,7 @@ private static Logger logger = Logger.getLogger(QueryService.class);
 			ret = sendToBE("remoteCommandProcessor.action",screenName, submitdataObj, "submitdataObj");
 		} catch (IOException e) {
 			logger.error("remoteCommandProcessor in FE call",e);
+			ret = "{'errors':['connection error'],'messages':['error occured']}";
 		}
 		return ret;
 	}
@@ -37,6 +38,7 @@ private static Logger logger = Logger.getLogger(QueryService.class);
 			sendToBE("selectOnLoad.action",screenName1, jsonsubmitdata, "jsonsubmitdata");
 		} catch (IOException e) {
 			logger.error("selectOnLoad in FE call",e);
+			ret = "{'errors':['connection error'],'messages':['error occured']}";
 		}
 		return ret;
 	}

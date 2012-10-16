@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -121,15 +122,15 @@ public class DBConnector {
 //				 conn = JDBCUtils.getConnection();
 //				 JDBCUtils.listCacheInfos();
 				
-//				try{
-//					if(!poolinitialized){
-//						C3P0Helper.setUp();
-//						poolinitialized = true;
-//					}
-//					conn =  C3P0Helper.getConnection();
-//				}catch(Exception e){
-//					logger.error("c3p0 connection error"+e);
-//				}
+				try{
+					if(!poolinitialized){
+						C3P0Helper.setUp();
+						poolinitialized = true;
+					}
+					conn =  C3P0Helper.getConnection();
+				}catch(Exception e){
+					logger.error("c3p0 connection error"+e);
+				}
 				
 				isRuninServerContext = false;
 				if(conn == null){ 
@@ -180,7 +181,7 @@ public class DBConnector {
 			stmt.close();
 
 		} catch (SQLException e) {
-			logger.error("error.sqlstatement", e);
+			logger.error("error.sqlstatement:"+qry, e);
 			throw new BackendException("error.sqlstatement", e);
 		} finally {
 			if (conn != null) {
@@ -213,10 +214,12 @@ public class DBConnector {
 
 			conn = getConnection();
 			Statement stmt = conn.createStatement();
+			debug(0, qry);
 			retval = stmt.executeUpdate(qry);
+			logger.debug("Rows updated :"+retval +" for the query "+qry);
 			conn.commit();
 		} catch (SQLException e) {
-			logger.error("error.sqlstatement", e);
+			logger.error("error.sqlstatement:"+qry, e);
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
@@ -261,8 +264,8 @@ public class DBConnector {
 					Timestamp newDate = new Timestamp(new SimpleDateFormat(SIMPLE_DATE_FORMAT).parse(pd.getData()).getTime());
 					stmt.setTimestamp(count, newDate);
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_NS) {
-					Date newDate = new Date((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
-					stmt.setDate(count, newDate);
+					Timestamp newDate = new Timestamp((new SimpleDateFormat(SIMPLE_DATE_FORMAT)).parse(pd.getData()).getTime());
+					stmt.setTimestamp(count, newDate);
 				} else if (pd.getType() == PrepstmtDTO.DataType.DATE_TIME_MIN) {
 					Date newDate = new Date((new SimpleDateFormat(PrepstmtDTO.DATE_TIME_MIN_FORMAT)).parse(pd.getData()).getTime());
 					stmt.setDate(count, newDate);
@@ -303,7 +306,7 @@ public class DBConnector {
 			stmt.close();
 
 		} catch (SQLException e) {
-			logger.error("error.sqlstatement", e);
+			logger.error("error.sqlstatement:"+qry, e);
 			throw new BackendException("error.sqlstatement", e);
 		} catch (ParseException e) {
 			logger.error("error.datatypeParsing", e);
@@ -371,34 +374,47 @@ public class DBConnector {
 					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.DOUBLE) {
 					String in = pd.getData();
-					if (in == null || "".equals(in))
+					if (in == null || "".equals(in)){
 						in = "0.0D";
+						stmt.setNull(count, Types.DOUBLE);
+					}else{
 					stmt.setDouble(count, Double.parseDouble(in));
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.FLOAT) {
 					String in = pd.getData();
-					if (in == null || "".equals(in))
+					if (in == null || "".equals(in)){
 						in = "0.0f";
+						stmt.setNull(count, Types.FLOAT);
+					}else{
 					stmt.setFloat(count, Float.parseFloat(in));
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.INT) {
 					String in = pd.getData();
-					if (in == null || "".equals(in))
+					if (in == null || "".equals(in)){
 						in = "0";
+						stmt.setNull(count, Types.INTEGER);
+					}else{
 					stmt.setInt(count, Integer.parseInt(in));
+					}
 				} else if (pd.getType() == PrepstmtDTO.DataType.STRING) {
 					stmt.setString(count, pd.getData());
 				} else if (pd.getType() == PrepstmtDTO.DataType.LONG) {
 					String in = pd.getData();
-					if (in == null || "".equals(in))
+					if (in == null || "".equals(in)){
 						in = "0";
+						stmt.setNull(count, Types.INTEGER);
+					}else{
 					stmt.setLong(count, Long.parseLong(in));
+				}
 				}
 				count++;
 			}
-
+			debug(0, qry);
 			retval = stmt.executeUpdate();
+			logger.debug("Rows updated :"+retval +" for the query "+qry);
 			conn.commit();
 		} catch (SQLException e) {
-			logger.error("error.sqlstatement", e);
+			logger.error("error.sqlstatement:"+qry, e);
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {

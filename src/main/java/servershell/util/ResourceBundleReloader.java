@@ -13,9 +13,9 @@ public class ResourceBundleReloader {
      {  
          try  
          {  
+        	 AppCacheManager.removeCache("xmlcache");
              clearMap(ResourceBundle.class, null, "cacheList");   
              clearTomcatCache();  
-             AppCacheManager.removeCache("xmlcache");
          }  
          catch (Exception e)  
          {  

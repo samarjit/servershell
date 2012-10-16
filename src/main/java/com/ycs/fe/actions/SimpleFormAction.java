@@ -16,6 +16,7 @@ import org.apache.struts2.interceptor.ParameterAware;
 
 import com.ycs.fe.dto.PageReturnType;
 import com.ycs.fe.dto.ResultDTO;
+import com.ycs.fe.exception.FrontendException;
 import com.ycs.fe.util.ReplaceAlias;
 
 
@@ -38,7 +39,7 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 			@Result(name="ajax",type="stream",params={"contentType","text/html","inputName","inputStream"})
 			}
 	)
-	public String execute() throws Exception{
+	public String execute(){
 		String resultHtml = "{}";
 		ResultDTO resDTO = new ResultDTO() ;
 		try {
@@ -46,18 +47,25 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 			JSONArray form1ar = new JSONArray();
 			JSONObject form1obj= new JSONObject();
 			
+			JSONObject jsonObjForValidation = new JSONObject();
+			JSONArray form1arForValidation = new JSONArray();
+			JSONObject frmJsonForValidation = new JSONObject();
+			String key2;
 			if(bulkcmd != null){
 				
 				for (Entry<String, String[]> entry : parameters.entrySet()) {
 					String[] val = entry.getValue();
 					String key = entry.getKey();
-					key = ReplaceAlias.replaceAlias(screenName, key);
+					key2 = key;
+//					key = ReplaceAlias.replaceAlias(screenName, key);
 					if(!key.equals("bulkcmd") && !key.equals("screenName") && !key.equals("oper")){
 						if(val.length== 1){
 							form1obj.put(key, val[0]);
+							jsonObjForValidation.put(key2,val[0]);
 						}else{
 							List<String> arVal = Arrays.asList(val);
 							form1obj.put(key, arVal);
+							jsonObjForValidation.put(key2, arVal);
 						}
 					}		
 					if(key.equals("oper")){
@@ -70,10 +78,14 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				submitdataObj.put("bulkcmd", bulkcmd);
 				
 				submitdata = submitdataObj.toString();
-				System.out.println("Suitable to send to BE? screenName:"+screenName+" submitdata:"+submitdataObj.toString());
+//				System.out.println("Suitable to send to BE? screenName:"+screenName+" submitdata:"+submitdataObj.toString());
 				JSONObject jsonRecord =   submitdataObj;
 				
-				resDTO = validate(jsonRecord);
+				//validation
+				form1arForValidation.add(jsonObjForValidation);
+				frmJsonForValidation.put("form1", form1arForValidation);
+				resDTO = validate(frmJsonForValidation);
+				
 				resDTO = commandProcessor(jsonRecord, resDTO);
 				
 			
@@ -100,7 +112,14 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 			jsonRecord = new JSONObject();
 			jsonRecord.put("bulkcmd", bulkcmd);
 		}
-		PageReturnType pg = setResult(resultHtml, jsonRecord, resDTO);
+		PageReturnType pg;
+		try {
+			pg = setResult(resultHtml, jsonRecord, resDTO);
+		} catch (Exception e) {
+			logger.error("PageReturnType resolution error");
+			pg = new PageReturnType();
+			pg.resultName = "ajax";
+		}
 		logger.error("Result Page:"+ pg.resultName);
 		return pg.resultName;
 		//return SUCCESS;//commonExecute();

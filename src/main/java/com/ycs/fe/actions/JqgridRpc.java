@@ -106,6 +106,7 @@ public class JqgridRpc extends ActionSupport {
 				  jcfg.setRootClass(PagingFilters.class);
 				  Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
 				  classMap.put( "rules", PagingFilterRule.class );  
+				  classMap.put( "groups", PagingFilters.class );  
 				PagingFilters filter = (PagingFilters) JSONObject.toBean(filterJson, PagingFilters.class,classMap);//, jcfg);
 				//JSONObject job = org.json.JSONObject();
 				for (PagingFilterRule rule: filter.getRules()) {
