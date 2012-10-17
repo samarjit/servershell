@@ -22,7 +22,7 @@ function refresh(cmd){
 		var json = $.parseJSON(data);
 		//$("#runlogdiv").text(json.message);
 		 
-		if(json.message != ""){
+		if(json.jobj.message != ""){
 			/*lasteol = (json.endswith == "EOL")?true: false;
 			if(lasteol == false){
 				if(json.message.substring(5) ==""){
@@ -37,10 +37,10 @@ function refresh(cmd){
 			if(json.message.substring(5) !=""){
 				$("#runlogdiv").append("<div id='r"+seq+"'>"+json.message+"</div>");
 			}
-			*/$("#runlogdiv").append("<div id='lastline"+seq+"' style='color:green'>"+json.message+"</div>");
+			*/$("#runlogdiv").append("<div id='lastline"+seq+"' style='color:green'>"+json.jobj.message+"</div>");
 			seq++;
 			
-			$("#prevpos").val(json.prevpos);
+			$("#prevpos").val(json.jobj.prevpos);
 			
 		}
 	}); 
@@ -48,7 +48,7 @@ function refresh(cmd){
 }
 var refreshinterval = null;
 function autorefresh(){
-	refreshinterval = setInterval('refresh()', 5000);
+	refreshinterval = setInterval('refresh("getalluptoend")', 5000);
 }
 function stopautorefresh(){
 	clearInterval(refreshinterval );

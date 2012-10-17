@@ -486,9 +486,9 @@ public class ReverseEngineerXml {
 			}
 			gridupd = simepleformupd;
 			simepleformupd += " WHERE "+arcol.get(0)+"=#inp.form1[0]."+aralias.get(0);
-			out.println("      <sqlupdate id=\""+bulkcmdsimplfrm+"edit\" outstack=\"updt\">"+simepleformupd+"<message message=\"Record(s) got updated.\" /><error message=\"Record(s) update failed.\" /></sqlupdate>");
+			out.println("      <sqlupdate id=\""+bulkcmdsimplfrm+"edit\" outstack=\"updt\">"+simepleformupd+"<error message=\"Record(s) update failed.\" /><message message=\"Record(s) got updated.\" /></sqlupdate>");
 			gridupd += " WHERE "+arcol.get(0)+"=#inp.form1[0].id|STRING";
-			out.println("      <sqlupdate id=\""+bulkcmd+"edit\"    outstack=\"updt\">"+gridupd+"<message message=\"Record(s) got updated.\" /><error message=\"Record(s) update failed.\" /></sqlupdate>");
+			out.println("      <sqlupdate id=\""+bulkcmd+"edit\"    outstack=\"updt\">"+gridupd+"<error message=\"Record(s) update failed.\" /><message message=\"Record(s) got updated.\" /></sqlupdate>");
 			///end grid inserts
 
 			out.println("    </crud>\r\n" + 

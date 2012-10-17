@@ -34,9 +34,9 @@ public class SendToBE {
 
 			ResponseHandler<String>  responseHandler = new CustomResponseHandler();
 			String responseBody = client.execute(post, responseHandler);
-			System.out.println(responseBody.trim());
+//			System.out.println(responseBody.trim());
 		
-			logger.debug("This is logback debug " + responseBody.trim());
+//			logger.debug("This is logback debug " + responseBody.trim());
 			jsonString = responseBody.trim();
 			
 			client.getConnectionManager().shutdown();

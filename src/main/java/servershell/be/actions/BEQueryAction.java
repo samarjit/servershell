@@ -53,6 +53,7 @@ public class BEQueryAction extends ActionSupport{
 			logger.info("This is from is be query= "+ query);
 			String jsonString = "This is be query "+query;
 			DBConnector db = new DBConnector();
+			String countQuery =null;
 			try {
 				Map<String, String> row ;
 				List<Map<String, String>> values = new ArrayList<Map<String, String>>();
@@ -63,7 +64,7 @@ public class BEQueryAction extends ActionSupport{
 					Matcher m = p.matcher(query);
 					m.find();
 					logger.debug("select query grp 1 grp 3"+m.group(1));
-					String countQuery = "select count(1) from "+m.group(1);
+					countQuery = "select count(1) from "+m.group(1);
 					CachedRowSet crs1 = db.executeQuery(countQuery);
 					int totalcount = 0;
 					while(crs1.next()){
@@ -116,7 +117,7 @@ public class BEQueryAction extends ActionSupport{
 				}
 			} catch (Exception e) {
 				StackTraceElement[] stackTrace = e.getStackTrace();
-				String str = "";
+				String str = "Count Query: "+countQuery+" query: "+ query;
 				for (StackTraceElement stElm : stackTrace) {
 					str += stElm.toString()+"<br/>";
 				}

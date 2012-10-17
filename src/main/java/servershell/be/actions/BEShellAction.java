@@ -62,7 +62,7 @@ public class BEShellAction extends ActionSupport {
 	private String data;
 	public String expression;
 	public String sendtobe;
-	
+	public JSONObject jobj = new JSONObject();
 	
 	public void validate(){
 		
@@ -252,7 +252,7 @@ public class BEShellAction extends ActionSupport {
 		String message = "";
 		try{
 			
-			logger.debug("BEscrollog started .."+cmd);
+//			logger.debug("BEscrollog started .."+cmd);
 			raf = new RandomAccessFile(belogpath, "r");
 			ArrayList<String> ar = new ArrayList<String>(50);
 			byte bytear[] = new byte[200];
@@ -425,7 +425,7 @@ public class BEShellAction extends ActionSupport {
 				}
 				strw.write(new String(bytear));
 				System.out.println(strw.toString());
-				
+				prevpos = raf.getFilePointer();
 			}
 			
 			
@@ -444,7 +444,7 @@ public class BEShellAction extends ActionSupport {
 //			jsonMessage.put("lastline", lastline);
 			
 			message = jsonMessage.toString();
-			
+			jobj = jsonMessage;
 		}catch(Exception e){
 			logger.error(" Exception "+e,e);
 			addActionError("Exception "+e);
@@ -458,13 +458,13 @@ public class BEShellAction extends ActionSupport {
 				}
 		}
 		
-		if(getActionErrors().size() != 0){
-			message = getActionErrors().toString();
-		}
+//		if(getActionErrors().size() != 0){
+//			message = getActionErrors().toString();
+//		}
 		
-		inputStream  = new ByteArrayInputStream(message.getBytes());
+//		inputStream  = new ByteArrayInputStream(message.getBytes());
 		
-		return SUCCESS;
+		return "json";
 	}
 	
 	@Action(value="becd", results={@Result(type="stream")})
@@ -714,6 +714,16 @@ public class BEShellAction extends ActionSupport {
 		this.fileUploadContentType = fileUploadContentType;
 	}
 	
+	
+	
+	public JSONObject getJobj() {
+		return jobj;
+	}
+
+	public void setJobj(JSONObject jobj) {
+		this.jobj = jobj;
+	}
+
 	public static void main(String[] args) throws Exception {
 		String belogpath ="C:/Users/Samarjit/Desktop/Book1.txt";
 		int pagesize = 4;

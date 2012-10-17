@@ -17,6 +17,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
 import servershell.util.AccessRights;
+import servershell.util.MergeErrors;
 import servershell.util.SendToBE;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -48,6 +49,7 @@ public class BEShellRelayAction extends ActionSupport {
 	public String belogpath;
 	public String pagesize;
 	public String expression;
+	public JSONObject jobj = new JSONObject();
 	
 	public void validate(){
 		String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
@@ -71,27 +73,27 @@ public class BEShellRelayAction extends ActionSupport {
 			String url = "prevpos="+prevpos+"&belogpath="+URLEncoder.encode(belogpath)+"&cmd="+cmd+"&pagesize="+pagesize;
 			logger.debug("url bescrolllog:"+url);
 			message = SendToBE.sendToBE("", "bescrolllog.action?"+url);
-				/*JSONObject jsonMessage = new JSONObject();
-				jsonMessage.put("time",new Date().toString());
-				jsonMessage.put("prevpos",prevpos);
-				jsonMessage.put("pos",pos);
+				JSONObject bejson = JSONObject.fromObject(message);
+				/*jobj.put("time",new Date().toString());
+				jobj.put("prevpos",prevpos);
+				jobj.put("pos",pos);
 		//		jsonMessage.put("endswith",endchar);
-				jsonMessage.put("message", message);
+				jobj.put("message", message);
 		//		jsonMessage.put("lastline", lastline);
 				
-				message = jsonMessage.toString();
-				*/
+//				message = jobj.toString();*/
+				MergeErrors.mergeErrorsAndJson(jobj, bejson);
 			}catch(Exception e){
 				logger.error(" Exception "+e,e);
 				addActionError("Exception "+e);
 			}
 			
-			if(getActionErrors().size() != 0){
-				message = getActionErrors().toString();
-			}
+//			if(getActionErrors().size() != 0){
+//				message = getActionErrors().toString();
+//			}
 			
-			inputStream  = new ByteArrayInputStream(message.getBytes());
-		return SUCCESS;
+//			inputStream  = new ByteArrayInputStream(message.getBytes());
+		return "json";
 	}
 	
 	@Action(value="bcd")
