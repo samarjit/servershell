@@ -84,7 +84,7 @@ public class BEQueryAction extends ActionSupport{
 							for (int i = 1; i <= colcount; i++) {
 								if(md.getColumnTypeName(i ).equals("DATE")|| md.getColumnTypeName(i ).equals("TIMESTAMP")){
 									Date dt = null;
-									if(md.getColumnTypeName(i ).equals("DATE")) dt = crs.getDate(i);
+									if(md.getColumnTypeName(i ).equals("DATE")) dt = crs.getTimestamp(i);
 									if(md.getColumnTypeName(i ).equals("TIMESTAMP")) dt = crs.getTimestamp(i);
 									
 									String dtStr = (dt == null)?"":PrepstmtDTO.getDateStringFormat(dt,"yyyy-MM-dd HH:mm:ss");

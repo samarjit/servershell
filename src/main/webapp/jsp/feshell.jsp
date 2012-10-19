@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<!DOCTYPE xhtml PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -9,7 +9,19 @@
 <%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 
 <s:head/>
+
 <sj:head debug="true" defaultLoadingText="loading..." defaultErrorText="Error occurred.." loadAtOnce="true" compressed="false" />
+<style>
+.ui-autocomplete {
+        max-height: 400px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+* html .ui-autocomplete {
+        height: 400px;
+    }    
+</style>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/json2.js"></script>
 <script type="text/javascript">
 var seq = 0;
@@ -57,7 +69,7 @@ function clearresult(){
 	$("#runlogdiv div").remove();
 }
 function gotoHome(){
-	$("#rootpath").load("${pageContext.request.contextPath}/behome.action");
+	 $.get("${pageContext.request.contextPath}/behome.action",function (data){$("#rootpath").val(data);});
 }
 function showHomeTopic(event, data){
 	alert(event.originalEvent.request.responseText);
@@ -74,8 +86,9 @@ function changedir(){
 //	$.get("${pageContext.request.contextPath}/becd.action?rootPath="+$('#rootpath').val()+"&cdpath="+$('#cdpath').val(),
 	 function(data){
 		$("#result").text(data);
-		if(!data.startsWith("File"))
+		if(!(data.indexOf("File") >0))
 			$("#rootpath").val(data);
+		 	$('#cdpath').val('');
 	 });
 }
 function ls(){
@@ -96,6 +109,68 @@ function grep(){
 function copytoLogpath(){
 	$("#belogpath").val($("#rootpath").val());
 }
+
+
+function changedirdyn(){
+	var jsonls  = {};
+	jsonls.rootPath = $('#rootpath').val();
+	jsonls.relPath =  $('#cdpath').val();
+	$.get("${pageContext.request.contextPath}/flsjson.action?rootPath="+jsonls.rootPath+"&relPath="+jsonls.relPath+"", function (data){
+		
+		$("#result").text(data);
+		var json = $.parseJSON(data);
+		dt = json.jobj;
+		var localar = [];	
+		for (var x in dt){
+			localar.push(x);
+			}
+        
+		$("#cdpath").autocomplete({
+			source: function(request,response){
+				var splt = request.term.split(/[\/\\]/);
+				var srch = splt.pop();
+				var ar = $.grep(localar, function (a){
+					return (a.indexOf(srch) == 0);
+				} );
+				
+				response(
+						
+					ar	
+				);
+			},
+			minLengthType: 0,
+		/*	search: function (event, ui){
+				var terms = this.value.split( "/" );
+			},*/
+			focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+			select: function( event, ui ) {
+                var terms = this.value.split( "/" );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( "/" );
+                return false;
+            }
+			
+			});
+		 
+	});
+}
+
+$(document).ready(function(){
+	$("#cdpath").keydown(function(e){
+		 if (e.keyCode == 9 ) {
+			 changedirdyn();
+			 return false;
+		 }
+	});
+});
 </script>
 </head>
 <body>
@@ -105,7 +180,7 @@ function copytoLogpath(){
 <s:url  action="behome.action" var="bhome1" />
 <sj:submit value="home" type="button" href="%{#bhome1}" onCompleteTopics="showHomeTopic()" targets="result" >js:home</sj:submit>
 <br/>
-pwd:<textarea id="rootpath" rows="2" cols="100"></textarea>
+pwd:<textarea id="rootpath" name="rootpath" rows="2" cols="100"></textarea>
 <button onclick="copytoLogpath()">copy to logpath</button>
 <br/>
 List:<input name="relPath" id="relPath" size="100"/><button type="button" onclick="ls()">ls</button>

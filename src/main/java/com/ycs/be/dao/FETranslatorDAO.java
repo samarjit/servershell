@@ -159,7 +159,7 @@ public class FETranslatorDAO {
 							row = new HashMap<String, String>();
 							for (int i = 1; i <= colcount; i++) {
 								if(md.getColumnType(i) == 93){//TIMESTAMP
-									row.put(md.getColumnLabel(i), PrepstmtDTO.getDateStringFormat(crs.getDate(i), PrepstmtDTO.DATE_NS_FORMAT) );
+									row.put(md.getColumnLabel(i), PrepstmtDTO.getDateStringFormat(crs.getTimestamp(i), PrepstmtDTO.DATE_NS_FORMAT) );
 								}else{
 									row.put(md.getColumnLabel(i), crs.getString(i));
 								}

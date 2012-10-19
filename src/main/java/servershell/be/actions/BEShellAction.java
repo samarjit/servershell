@@ -69,8 +69,8 @@ public class BEShellAction extends ActionSupport {
 		if(sendtobe == null ||  "".equals(sendtobe)){
 			String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
 			String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
-			//System.out.println("Role = "+role+" User="+user);
 			String actionName = ServletActionContext.getActionMapping().getName();
+//			System.out.println("Role = "+role+" User="+user+" "+actionName);
 			
 			if(user == null){
 				addFieldError("user","User must be logged in ..");
@@ -506,37 +506,112 @@ public class BEShellAction extends ActionSupport {
 			FileFilter regex = new WildcardFileFilter(relPath);
 			File[] flist =  f.listFiles(regex);
 			SimpleDateFormat sm = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
-			HashMap<Long, String> hm1 = new HashMap<Long, String>();
-			HashMap<Long, String> hm2 = new HashMap<Long, String>();
+			HashMap<Long, String> hmDir = new HashMap<Long, String>();
+			HashMap<Long, String> hmFile = new HashMap<Long, String>();
 			if(flist == null)throw new Exception("File not found "+regex+" in "+rootPath);
 			for (File fl : flist) {
 				if (fl.isDirectory()) {
-					//jobj.put("dir", fl.lastModified() + " " + fl.getPath());
-					hm1.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+//					this.jobj.put(fl.getPath(),"dir "+fl.lastModified() + "   NA");
+					hmDir.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
 				}
 			}
 			for (File fl : flist) {
 				if (fl.isFile()) {
-					hm2.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
-	//				jobj.put("file", fl.length() + "\t" + fl.lastModified() + "\t" + fl.getPath());
+					hmFile.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+//					this.jobj.put(fl.getPath(),"file" + fl.lastModified()+" "+fl.length() );
 				}
 			}
-			TreeSet<Long> ar = new TreeSet<Long>(hm1.keySet());
+			TreeSet<Long> ar = new TreeSet<Long>(hmDir.keySet());
 			for (Iterator<Long> ltime = ar.descendingIterator();ltime.hasNext();) {
-				message += hm1.get(ltime.next());
+				message += hmDir.get(ltime.next());
 			}
-			TreeSet<Long> ar2 = new TreeSet<Long>(hm2.keySet());
+			TreeSet<Long> ar2 = new TreeSet<Long>(hmFile.keySet());
 			for (Iterator<Long> ltime = ar2.descendingIterator();ltime.hasNext();) {
-				message += hm2.get(ltime.next());
+				message += hmFile.get(ltime.next());
 			}
 		}catch(Exception e){
 			for (StackTraceElement elm : e.getStackTrace()) {
 				message+=elm.getClassName()+"."+elm.getMethodName()+"("+elm.getLineNumber()+")\r\n";
 			}
 			message = "bels() Error: "+e.toString()+"\r\n"+message;
+			addActionError(message);
 		}
 		inputStream  = new ByteArrayInputStream(message.getBytes());
 		return SUCCESS;
+	}
+	
+	
+	/**
+	 * rootPath
+	 * relPath
+	 * @return
+	 */
+	@Action(value="belsjson", results={@Result(type="stream")})
+	public String belsjson (){
+		String message = "";
+//		logger.debug("belsjson() called with"+data);
+		JSONObject jobj =  JSONObject.fromObject(data);
+		String rootPath  = jobj.getString("rootPath");
+		String relPath  = jobj.getString("relPath");
+		if("".equals(relPath))relPath ="*";
+		String secondPart = null;
+//		logger.debug("belsjson() rootPath :"+rootPath+"; relPath:"+relPath);
+		try{
+			
+			if(rootPath == null || "".equals(rootPath))throw new Exception("rootPath is empty");
+			if(relPath.indexOf('\\') >0){
+				secondPart = '\\'+relPath.substring(0, relPath.lastIndexOf('\\'));
+				relPath = relPath.substring(relPath.lastIndexOf('\\')+1);
+			}
+			if(relPath.indexOf('/') >0){
+				secondPart = '/'+relPath.substring(0, relPath.lastIndexOf('/'));
+				relPath = relPath.substring(relPath.lastIndexOf('/')+1);
+			}
+			
+			if("".equals(relPath))relPath ="*";
+			else if(relPath.length() >0)relPath = relPath+"*";
+			
+			
+			rootPath += (secondPart == null?"":secondPart);
+			File f = new File(rootPath);
+			if(!f.exists())throw new Exception(" file not found "+f.getAbsolutePath());
+			if(!f.canRead()) throw new Exception("Path is not readable "+rootPath);
+			// put in security of path matching
+			FileFilter regex = new WildcardFileFilter(relPath);
+			File[] flist =  f.listFiles(regex);
+			SimpleDateFormat sm = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+			HashMap<Long, String> hmDir = new HashMap<Long, String>();
+			HashMap<Long, String> hmFile = new HashMap<Long, String>();
+			if(flist == null)throw new Exception("File not found "+regex+" in "+rootPath);
+			for (File fl : flist) {
+				if (fl.isDirectory()) {
+					this.jobj.put(fl.getName(),"dir ");
+//					hmDir.put(fl.lastModified(), String.format("dir   %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+				}
+			}
+			for (File fl : flist) {
+				if (fl.isFile()) {
+//					hmFile.put(fl.lastModified(), String.format("file  %25s  %s  <br/>\r\n",sm.format(fl.lastModified()),fl.getName()));
+					this.jobj.put(fl.getName(),"file");
+				}
+			}
+//			TreeSet<Long> ar = new TreeSet<Long>(hmDir.keySet());
+//			for (Iterator<Long> ltime = ar.descendingIterator();ltime.hasNext();) {
+//				message += hmDir.get(ltime.next());
+//			}
+//			TreeSet<Long> ar2 = new TreeSet<Long>(hmFile.keySet());
+//			for (Iterator<Long> ltime = ar2.descendingIterator();ltime.hasNext();) {
+//				message += hmFile.get(ltime.next());
+//			}
+		}catch(Exception e){
+			for (StackTraceElement elm : e.getStackTrace()) {
+				message+=elm.getClassName()+"."+elm.getMethodName()+"("+elm.getLineNumber()+")\r\n";
+			}
+			message = "belsjson() Error: "+e.toString()+"\r\n"+message;
+			addActionError(message);
+		}
+//		inputStream  = new ByteArrayInputStream(message.getBytes());
+		return "json";
 	}
 	
 	@Action(value="behome", results={@Result(type="stream")})

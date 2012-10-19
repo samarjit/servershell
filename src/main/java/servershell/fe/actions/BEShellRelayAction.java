@@ -27,8 +27,8 @@ import com.opensymphony.xwork2.ActionSupport;
 @ParentPackage("default")
 @Results(value={
 @Result(type="stream", name="success")
-,@Result(type="json", name="json",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
-,@Result(type="json", name="input",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*"})
+,@Result(type="json", name="json",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*","callbackParameter","callback"})
+,@Result(type="json", name="input",params={"contentType","text/html","ignoreHierarchy","false","includeProperties","jobj.*,actionErrors.*,actionMessages.*,fieldErrors.*","callbackParameter","callback"})
 })
 public class BEShellRelayAction extends ActionSupport {
 	
@@ -51,11 +51,12 @@ public class BEShellRelayAction extends ActionSupport {
 	public String expression;
 	public JSONObject jobj = new JSONObject();
 	
+	
 	public void validate(){
 		String user = (String) ServletActionContext.getRequest().getSession().getAttribute("name");
 		String role = (String) ServletActionContext.getRequest().getSession().getAttribute("role");
-		System.out.println("Role = "+role+" User="+user);
 		String actionName = ServletActionContext.getActionMapping().getName();
+		System.out.println("Role = "+role+" User="+user+" "+actionName);
 		
 		if(user == null){
 			addFieldError("user","User must be logged in ..");
@@ -184,6 +185,65 @@ public class BEShellRelayAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/**
+	 * rootPath
+	 * relPath
+	 * @return
+	 */
+	@Action(value="flsjson")
+	public String flsjson(){
+		String message = "ls not completed";
+		try {
+//			logger.debug("flsjson() called with rootPath:"+rootPath+" relPath:"+relPath);
+			JSONObject jobj = new JSONObject();  
+			jobj.put("relPath", relPath);  
+			jobj.put("rootPath", rootPath);  
+			String data = jobj.toString();
+			message = SendToBE.sendToFE(data, "belsjson.action"); 
+			MergeErrors.mergeErrorsAndJsonStr(this.jobj, message);
+			
+		} catch (IOException e) {
+			logger.error("IOException cannot contact backend: "+e.toString());
+			message = "Cannot connect to backend- "+ e.toString();
+			addActionError(message);
+		}
+		if("".equals(message)){
+			message="No data Found"+new Date().toString();
+			addActionError(message);
+		}
+//		inputStream  = new ByteArrayInputStream(message.getBytes());
+		return "json";
+	}
+	
+	/**
+	 * rootPath
+	 * relPath
+	 * @return
+	 */
+	@Action(value="blsjson")
+	public String blsjson(){
+		String message = "ls not completed";
+		try {
+//			logger.debug("blsjson() called with rootPath:"+rootPath+" relPath:"+relPath);
+			JSONObject jobj = new JSONObject();  
+			jobj.put("relPath", relPath);  
+			jobj.put("rootPath", rootPath);  
+			String data = jobj.toString();
+			message = SendToBE.sendToBE(data, "belsjson.action"); 
+			MergeErrors.mergeErrorsAndJsonStr(this.jobj, message);
+		} catch (IOException e) {
+			logger.error("IOException cannot contact backend: "+e.toString());
+			message = "Cannot connect to backend- "+ e.toString();
+			addActionError(message);
+		}
+		if("".equals(message)){
+			message="No data Found"+new Date().toString();
+			addActionError(message);
+		}
+//		inputStream  = new ByteArrayInputStream(message.getBytes());
+		return "json";
+	}
+	
 	
 	public String filename;
 	/**
@@ -271,5 +331,12 @@ public class BEShellRelayAction extends ActionSupport {
 		this.cmd = cmd;
 	}
 	
-	
+	public JSONObject getJobj() {
+		return jobj;
+	}
+
+	public void setJobj(JSONObject jobj) {
+		this.jobj = jobj;
+	}
+
 }

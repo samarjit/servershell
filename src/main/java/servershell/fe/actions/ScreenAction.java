@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -77,9 +78,9 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="createhtml")
 	public String createhtml(){
 		String message= "Not processed!";
-		System.out.println(ftlbasepath);
-		System.out.println(ftlfilename);
-		System.out.println(htmlscreen1);
+		logger.debug(ftlbasepath);
+		logger.debug(ftlfilename);
+		logger.debug(StringUtils.abbreviate(htmlscreen1,200)+"...");
 		File dir = new File(ftlbasepath);
 		if(dir.exists()){
 			File f = new File(dir,ftlfilename);
@@ -108,10 +109,10 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="createxml")
 	public String createxml(){
 		String message= "Not processed!";
-		System.out.println(fepagexmlpath);
-		System.out.println(bepagexmlpath);
-		System.out.println(pagexmlfilename);
-		System.out.println(pagexml);
+		logger.debug(fepagexmlpath);
+		logger.debug(bepagexmlpath);
+		logger.debug(pagexmlfilename);
+		logger.debug(StringUtils.abbreviate(pagexml,200));
 		File dir = new File(fepagexmlpath);
 		if(dir.exists()){
 			File f = new File(dir,pagexmlfilename);
@@ -240,9 +241,9 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="loadfefile")
 	public String loadfefile(){
 		String message= "Not processed!";
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println("loadding...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug("loadding...");
 		JSONObject jres =new JSONObject();
 		File dir = new File(filepath);
 		if(dir.exists()){
@@ -274,10 +275,10 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="savefefile")
 	public String savefefile(){
 		String message= "Not processed!";
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println(fefile);
-		System.out.println("saving...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug(StringUtils.abbreviate(fefile, 200));
+		logger.debug("saving...");
 		
 		File dir = new File(filepath);
 		if(dir.exists()){
@@ -383,9 +384,9 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="bloadfefile")
 	public String bloadfefile(){
 		String message= "Not processed!";
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println("loadding...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug("loadding...");
 		JSONObject jres =new JSONObject();
 		
 		try{
@@ -409,10 +410,10 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="bsavefefile")
 	public String bsavefefile(){
 		String message= "Not processed!";
-		System.out.println(filepath);
-		System.out.println(filename);
-		System.out.println(fefile);
-		System.out.println("saving in BE ...");
+		logger.debug(filepath);
+		logger.debug(filename);
+		logger.debug(StringUtils.abbreviate(fefile,200));
+		logger.debug("saving in BE ...");
 		
 		 
 		try{
@@ -585,9 +586,9 @@ public class ScreenAction extends ActionSupport{
 					keyLine = (String)keyObj;
 					if(keyLine.contains(fefile)){
 						
-						if (keyLine.indexOf('_') > -1 && keyLine.indexOf('.') > -1) {
-							configName = keyLine.substring(keyLine.indexOf('_') + 1, keyLine.indexOf('.'));
-							filedName = keyLine.substring(keyLine.indexOf('.') + 1);
+						if (keyLine.indexOf('_') > -1 && keyLine.indexOf('#') > -1) {
+							configName = keyLine.substring(keyLine.indexOf('_') + 1, keyLine.indexOf('#'));
+							filedName = keyLine.substring(keyLine.indexOf('#') + 1);
 							if (!jsonres.containsKey(configName)) {
 								fieldValues = new JSONObject();
 							}else{

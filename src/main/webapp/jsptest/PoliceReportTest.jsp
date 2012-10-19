@@ -196,6 +196,7 @@
     		userdata: 'userdata',
             id: "0"
     	},
+  		cellEdit: true,
        onSelectRow: function(id){
 			    		if(id && id!==lastsel){
 			    			//jQuery('#listid').jqGrid('restoreRow',lastsel);
@@ -204,6 +205,9 @@
 			    			lastsel=id;
 			    		}
 			    	},
+  		afterSubmit: function(data){
+  						alert(data);
+  					},	
 	    loadComplete: function(){
 			    		var ret;
  						$("#messagegrid").text(JSON.stringify(jQuery("#listid").getGridParam('userData'), null, 2));

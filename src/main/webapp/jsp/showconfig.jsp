@@ -14,8 +14,8 @@ if(jQuery.struts2_jquery != null){
 function showallconf(){
 	var s="";
 	$(":input").each(function(i,v){ 
-		if(v.type == 'text' && v.name != 'name' && v.name != null && v.name != ""){
-			s+= document.title.replace(/\s/g,"")+"_"+$("#configname").val()+"."+v.name+"="+v.value+"\r\n<br/>";
+		if(v.type == 'text' && v.name != null && v.name != 'name' &&  v.name != ""){
+			s+= document.title.replace(/\s/g,"")+"_"+$("#configname").val()+"#"+v.name+"="+v.value+"\r\n<br/>";
 		}
 	});
 	
@@ -34,7 +34,7 @@ function saveconf(){
 function fetchconf(){
 	$.get("${pageContext.request.contextPath}/finduserpref.action",'fefile='+document.title.replace(/\s/g,""),function(data){
 		var json = $.parseJSON(data);
-		
+		if(json.fieldErrors.user)alert(json.fieldErrors.user);
 		jsonProps = json.jobj.props;
 		var tabl = $("<table id='datatable' border='1'></table>");
 		$("#fetchresult").append(tabl);
