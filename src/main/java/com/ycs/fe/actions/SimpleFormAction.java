@@ -1,23 +1,21 @@
 package com.ycs.fe.actions;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.ParameterAware;
 
+import com.google.gson.Gson;
 import com.ycs.fe.dto.PageReturnType;
 import com.ycs.fe.dto.ResultDTO;
-import com.ycs.fe.exception.FrontendException;
-import com.ycs.fe.util.ReplaceAlias;
 
 
 
@@ -43,13 +41,13 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 		String resultHtml = "{}";
 		ResultDTO resDTO = new ResultDTO() ;
 		try {
-			JSONObject submitdataObj = new JSONObject();
-			JSONArray form1ar = new JSONArray();
-			JSONObject form1obj= new JSONObject();
+			Map<String,Object> submitdataObj = new HashMap<String,Object>();
+			ArrayList<Map<String, Object>> form1ar = new ArrayList<Map<String,Object>>();
+			HashMap<String, Object> form1obj= new HashMap<String,Object>();
 			
-			JSONObject jsonObjForValidation = new JSONObject();
-			JSONArray form1arForValidation = new JSONArray();
-			JSONObject frmJsonForValidation = new JSONObject();
+			HashMap<String, Object> jsonObjForValidation = new HashMap<String,Object>();
+			ArrayList<Map<String, Object>> form1arForValidation = new ArrayList<Map<String,Object>>();
+			HashMap<String, Object> frmJsonForValidation = new HashMap<String,Object>();
 			String key2;
 			if(bulkcmd != null){
 				
@@ -79,7 +77,7 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				
 				submitdata = submitdataObj.toString();
 //				System.out.println("Suitable to send to BE? screenName:"+screenName+" submitdata:"+submitdataObj.toString());
-				JSONObject jsonRecord =   submitdataObj;
+				Map<String, Object> jsonRecord =   submitdataObj;
 				
 				//validation
 				form1arForValidation.add(jsonObjForValidation);
@@ -95,7 +93,7 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 				resDTO.addError("bulkcmd.required");
 			}
 			populateActionErrors(resDTO);
-			JSONObject resjsonResult = JSONObject.fromObject(resDTO);
+			String resjsonResult = new Gson().toJson(resDTO);
 			
 			resultHtml = resjsonResult.toString();
 			
@@ -107,9 +105,9 @@ public class SimpleFormAction extends CommonActionSupport implements ParameterAw
 		inputStream = new ByteArrayInputStream(resultHtml.getBytes());
 		
 		System.out.println("result beginning to process");
-		JSONObject jsonRecord = new JSONObject(true);
+		Map<String,Object> jsonRecord = new HashMap<String,Object>();
 		if(bulkcmd!= null){
-			jsonRecord = new JSONObject();
+			jsonRecord = new HashMap<String,Object>();
 			jsonRecord.put("bulkcmd", bulkcmd);
 		}
 		PageReturnType pg;

@@ -1,6 +1,6 @@
 package com.ycs.be.commandprocessor;
 
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -13,7 +13,7 @@ public class BlCommandProcessor implements BaseCommandProcessor {
 	private static Logger logger = Logger.getLogger(BlCommandProcessor.class);
 	
 	@Override
-	public ResultDTO processCommand(String screenName, String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
+	public ResultDTO processCommand(String screenName, String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
 		logger.debug("Currently processing record in remote BL");
 		BaseBL bl = BusinessLogicFactory.getBusinessLogic(screenName);
 		ResultDTO resDTO = bl.executeCommand(screenName, querynodeXpath, jsonRecord, inputDTO, resultDTO /*previous result*/);

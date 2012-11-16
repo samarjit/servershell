@@ -9,11 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import net.sf.json.JSONObject;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -32,6 +31,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import servershell.be.dao.BackendException;
 import servershell.util.SendToBE;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
 
@@ -45,6 +45,7 @@ public class QueryAction extends ActionSupport implements SessionAware{
 	private InputStream inputStream;
 	private Map<String, Object> session;
 	private String cmd;
+	private Gson gson = new Gson();
 	
 	@Action(value="query", results ={@Result(name="success",type="stream")})
 	public String execute(){
@@ -90,13 +91,13 @@ public class QueryAction extends ActionSupport implements SessionAware{
 				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:select)[\\S\\s]*") ){ //describe
 					String qr = query.substring(4).trim();
 					jsonString = SendToBE.sendToBE(qr, "berevengg.action");
-					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
+					jsonString = "<pre>"+(String)gson.fromJson(jsonString, HashMap.class).get("tabledetails")+"</pre>";
 					
 				}else if(query.matches("[\\S\\s]*(?ims:desc)[\\S\\s]*(?ims:\\w+)[\\S\\s]*") ){ //describe
 					String qr = query.substring(4).trim();
 					qr = "select * from "+qr+" where 1=2";
 					jsonString = SendToBE.sendToBE(qr, "berevengg.action");
-					jsonString = "<pre>"+JSONObject.fromObject(jsonString).getString("tabledetails")+"</pre>";
+					jsonString = "<pre>"+(String)gson.fromJson(jsonString, HashMap.class).get("tabledetails")+"</pre>";
 				}else{
 					logger.debug("invalid query skipping..."+query);
 					addActionError("invalid query skipping...");

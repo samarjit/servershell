@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,30 +21,20 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
-
+import org.dom4j.dom.DOMDocumentFactory;
+import org.dom4j.io.SAXReader;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.dom4j.dom.DOMDocumentFactory;
-import org.dom4j.io.HTMLWriter;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -436,7 +426,7 @@ private boolean templateprocessed = false;
 				if(dfvalue.length() == 0){
 					dfvalue="{}";
 				}
-				JSONObject dfjson = new JSONObject(dfvalue);
+				HashMap<String,String> dfjson = new Gson().fromJson(dfvalue, HashMap.class);
 				List displayfield = compositefield.select("displayfield");
 				org.jsoup.nodes.Element datafldhtm = dochtml.createElement("input");
 				datafldhtm.attr("type", dftype);
@@ -459,8 +449,8 @@ private boolean templateprocessed = false;
 					difldhtm.attr("type", detype);
 					difldhtm.attr("id", dename);
 					difldhtm.attr("name", dename);
-					if(dfjson.has(dename))
-					difldhtm.attr("value", dfjson.getString(dename));
+					if(dfjson.containsKey(dename))
+					difldhtm.attr("value", dfjson.get(dename));
 					difldhtm.attr("onblur", "updateCompositeField(this,'#"+dfid+"')");
 					if(dfforidfound == false && n!=null){
 						dfforidfound = true; //appending to first display element
@@ -483,19 +473,22 @@ private boolean templateprocessed = false;
 			}
 			//JSON rule begin
 			nl = xmlelmNode.select("rule");//(List) xp.evaluate("//rule", xmlelmNode, XPathConstants.NODESET);
-			JSONObject rulejson = new JSONObject("{rules:{},messages:{}}");
+			HashMap<String,Object> rulejson = new HashMap<String,Object>(); //"{rules:{},messages:{}}"
+			rulejson.put("rules", new HashMap<String,Object>());
+			rulejson.put("messages", new HashMap<String,Object>());
 			for (int i = 0; i < nl.size(); i++) {
 				Element ruleElm = (Element) nl.get(i);
 				String ruletext = ruleElm.text();
 				logger.debug("Rule="+ruletext);
 				if(ruletext != null && ruletext.length() > 0){
-					JSONArray jar = new JSONArray(ruleElm.text());
+					//JSONArray jar = new JSONArray(ruleElm.text());
+					ArrayList<HashMap<String,Object>> jar = new Gson().fromJson(ruleElm.text(), ArrayList.class);
 					//JSONObject messageelmpart =  jobj.getJSONObject("messages");
-					for (int j = 0; j < jar.length(); j++) {
-						JSONObject jobj = jar.getJSONObject(j);
-						String fieldname=jobj.getString("fieldname");
-						rulejson.getJSONObject("rules").put(fieldname, jobj.get("rules"));
-						rulejson.getJSONObject("messages").put(fieldname, jobj.get("messages"));
+					for (int j = 0; j < jar.size(); j++) {
+						HashMap<String, Object> jobj = jar.get(j);
+						String fieldname = (String) jobj.get("fieldname"); //string
+						((HashMap<String,Object>) rulejson.get("rules")).put(fieldname, jobj.get("rules"));
+						((HashMap<String,Object>) rulejson.get("messages")).put(fieldname, jobj.get("messages"));
 					} 
 					 
 				}
@@ -503,7 +496,7 @@ private boolean templateprocessed = false;
 			//default rule properties ,errorElement:\"div\",errorLabelContainer:\"#alertmessage\"
 			rulejson.put("errorElement", "label");
 			rulejson.put("errorLabelContainer", "#alertmessage");
-			globaljs +="var rule="+rulejson.toString(3)+";\n";
+			globaljs +="var rule="+new Gson().toJson(rulejson)+";\n";
 			String strrule = "<script>"+globaljs+"</script>";
 			headNode.append(strrule);
 			//appendXmlFragment(dbuild, headNode, strrule);

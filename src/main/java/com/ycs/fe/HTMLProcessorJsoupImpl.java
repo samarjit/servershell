@@ -21,6 +21,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.json.JSONException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -28,14 +29,12 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.dom.DOMDocumentFactory;
 import org.dom4j.io.SAXReader;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -485,7 +484,7 @@ private boolean templateprocessed = false;
 			if(dfvalue.length() == 0){
 				dfvalue="{}";
 			}
-			JSONObject dfjson = new JSONObject(dfvalue);
+			HashMap<String,String> dfjson = new Gson().fromJson(dfvalue, HashMap.class);
 			@SuppressWarnings("unchecked")
 			List<Node> displayfield = compositefield.selectNodes("displayfield");
 			org.jsoup.nodes.Element datafldhtm = dochtml.createElement("input");
@@ -509,8 +508,8 @@ private boolean templateprocessed = false;
 				difldhtm.attr("type", detype);
 				difldhtm.attr("id", dename);
 				difldhtm.attr("name", dename);
-				if(dfjson.has(dename))
-				difldhtm.attr("value", dfjson.getString(dename));
+				if(dfjson.containsKey(dename))
+				difldhtm.attr("value", dfjson.get(dename));
 				difldhtm.attr("onblur", "updateCompositeField(this,'#"+dfid+"')");
 				if(dfforidfound == false && n!=null){
 					dfforidfound = true; //appending to first display element
@@ -580,23 +579,26 @@ private boolean templateprocessed = false;
 			}
 		}
 	}
-	public void processRules(Node xmlelmNode, org.jsoup.nodes.Document dochtml, org.jsoup.nodes.Element headNode, StringBuffer globaljs) throws JSONException{
+	public void processRules(Node xmlelmNode, org.jsoup.nodes.Document dochtml, org.jsoup.nodes.Element headNode, StringBuffer globaljs) {
 		//JSON rule begin
 		@SuppressWarnings("unchecked")
 		List<Node> nl = xmlelmNode.selectNodes("//rule");//(List) xp.evaluate("//rule", xmlelmNode, XPathConstants.NODESET);
-		JSONObject rulejson = new JSONObject("{rules:{},messages:{}}");
+		HashMap<String,Object> rulejson = new HashMap<String,Object>(); //"{rules:{},messages:{}}"
+		rulejson.put("rules", new HashMap<String,Object>());
+		rulejson.put("messages", new HashMap<String,Object>());
 		for (int i = 0; i < nl.size(); i++) {
 			Element ruleElm = (Element) nl.get(i);
 			String ruletext = ruleElm.getText();
 			logger.debug("Ruleobj="+ruletext);
 			if(ruletext != null && ruletext.length() > 0){
-				JSONArray jar = new JSONArray(ruleElm.getText());
+				//JSONArray jar = new JSONArray(ruleElm.getText());
+				ArrayList<HashMap<String,Object>> jar = new Gson().fromJson(ruleElm.getText(), ArrayList.class);
 				//JSONObject messageelmpart =  jobj.getJSONObject("messages");
-				for (int j = 0; j < jar.length(); j++) {
-					JSONObject jobj = jar.getJSONObject(j);
-					String fieldname=jobj.getString("fieldname");
-					rulejson.getJSONObject("rules").put(fieldname, jobj.get("rules"));
-					rulejson.getJSONObject("messages").put(fieldname, jobj.get("messages"));
+				for (int j = 0; j < jar.size(); j++) {
+					HashMap<String, Object> jobj = jar.get(j);
+					String fieldname = (String) jobj.get("fieldname"); //string
+					((HashMap<String,Object>) rulejson.get("rules")).put(fieldname, jobj.get("rules"));
+					((HashMap<String,Object>) rulejson.get("messages")).put(fieldname, jobj.get("messages"));
 				} 
 				 
 			}
@@ -605,7 +607,7 @@ private boolean templateprocessed = false;
 //		rulejson.put("errorElement", "label");
 //		rulejson.put("errorLabelContainer", "#alertmessage");
 //		rulejson.put("submitHandler", "JSONincludedFunc:function(form){ alert('hi');}");
-		globaljs.append("var ruleobj="+rulejson.toString(3)+";\n");
+		globaljs.append("var ruleobj="+new Gson().toJson(rulejson)+";\n");
 		//JSON rule ends
 		
 		

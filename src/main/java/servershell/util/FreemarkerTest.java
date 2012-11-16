@@ -11,14 +11,11 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.google.gson.Gson;
 import com.ycs.fe.util.Constants;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -70,12 +67,17 @@ public class FreemarkerTest {
 			while ((line = br.readLine()) != null) {
 				jsonstr += line;
 			}
-		  JSONObject json = JSONObject.fromObject(jsonstr);
-			JSONArray rowHeader = json.getJSONObject("data").getJSONObject("jobsTrack").getJSONArray("header");
-			JSONArray rowModel = json.getJSONObject("data").getJSONObject("jobsTrack").getJSONArray("model");
-			String width = json.getJSONObject("data").getJSONObject("jobsTrack").getString("width");
-			JSONArray jar = json.getJSONObject("data").getJSONObject("jobsTrack").getJSONArray("datalist");
-			String title = json.getJSONObject("data").getJSONObject("jobsTrack").getString("title");
+		   HashMap<String, HashMap<String,HashMap<String,Object>>> json = new Gson().fromJson(jsonstr, HashMap.class);
+//			JSONArray rowHeader = json.get("data").getJSONObject("jobsTrack").getJSONArray("header");
+//			JSONArray rowModel = json.getJSONObject("data").getJSONObject("jobsTrack").getJSONArray("model");
+//			String width = json.getJSONObject("data").getJSONObject("jobsTrack").getString("width");
+//			JSONArray jar = json.getJSONObject("data").getJSONObject("jobsTrack").getJSONArray("datalist");
+//			String title = json.getJSONObject("data").getJSONObject("jobsTrack").getString("title");
+			ArrayList rowHeader = (ArrayList) json.get("data").get("jobsTrack").get("header");
+			ArrayList rowModel = (ArrayList) json.get("data").get("jobsTrack").get("model");
+			String width = (String) json.get("data").get("jobsTrack").get("width");
+			ArrayList jar = (ArrayList) json.get("data").get("jobsTrack").get("datalist");
+			String title = (String) json.get("data").get("jobsTrack").get("title");
 			String[] widtharr = width.split(",");
 			
 			root.put("rowmodel", rowModel);

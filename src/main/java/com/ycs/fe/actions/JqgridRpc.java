@@ -3,16 +3,14 @@ package com.ycs.fe.actions;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 import com.ycs.fe.cache.ScreenDetails;
 import com.ycs.fe.commandprocessor.CommandProcessor;
@@ -71,9 +69,9 @@ public class JqgridRpc extends ActionSupport {
 	)
 	public String execute(){
 		
-		JSONObject jobj = null;
+		HashMap<String,Object> jobj = null;
 //		if("true".equals(command)){
-			JSONObject oResult = new JSONObject();
+		HashMap<String,Object> oResult = new HashMap<String,Object>();
 //http://www.trirand.com/blog/jqgrid/server.php?q=2&_search=false&nd=1313507637422&rows=10&page=1&sidx=id&sord=desc			
 //submitdata={form1:[{row:0,}],pagination:{form1:{currentpage:1,pagecount:200}}, bulkcmd:''...}
 			ScreenDetails screenDetails = null;
@@ -90,7 +88,7 @@ public class JqgridRpc extends ActionSupport {
 				logger.error("screenDetailsRetrievalError",e);
 			}
 			
-			JSONObject submitdataObj = JSONObject.fromObject(submitdata);
+			Map<String,Object> submitdataObj = new Gson().fromJson(submitdata, Map.class);
 			PaginationDTO pageDTO = new PaginationDTO();
 			pageDTO.setPage(page);
 			pageDTO.setRows(rows);
@@ -101,13 +99,14 @@ public class JqgridRpc extends ActionSupport {
 			pageDTO.setSearchString(searchString);
 			
 			  if (filters != null && !"".equals(filters)) {
-				  JSONObject filterJson = JSONObject.fromObject(filters);
-				  JsonConfig jcfg = new JsonConfig();
-				  jcfg.setRootClass(PagingFilters.class);
-				  Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
-				  classMap.put( "rules", PagingFilterRule.class );  
-				  classMap.put( "groups", PagingFilters.class );  
-				PagingFilters filter = (PagingFilters) JSONObject.toBean(filterJson, PagingFilters.class,classMap);//, jcfg);
+				  Map<String,Object> filterJson = new Gson().fromJson(filters, Map.class);
+//				  JsonConfig jcfg = new JsonConfig();
+//				  jcfg.setRootClass(PagingFilters.class);
+//				  Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
+//				  classMap.put( "rules", PagingFilterRule.class );  
+//				  classMap.put( "groups", PagingFilters.class );  
+//				PagingFilters filter = (PagingFilters) JSONObject.toBean(filterJson, PagingFilters.class,classMap);//, jcfg);
+				  PagingFilters filter = new Gson().fromJson(filters, PagingFilters.class);  
 				//JSONObject job = org.json.JSONObject();
 				for (PagingFilterRule rule: filter.getRules()) {
 					if(screenDetails.nameColumnMap.get(rule.getField()) !=null){ //remove this for strict security
@@ -119,12 +118,12 @@ public class JqgridRpc extends ActionSupport {
 				if(filter != null)
 					pageDTO.setFilters(filter);
 				
-				logger.debug("filters:" + JSONObject.fromObject(filter).toString() + " sord:" + sord + " sidx:" + sidx);
+				logger.debug("filters:" + new Gson().toJson(filter).toString() + " sord:" + sord + " sidx:" + sidx);
 			  }
 			  
-			  JSONObject pagination = JSONObject.fromObject(pageDTO);
-			  JSONObject pagestack = new JSONObject();
-			  pagestack.put(STACK, pagination);
+//			  JSONObject pagination = new Gson().toJson(pageDTO);
+			  Map<String,Object> pagestack = new HashMap<String,Object>();
+			  pagestack.put(STACK, pageDTO);
 			  submitdataObj.put("pagination", pagestack);
 //			  JSONObject bulkcmd = JSONObject.fromObject("{'bulkcmd':'gridtest'}");
 //			  submitdataObj.put("bulkcmd", "prodgrid");
@@ -132,7 +131,7 @@ public class JqgridRpc extends ActionSupport {
 			  logger.debug("send to BE :"+submitdataObj.toString());
 			  			CommandProcessor cmdpr = new CommandProcessor();
 			  			ResultDTO resDTO = cmdpr.commandProcessor(submitdataObj, screenName);
-			  			logger.debug("back from cmd processor:"+ JSONObject.fromObject(resDTO));
+			  			logger.debug("back from cmd processor:"+ new Gson().toJson(resDTO));
 			  			logger.debug("back from cmd processor pagination:"+  resDTO.getPagination());
 			
 			
@@ -155,12 +154,22 @@ public class JqgridRpc extends ActionSupport {
 			}
 			*/
 			  			
-			JSONArray jrow2 = null;  			
-			if (resDTO != null && JSONObject.fromObject(resDTO.getData()).containsKey(STACK)) {
-				  jrow2 = JSONObject.fromObject(resDTO.getData()).getJSONArray(STACK);
+			List jrow2 = null;  			
+			if (resDTO != null && resDTO.getData().containsKey(STACK)) {
+				  jrow2 = (List) resDTO.getData().get(STACK); //array
 				Map<String, Map<String, Integer>> pagingMultiForm = resDTO.getPagination();
 			    Map<String, Integer> pageingRet = pagingMultiForm.get(STACK);
 				if (pageingRet != null) {
+//					Object o;
+//					try{
+//						o = pageingRet.get("currentpage");
+//						double p =  (Double)o;
+//						int s = (int)p;
+//					System.out.println(s);
+//					}catch(Exception e){
+//						e.printStackTrace();
+//					}
+//					o = pageingRet.get("currentpage");
 					oResult.put("page", pageingRet.get("currentpage"));
 					oResult.put("total", pageingRet.get("totalpage"));
 					oResult.put("records", pageingRet.get("totalrec"));
@@ -169,7 +178,7 @@ public class JqgridRpc extends ActionSupport {
 				// oResult.put("rows", oAllrows );
 				oResult.put("rows", jrow2);
 				//"errors":[],"fieldErrors":null,"messages":["SUCCESS:10|"]
-				JSONObject userdata = new JSONObject();
+				Map<String,Object> userdata = new HashMap<String,Object>();
 				userdata.put("errors", resDTO.getErrors());
 				
 				userdata.put("fieldErrors", (resDTO.getFieldErrors()==null)?null:resDTO.getFieldErrors());
@@ -180,8 +189,8 @@ public class JqgridRpc extends ActionSupport {
 				jobj = oResult;
 			}else{
 				//error occurred. 
-				jobj = new JSONObject();
-				JSONObject userdata = new JSONObject();
+				jobj = new HashMap<String,Object>();
+				Map<String,Object> userdata = new HashMap<String,Object>();
 				userdata.put("errors", resDTO.getErrors());
 				
 				userdata.put("fieldErrors", (resDTO.getFieldErrors()==null)?null:resDTO.getFieldErrors());
@@ -199,7 +208,7 @@ public class JqgridRpc extends ActionSupport {
 //		} catch (JSONException e) {
 //			e.printStackTrace();
 //		}
-		String json = jobj.toString();
+		String json = new Gson().toJson(jobj).toString();
 		
 		
 		logger.debug("Sent back to client:"+json);

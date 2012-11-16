@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -27,14 +24,13 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.convention.annotation.InterceptorRefs;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
 
 import servershell.be.dao.BackendException;
 import servershell.util.CompoundResource;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
 
@@ -52,7 +48,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 	
 	private String feUploadDir;
 	private String beUploadDir;
-	
+	private Gson gson = new Gson();
 	
 	/**
 	 * 
@@ -136,7 +132,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 	public String feupload(){
 		System.out.println("FE file upload started ..");
 		String jsonString = "";
-		JSONObject jobj= new JSONObject() ;
+		HashMap<String,Object> jobj= new HashMap<String,Object>() ;
 		String message = "";
 		
 		ResourceBundle rb = ResourceBundle.getBundle("config");
@@ -175,11 +171,11 @@ public class FileAction extends ActionSupport implements SessionAware {
 		if (getActionErrors().size() > 0) {
 			jsonString = getActionErrors().toString();
 		}else{
-			JSONArray jar = new JSONArray();
+			List jar = new ArrayList();
 			jar.addAll(getActionMessages());
 			jobj.put("actionMessages", jar);
 			jobj.put("message", message);
-			jsonString =  jobj.toString();
+			jsonString =  gson.toJson(jobj).toString();
 		}
 		inputStream = new ByteArrayInputStream(jsonString.getBytes());
 		
@@ -197,7 +193,7 @@ public class FileAction extends ActionSupport implements SessionAware {
 	public String upload(){
 		 
 		String jsonString = "";
-		JSONObject jobj= new JSONObject() ;
+		HashMap<String,Object> jobj= new HashMap<String,Object>() ;
 		String message = "";
 		
 		HttpClient client = new DefaultHttpClient();
@@ -259,11 +255,11 @@ public class FileAction extends ActionSupport implements SessionAware {
 	        if (getActionErrors().size() > 0) {
 				jsonString = getActionErrors().toString();
 			}else{
-				JSONArray jar = new JSONArray();
+				List jar = new ArrayList();
 				jar.addAll(getActionMessages());
 				jobj.put("actionMessages", jar);
 				jobj.put("message", message);
-				jsonString =  jobj.toString();
+				jsonString =  gson.toJson(jobj).toString();
 			}
 			inputStream = new ByteArrayInputStream(jsonString.getBytes());
 			

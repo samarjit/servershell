@@ -7,22 +7,24 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONObject;
 import servershell.be.dao.DBConnector;
+
+import com.google.gson.Gson;
 
 public class ReverseEngineerXml {
 	private String globalSQL = "  SELECT PRODUCT_CODE ,  PRODUCT_NAME ,  PLASTIC_CODE,   PLASTIC_DESC    FROM PRODUCT_DETAILS ";
 	private  StringWriter strw = null;
-	JSONObject jresult = null;
+	HashMap<String,String> jresult = null;
 	
 	public String getStringResult(String globalSQL) throws Exception{
 		this.globalSQL = globalSQL;
 		reverseEng();
-		return jresult.toString();
+		return new Gson().toJson(jresult).toString();
 	}
 	public static String toProperCase(String inputString) {
 
@@ -112,7 +114,7 @@ public class ReverseEngineerXml {
 		
 		strw = new StringWriter();
 		PrintWriter out = new PrintWriter( strw);
-		jresult = new JSONObject();
+		jresult = new HashMap<String,String>();
 		
 		StringBuffer sb = new StringBuffer();
 		if(tableName == null || tableName.equals("")){

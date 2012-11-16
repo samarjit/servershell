@@ -2,14 +2,14 @@ package com.ycs.be.commandprocessor;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -18,6 +18,7 @@ import org.dom4j.Node;
 import repo.txnmap.generated.Root;
 import repo.txnmap.generated.Txn;
 
+import com.google.gson.Gson;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.ResultDTO;
 import com.ycs.be.exception.FrontendException;
@@ -47,7 +48,7 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 	 */
 
 	@Override
-	public ResultDTO processCommand(String screenName, String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
+	public ResultDTO processCommand(String screenName, String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
 		HashMap<String, Object>  data = new HashMap<String, Object>();
 		resultDTO = new ResultDTO();
 		try {
@@ -62,14 +63,14 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 			
 			String jsonFromConf = queryNode.getText();
 			String resultJsonConf = ParseSentenceOgnl.parse(jsonFromConf, jsonRecord);
-			JSONObject jsonObj = JSONObject.fromObject(resultJsonConf);
+			Map<String,Object> jsonObj = new Gson().fromJson(resultJsonConf, Map.class);
 
 			String unique = new String();
 			String application_name = "ICICI_BRUSER3_1298884319363";
 			String transcode = ""; // will be coming form command
 			String netId = "BRUSER3";
-			JSONObject singleData = null;
-			JSONArray multipleData = null;
+			Map<String,Object> singleData = null;
+			List<Object> multipleData = null;
 			// creating a unique id.
 			
 			// unique id = transaction code.
@@ -79,13 +80,13 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 			logger.debug("calling DM command Processor");
 
 			if (jsonObj.containsKey("single"))
-				singleData = jsonObj.getJSONObject("single");
+				singleData = (Map<String, Object>) jsonObj.get("single"); //object
 
 			if (jsonObj.containsKey("transcode"))
-				transcode = jsonObj.getString("transcode");
+				transcode = (String) jsonObj.get("transcode"); //string
 
 			if (jsonObj.containsKey("multiple"))
-				multipleData = jsonObj.getJSONArray("multiple");
+				multipleData = (List<Object>) jsonObj.get("multiple"); //list
 
 
 			final JAXBContext jc = JAXBContext.newInstance(Root.class);
@@ -220,8 +221,8 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 								columnName = columnName.substring(0, index);
 							String mltplDtValue = null;
 
-							if (multipleData.getJSONObject(i).containsKey(columnName)) {
-								mltplDtValue = multipleData.getJSONObject(i).getString(columnName);
+							if (((Map<String, Object>) multipleData.get(i)).containsKey(columnName)) { //object
+								mltplDtValue = (String) ((Map<String, Object>) multipleData.get(i)).get(columnName); //object
 							}
 							if (mltplDtValue != null) {
 								xml += "<" + columnName + ">" + mltplDtValue + "</" + columnName + ">";
@@ -256,9 +257,9 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 		} catch (SentenceParseException e) {
 			resultDTO.addError("error.sentenceparse");
 			logger.error("error.sentenceparse", e);
-		} catch (JSONException e) {
-			resultDTO.addError("error.jsonexception");
-			logger.error("error.jsonexception", e);
+//		} catch (JSONException e) {
+//			resultDTO.addError("error.jsonexception");
+//			logger.error("error.jsonexception", e);
 		} catch (WebServiceException e ){
 			resultDTO.addError("error.webservice");
 			logger.error("error.webservice", e);
@@ -289,7 +290,7 @@ public class DmCommandProcessor implements BaseCommandProcessor {
 		DmCommandProcessor test = new DmCommandProcessor();
 		String submitdatatxncode = "{'cmd':'STUCAP','single':{'FF0151':'aaa','FF0148':'bbb','FF01258':'eee'},'multiple':[{'FF9000':111,'FF0151':222,'FF0152':333},{'FF0151':555},{'FF9000':456,'FF0151':765,'FF0152':877}]}";
 		submitdatatxncode = "{'transcode':'BNGPVW','multiple':[{'FF0143':'100001'},{'FF0143':'100002'}]}";
-		JSONObject jsonRecord = JSONObject.fromObject(submitdatatxncode);
-		test.processCommand(null, null, null, null, null);
+//		JSONObject jsonRecord = JSONObject.fromObject(submitdatatxncode);
+//		test.processCommand(null, null, null, null, null);
 	}
 }

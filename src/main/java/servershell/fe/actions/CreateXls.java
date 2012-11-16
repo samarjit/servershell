@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -46,7 +44,7 @@ public class CreateXls extends ActionSupport {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private JSONObject jobj;
+	private HashMap<String,Object> jobj;
 	public InputStream inputStream;
 	public String message;
 	public String contentType;
@@ -84,11 +82,11 @@ public class CreateXls extends ActionSupport {
 		return inputStream;
 	}
 
-	public JSONObject getJobj() {
+	public HashMap<String,Object> getJobj() {
 		return jobj;
 	}
 
-	public void setJobj(JSONObject jobj) {
+	public void setJobj(HashMap<String,Object> jobj) {
 		this.jobj = jobj;
 	}
 	

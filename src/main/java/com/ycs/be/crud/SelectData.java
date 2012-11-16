@@ -2,8 +2,7 @@ package com.ycs.be.crud;
 
 import java.util.HashMap;
 import java.util.List;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -16,18 +15,18 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.ycs.be.dao.FETranslatorDAO;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.PrepstmtDTO;
+import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
-import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.util.ScreenMapRepo;
 
 public class SelectData {
 private Logger logger = Logger.getLogger(getClass()); 
-	public ResultDTO selectData(String screenName, String panelname,  JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public ResultDTO selectData(String screenName, String panelname,  Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		return selectData(screenName, panelname,"sqlselect", jsonObject, jsonInput, prevResultDTO);
 	}
 	
-	public ResultDTO selectData(String screenName, String panelname,String querynode, JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public ResultDTO selectData(String screenName, String panelname,String querynode, Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		 
 		 
 			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
@@ -90,10 +89,10 @@ private Logger logger = Logger.getLogger(getClass());
 						int reccount = fetranslatorDAO.executeCountQry(screenName, parsedquery, outstack, arparam);
 						
 						if(reccount > pagesize){
-							JSONObject jsonobject = jsonObject.getJSONObject("pagination");
+							Map<String,Object> jsonobject = (Map<String, Object>) jsonObject.get("pagination"); //object
 							int pageno = 0;
-							JSONObject	panel = jsonobject.getJSONObject(outstack);
-							pageno =  panel.getInt("currentpage");
+							Map	panel =  (Map) jsonobject.get(outstack); //object
+							pageno =  (Integer) panel.get("currentpage"); //int
 							int pagecount = (int) Math.ceil((double)reccount / pagesize); 
 							 
 							//pagination:{form1:{currentpage:1,pagecount:200}} 

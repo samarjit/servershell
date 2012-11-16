@@ -1,7 +1,5 @@
 package com.ycs.fe;
 
-import java.sql.SQLException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -10,7 +8,7 @@ import net.sf.ehcache.CacheException;
 
 import org.apache.log4j.Logger;
 
-import com.ycs.oldfe.commandprocessor.AppCacheManager;
+import com.ycs.fe.cache.AppCacheManager;
 
  
 /**

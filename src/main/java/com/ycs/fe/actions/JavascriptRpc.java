@@ -2,20 +2,17 @@ package com.ycs.fe.actions;
 
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.ycs.fe.businesslogic.BaseBL;
-import com.ycs.fe.cache.BusinessLogicFactory;
 import com.ycs.fe.commandprocessor.CommandProcessor;
 import com.ycs.fe.dto.InputDTO;
 import com.ycs.fe.dto.ResultDTO;
@@ -66,7 +63,7 @@ public class JavascriptRpc extends ActionSupport {
 				//Element root = ScreenMapRepo.findMapXMLRoot(screenName);
 				FEValidator validator = new FEValidator();
 				logger.debug("JsonRPC with submitdata="+submitdata);
-				JSONObject submitdataObj = JSONObject.fromObject(submitdata);
+				Map<String,Object> submitdataObj =  new Gson().fromJson(submitdata, Map.class);
 				
 				ResultDTO validatorDTO = validator.validate(screenName,submitdataObj);
 				if(validatorDTO!=null && validatorDTO.getErrors() != null){
@@ -76,7 +73,7 @@ public class JavascriptRpc extends ActionSupport {
 				}
 		
 				InputDTO inputDTO = new InputDTO();
-				inputDTO.setData((JSONObject) submitdataObj);
+				inputDTO.setData(submitdataObj);
 				ActionContext.getContext().getValueStack().getContext().put("inputDTO", inputDTO);
 				
 				CommandProcessor cmdpr = new CommandProcessor();
@@ -114,7 +111,7 @@ public class JavascriptRpc extends ActionSupport {
 //			e1.printStackTrace();
 //		}
 		
-		JSONObject jobj = JSONObject.fromObject(resDTO);
+		String jobj =  new Gson().toJson(resDTO);
 //		try {
 //			jobj.put("data",resDTO.getData());
 //			jobj.put("pagination",resDTO.getPagination());

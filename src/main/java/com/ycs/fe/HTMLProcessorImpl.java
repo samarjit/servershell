@@ -9,7 +9,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,9 +35,6 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.dom4j.dom.DOMDocumentFactory;
 import org.dom4j.io.SAXReader;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,7 +42,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -380,7 +379,7 @@ public class HTMLProcessorImpl extends HTMLProcessor   {
 				if(dfvalue.length() == 0){
 					dfvalue="{}";
 				}
-				JSONObject dfjson = new JSONObject(dfvalue);
+				HashMap<String,String> dfjson = new Gson().fromJson(dfvalue, HashMap.class);
 				NodeList displayfield = compositefield.getElementsByTagName("displayfield");
 				Element datafldhtm = dochtml.createElement("input");
 				datafldhtm.setAttribute("type", dftype);
@@ -403,8 +402,8 @@ public class HTMLProcessorImpl extends HTMLProcessor   {
 					difldhtm.setAttribute("type", detype);
 					difldhtm.setAttribute("id", dename);
 					difldhtm.setAttribute("name", dename);
-					if(dfjson.has(dename))
-					difldhtm.setAttribute("value", dfjson.getString(dename));
+					if(dfjson.containsKey(dename))
+					difldhtm.setAttribute("value", dfjson.get(dename));
 					difldhtm.setAttribute("onblur", "updateCompositeField(this,'#"+dfid+"')");
 					if(dfforidfound == false && n!=null){
 						dfforidfound = true; //appending to first display element
@@ -427,19 +426,22 @@ public class HTMLProcessorImpl extends HTMLProcessor   {
 			}
 			//JSON rule begin
 			nl = (NodeList) xp.evaluate("//rule", xmlelmNode, XPathConstants.NODESET);
-			JSONObject rulejson = new JSONObject("{rules:{},messages:{}}");
+			HashMap<String,Object> rulejson = new HashMap<String,Object>(); //"{rules:{},messages:{}}"
+			rulejson.put("rules", new HashMap<String,Object>());
+			rulejson.put("messages", new HashMap<String,Object>());
 			for (int i = 0; i < nl.getLength(); i++) {
 				Element ruleElm = (Element) nl.item(i);
 				String ruletext = ruleElm.getNodeValue();
 				logger.debug("Rule="+ruletext);
 				if(ruletext != null && ruletext.length() > 0){
-					JSONArray jar = new JSONArray(ruleElm.getNodeValue());
+					ArrayList<HashMap<String,Object>> jar = new Gson().fromJson(ruleElm.getNodeValue(), ArrayList.class);
+					//JSONArray jar = new JSONArray(ruleElm.getNodeValue());
 					//JSONObject messageelmpart =  jobj.getJSONObject("messages");
-					for (int j = 0; j < jar.length(); j++) {
-						JSONObject jobj = jar.getJSONObject(j);
-						String fieldname=jobj.getString("fieldname");
-						rulejson.getJSONObject("rules").put(fieldname, jobj.get("rules"));
-						rulejson.getJSONObject("messages").put(fieldname, jobj.get("messages"));
+					for (int j = 0; j < jar.size(); j++) {
+						 HashMap<String, Object> jobj = jar.get(j);
+						String fieldname = (String) jobj.get("fieldname"); //string
+						((HashMap<String,Object>) rulejson.get("rules")).put(fieldname, jobj.get("rules"));
+						((HashMap<String,Object>) rulejson.get("messages")).put(fieldname, jobj.get("messages"));
 					} 
 					 
 				}
@@ -447,7 +449,7 @@ public class HTMLProcessorImpl extends HTMLProcessor   {
 			//default rule properties ,errorElement:\"div\",errorLabelContainer:\"#alertmessage\"
 			rulejson.put("errorElement", "label");
 			rulejson.put("errorLabelContainer", "#alertmessage");
-			globaljs +="var rule="+rulejson.toString(3)+";\n";
+			globaljs +="var rule="+new Gson().toJson(rulejson)+";\n";
 			String strrule = "<script>"+globaljs+"</script>";
 			appendXmlFragment(dbuild, headNode, strrule);
 			//JSON rule ends

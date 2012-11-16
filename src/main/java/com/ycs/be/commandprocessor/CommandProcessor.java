@@ -1,11 +1,14 @@
 package com.ycs.be.commandprocessor;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -13,6 +16,7 @@ import org.apache.struts2.ServletActionContext;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import com.google.gson.Gson;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.ResultDTO;
 import com.ycs.be.exception.FrontendException;
@@ -51,7 +55,7 @@ public class CommandProcessor {
 	 * @return
 	 * @throws Exception 
 	 */
-	public ResultDTO commandProcessor( JSONObject submitdataObj, String screenName){
+	public ResultDTO commandProcessor( Map<String,Object> submitdataObj, String screenName){
 		
 	
 //		JsrpcPojo rpc = new JsrpcPojo();
@@ -70,9 +74,9 @@ public class CommandProcessor {
 					for (String sessVariable : arSessionVar) {
 							String[] sessionField = sessVariable.trim().split("\\|");
 						String sessionData = "";
+							sessionData = (String) ServletActionContext.getContext().getSession().get(sessionField[0]);
 						if(sessionField.length >1){
 							//datatype is defined and it is required
-								sessionData = (String) ServletActionContext.getContext().getSession().get(sessionField[0]);
 								System.out.println("sessionData:"+sessionData);
 							if(sessionField[1].equals("INT")){
 								sessionData.matches("0-9");
@@ -84,21 +88,21 @@ public class CommandProcessor {
 					}
 				}
 			}
-			((JSONObject) submitdataObj).put("sessionvars",sessionMap);
+			   submitdataObj.put("sessionvars",sessionMap);
 		   }
 		}
 		InputDTO inputDTO = new InputDTO();
-		inputDTO.setData((JSONObject) submitdataObj);
+		inputDTO.setData( submitdataObj);
 		
 		if(Constants.CMD_PROCESSOR == Constants.APP_LAYER){
 			
 			Element rootXml = ScreenMapRepo.findMapXMLRoot(screenName);
 			
 		    @SuppressWarnings("unchecked")
-			Set<String>  itr =  ( (JSONObject) submitdataObj).keySet(); 
+			Set<String>  itr =     submitdataObj.keySet(); 
 		    
-		    if(submitdataObj.get("bulkcmd") !=null && !"inline".equals(submitdataObj.getString("bulkcmd"))){
-		    	String bulkcmd = ((JSONObject) submitdataObj).getString("bulkcmd");
+		    if(submitdataObj.get("bulkcmd") !=null && !"inline".equals((String)submitdataObj.get("bulkcmd"))){
+		    	String bulkcmd =  (String)submitdataObj.get("bulkcmd");
 		    	Element elmBulkCmd = (Element) rootXml.selectSingleNode("/root/screen/commands/bulkcmd[@name='"+bulkcmd+"']");
 		    	logger.debug("/root/screen/commands/bulkcmd[@name='"+bulkcmd+"']");
 		    	String operation = "";
@@ -127,9 +131,9 @@ public class CommandProcessor {
 //			    	if(dataSetkey.equals("bulkcmd") || dataSetkey.equals("txnrec")   ||  dataSetkey.equals("sessionvars")||  dataSetkey.equals("pagination"))continue;
 			    	if(! dataSetkey.startsWith("form"))continue;
 			    	
-			    	JSONArray dataSetJobj = ((JSONObject) submitdataObj).getJSONArray(dataSetkey);
-			    	for (Object jsonRecord : dataSetJobj) { //rows in dataset a Good place to insert DB Transaction
-			    		String cmd = ((JSONObject) jsonRecord).getString("command");
+			    	List<Map<String,Object>> dataSetJobj = (List<Map<String,Object>>) submitdataObj.get(dataSetkey);
+			    	for (Map<String,Object> jsonRecord : dataSetJobj) { //rows in dataset a Good place to insert DB Transaction
+			    		String cmd = (String) jsonRecord.get("command"); //string
 			    		if(cmd != null && !"".equals(cmd) ){
 			    		Element elmCmd = (Element) rootXml.selectSingleNode("/root/screen/commands/cmd[@name='"+cmd+"' ] ");
 			    		System.out.println("/root/screen/commands/cmd[@name='"+cmd+"' ] ");
@@ -144,7 +148,7 @@ public class CommandProcessor {
 			    			Element processorElm = (Element) rootXml.selectSingleNode("/root/screen/*/"+querynodeXpath+" ");
 			    			String strProcessor = processorElm.getParent().getName();
 			    		    BaseCommandProcessor cmdProcessor =  CommandProcessorResolver.getCommandProcessor(strProcessor);
-			    		    resDTO = cmdProcessor.processCommand(screenName, querynodeXpath, (JSONObject) jsonRecord, inputDTO, resDTO);				
+			    		    resDTO = cmdProcessor.processCommand(screenName, querynodeXpath, (Map<String,Object>)jsonRecord, inputDTO, resDTO);				
 			    		    //resDTO = rpc.selectData(  screenName,   null, querynodeXpath ,   (JSONObject)jsonRecord);
 			    		    if(resDTO.getErrors().size()>0)break;
 			    		}
@@ -155,8 +159,8 @@ public class CommandProcessor {
 				}
 		    }
 		}else{
-			String resultJson = remoteCommandProcessor (submitdataObj.toString(), screenName);
-			resDTO = ResultDTO.fromJsonString(JSONObject.fromObject(resultJson));
+			String resultJson = remoteCommandProcessor (new Gson().toJson(submitdataObj).toString(), screenName);
+			resDTO = ResultDTO.fromJsonString(resultJson);
 		}
 		} catch (FrontendException e) {
 			if(resDTO == null)resDTO= new ResultDTO();
@@ -176,10 +180,23 @@ public class CommandProcessor {
 	}
 	
 	private String remoteCommandProcessor(String submitdataObj, String screenName) {
-		QueryServiceService qss = new QueryServiceService();
+		ResourceBundle rb = ResourceBundle.getBundle(Constants.PATH_CONFIG);
+		String wsbasepath = rb.getString("be.webservice.basepath");
+		URL url = null;
+		try {
+			url = new URL(wsbasepath+"/qservice?wsdl");
+		} catch (MalformedURLException e) {
+			logger.error("remoteCommandProcessor URL exception",e);
+		}
+		QueryServiceService qss = new QueryServiceService(url, new QName("http://ws.ycs.com/", "QueryServiceService"));
 		 QueryService queryServicePort = qss.getQueryServicePort();
+		 logger.info("Sent to BE WebService: screenName="+screenName+" submitdata="+submitdataObj  );
 		 String strResDTO = queryServicePort.remoteCommandProcessor(submitdataObj, screenName);
-		 logger.debug("Ret from BE: "+StringUtils.abbreviate(strResDTO, 100) );
+		 qss = null;
+		 url = null;
+		 wsbasepath = null;
+		 rb = null;
+		 logger.info("Ret from BE screenName="+screenName+" returned data= "+StringUtils.abbreviate(strResDTO, 100) );
 		return strResDTO;
 	}
 

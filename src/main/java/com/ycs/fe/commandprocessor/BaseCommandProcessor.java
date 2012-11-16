@@ -1,6 +1,6 @@
 package com.ycs.fe.commandprocessor;
 
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import com.ycs.fe.dto.InputDTO;
 import com.ycs.fe.dto.ResultDTO;
@@ -15,5 +15,5 @@ public interface BaseCommandProcessor {
  * queries
  * @return The complete resultDTO once all the queries in the chain are processed.
  */
-ResultDTO processCommand(String screenName,String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
+ResultDTO processCommand(String screenName,String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
 }

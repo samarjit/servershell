@@ -3,8 +3,6 @@ package com.ycs.fe.crud;
 import java.util.HashMap;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -19,13 +17,14 @@ import com.ycs.fe.util.ScreenMapRepo;
 
 public class DeleteData {
 private Logger logger = Logger.getLogger(getClass()); 
-	public String delete(String screenName, String panelname, JSONObject jsonObject,  InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public String delete(String screenName, String panelname, HashMap<String,Object> jsonObject,  InputDTO jsonInput, ResultDTO prevResultDTO) {
 		logger.debug("calling first default(first) sqldelete query");
 		return delete(screenName, panelname,"sqldelete", jsonObject, jsonInput, prevResultDTO);
 	}
-	public String delete(String screenName, String panelname,String querynode, JSONObject jsonObject,  InputDTO jsonInput, ResultDTO prevResultDTO) {	 
+	public String delete(String screenName, String panelname,String querynode,  HashMap<String,Object> jsonObject,  InputDTO jsonInput, ResultDTO prevResultDTO) {	 
 		
 		String parsedquery = "";
+		QueryParser queryParser = new QueryParser();
 			try {
 				String xmlconfigfile =  ScreenMapRepo.findMapXMLPath(screenName);
 				org.dom4j.Document document1 = new SAXReader().read(xmlconfigfile);
@@ -43,7 +42,7 @@ private Logger logger = Logger.getLogger(getClass());
 				List<Element> nodeList = crudnode.selectNodes("../fields/field/*");
 				logger.debug("fields size:"+nodeList.size());
 				HashMap<String, DataType> hmfielddbtype = new HashMap<String, PrepstmtDTO.DataType>();
-				QueryParser.populateFieldDBType(nodeList, hmfielddbtype);
+				queryParser.populateFieldDBType(nodeList, hmfielddbtype);
 				
 				/*Pattern pattern  = Pattern.compile(":(\\w*)",Pattern.DOTALL|Pattern.MULTILINE);
 				Matcher m = pattern.matcher(updatequery);
@@ -59,7 +58,7 @@ private Logger logger = Logger.getLogger(getClass());
 				List<Element> primarykeys = crudnode.selectNodes("../fields/field/*[@primarykey]");
 				
 				PrepstmtDTOArray  arparam = new PrepstmtDTOArray();
-				parsedquery = QueryParser.parseQuery(updatequery, panelname, jsonObject, arparam, hmfielddbtype, jsonInput, prevResultDTO);
+				parsedquery = queryParser.parseQuery(updatequery, panelname, jsonObject, arparam, hmfielddbtype, jsonInput, prevResultDTO);
 			       
 			       logger.debug("UPDATE query:"+parsedquery+"\n Expanded prep:"+arparam.toString(updatequery));
 			}catch(Exception e){

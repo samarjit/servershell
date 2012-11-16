@@ -2,8 +2,7 @@ package com.ycs.be.crud;
 
 import java.util.HashMap;
 import java.util.List;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -12,17 +11,17 @@ import org.dom4j.io.SAXReader;
 
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.PrepstmtDTO;
+import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
-import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.util.ScreenMapRepo;
 
 public class SelectListData {
 private Logger logger = Logger.getLogger(getClass()); 
-	public String selectList(String screenName, String panelname, JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public String selectList(String screenName, String panelname, Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		 return selectList(screenName, panelname,"sqlselect", jsonObject, jsonInput, prevResultDTO);
 	}
-	public String selectList(String screenName, String panelname,String querynode, JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public String selectList(String screenName, String panelname,String querynode, Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 			String parsedquery = "";
 			QueryParser queryParser = new QueryParser();
 			try {

@@ -1,12 +1,13 @@
 package com.ycs.be.dto;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
+import com.google.gson.Gson;
+
+
 
 public class ResultDTO {
 
@@ -24,6 +25,7 @@ public ResultDTO() {
 	errors = new ArrayList<String>();
 	messages = new ArrayList<String>();
 	pagination = new HashMap<String, Map<String,Integer>>();
+	
 //	HashMap<String, Integer> hm = new HashMap<String, Integer>();
 //	hm.put("currentpage",1);
 //	hm.put("totalpage",1);
@@ -189,20 +191,22 @@ public void setResultScrName(String resultScrName) {
 }
 
 
-public static ResultDTO fromJsonString(JSONObject resDTOjson){
+public static ResultDTO fromJsonString(String jsonResDTO){
+	Gson gson = new Gson();
+	HashMap<String,Object> resDTOjson = gson.fromJson(jsonResDTO, HashMap.class);;
 	ResultDTO tempDTO = new ResultDTO();
 	 HashMap<String,Object> tmpHm = new HashMap<String, Object>();
-	 JSONObject data1 = resDTOjson.getJSONObject("data");
+	 HashMap<String,Object> data1 = (HashMap<String, Object>) resDTOjson.get("data"); //object
 	 tmpHm.putAll(data1);
 	 tempDTO.setData(tmpHm);
-	 tempDTO.setErrors(resDTOjson.getJSONArray("errors"));
-	 tempDTO.setMessages(resDTOjson.getJSONArray("messages"));
-	 Map<String, Map<String,Integer>> pagination =   (Map<String, Map<String, Integer>>) resDTOjson.getJSONObject("pagination");
+	 tempDTO.setErrors((List<String>)resDTOjson.get("errors")); //array
+	 tempDTO.setMessages((List<String>)resDTOjson.get("messages")); //array
+	 Map<String, Map<String,Integer>> pagination =   (Map<String, Map<String, Integer>>) resDTOjson.get("pagination"); //object
 	 System.out.println(pagination);
 	 tempDTO.setPagination(pagination);
-	 tempDTO.setSessionvars(resDTOjson.getJSONObject("sessionvars"));
+	 tempDTO.setSessionvars((Map<String,String>)resDTOjson.get("sessionvars")); //object
 	 if(resDTOjson.get("result")!=null)
-	   tempDTO.setResult(resDTOjson.getString("result"));
+	   tempDTO.setResult((String)resDTOjson.get("result"));
 	return tempDTO;
 	
 }

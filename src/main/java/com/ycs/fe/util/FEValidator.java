@@ -9,8 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -33,7 +32,7 @@ public class FEValidator  implements LocaleProvider{
 	private static Logger logger = Logger.getLogger(FEValidator.class);
 	private TextProvider textProvider;
 	private ResultDTO resultDTO = new ResultDTO();
-	public ResultDTO validate(String screenName, JSONObject submitdataObj) throws ValidationException{
+	public ResultDTO validate(String screenName, Map<String,Object> submitdataObj) throws ValidationException{
 		try{
 		Element rootElm = ScreenMapRepo.findMapXMLRoot(screenName);
 		
@@ -41,30 +40,30 @@ public class FEValidator  implements LocaleProvider{
 		for (Entry<String, Object> itr : s.entrySet()) { //form1, form2 ...skip txnrec, sessionvars, bulkcmd
 			if(itr.getKey().equals("sessionvars")){
 				//These will be most likely have not yet been set, validate directly from sessoin variable
-				JSONObject sessvars = (JSONObject) itr.getValue();
+				Map<String,Object> sessvars = (Map<String,Object>) itr.getValue();
 				System.out.println("Need to validate these:"+ sessvars);
 			}else if(itr.getKey().equals("bulkcmd")){
 				//do nothing
 			}else if(itr.getKey().equals("txnrec")){
-				JSONObject txnrec = (JSONObject) itr.getValue();
-				JSONObject singlerec = (JSONObject) txnrec.getJSONObject("single");
-				for (Iterator keyitr = singlerec.keys(); keyitr.hasNext();) {
+				Map<String,Object> txnrec = (Map<String,Object>) itr.getValue();
+				Map<String,Object> singlerec = (Map<String,Object>) txnrec.get("single"); //object
+				for (Iterator keyitr = singlerec.keySet().iterator(); keyitr.hasNext();) {
 					String keystr = (String) keyitr.next();
 					validateNode(screenName, rootElm, singlerec, keystr, null);
 				} 
-				JSONArray armultirec = txnrec.getJSONArray("multiple");
+				List armultirec = (List) txnrec.get("multiple"); //array
 				for (Iterator iterator = armultirec.iterator(); iterator.hasNext();) { //rows
-					JSONObject joMulti = (JSONObject) iterator.next(); //each row
-					for (Iterator keyitr = joMulti.keys(); keyitr.hasNext();) {
+					Map<String,Object> joMulti = (Map<String,Object>) iterator.next(); //each row
+					for (Iterator keyitr = joMulti.keySet().iterator(); keyitr.hasNext();) {
 						String keystr = (String) keyitr.next();
 						validateNode(screenName, rootElm, joMulti, keystr, null);
 					} 
 				}  
 			}else{ //form1,form2 ... data vaalidation
-				JSONArray rows =  (JSONArray) itr.getValue();
+				List rows =  (List) itr.getValue();
 				for (Iterator iterator = rows.iterator(); iterator.hasNext();) { //rows
-					JSONObject joMulti = (JSONObject) iterator.next(); //each row
-					for (Iterator keyitr = joMulti.keys(); keyitr.hasNext();) {
+					Map<String,Object> joMulti = (Map<String,Object>) iterator.next(); //each row
+					for (Iterator keyitr = joMulti.keySet().iterator(); keyitr.hasNext();) {
 						String keystr = (String) keyitr.next();
 						validateNode(screenName, rootElm, joMulti, keystr, null);
 					} 
@@ -99,7 +98,7 @@ public class FEValidator  implements LocaleProvider{
 //							if(sessionField[1].equals("INT")){
 //								sessionData.matches("0-9");
 //							}
-							JSONObject sessionJson = new JSONObject();
+							Map<String,Object> sessionJson = new HashMap<String,Object>();
 							sessionJson.put(sessionField[0], sessionData);
 							validateNode(screenName, rootElm, sessionJson, sessionField[0], sessionField[1]);
 						}
@@ -114,7 +113,7 @@ public class FEValidator  implements LocaleProvider{
 	}
 
 	private void validateNode(String screenName, Element rootElm,
-			JSONObject singlerec, String keystr, String overrideDatatype) {
+			Map<String,Object> singlerec, String keystr, String overrideDatatype) {
 		Element fieldNode = (Element) rootElm.selectSingleNode("/root/panels/panel/fields/field/*[@name='"+keystr+"']");
 		if (fieldNode != null) {
 			String strdbdatatype = fieldNode.attributeValue("dbdatatype");
@@ -132,79 +131,78 @@ public class FEValidator  implements LocaleProvider{
 			if (strdbcolsize != null && !"".equals(strdbcolsize)) {
 				colsize = Integer.parseInt(strdbcolsize);
 			}
+			String singleRecStr = (String) singlerec.get(keystr); //string
 			try {
-				DataType dbdatatype = PrepstmtDTO
-						.getDataTypeFrmStr(strdbdatatype);
+				DataType dbdatatype = PrepstmtDTO.getDataTypeFrmStr(strdbdatatype);
 				if (dbdatatype == DataType.STRING) {
 //					System.out.println("Validating string.....");
 //					addError("error.numberformat", keystr, strLabel,							singlerec.getString(keystr));
 					// filtering criterion required?
 				} else if (dbdatatype == DataType.INT) {
 					try {
-						if(singlerec.getString(keystr)!=null && !"".equals(singlerec.getString(keystr)))
-						Integer.parseInt(singlerec.getString(keystr));
+						if(singleRecStr!=null && !"".equals(singleRecStr))
+						Integer.parseInt(singleRecStr);
 					} catch (NumberFormatException e) {
 						addError("error.numberformat", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				} else if (dbdatatype == DataType.FLOAT) {
 					try {
-						if(singlerec.getString(keystr)!=null && !"".equals(singlerec.getString(keystr)))
-						Float.parseFloat(singlerec.getString(keystr));
+						if(singleRecStr!=null && !"".equals(singleRecStr))
+						Float.parseFloat(singleRecStr);
 					} catch (NumberFormatException e) {
 						addError("error.float", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				} else if (dbdatatype == DataType.DOUBLE) {
 					try {
-						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
-							Double.parseDouble(singlerec.getString(keystr));
+						if (singleRecStr != null && !"".equals(singleRecStr))
+							Double.parseDouble(singleRecStr);
 					} catch (NumberFormatException e) {
 						addError("error.double", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				} else if (dbdatatype == DataType.DATEDDMMYYYY) {
 					try {
-						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
-							new SimpleDateFormat("DD/MM/yyyy").parse(singlerec
-									.getString(keystr));
+						if (singleRecStr != null && !"".equals(singleRecStr))
+							new SimpleDateFormat("DD/MM/yyyy").parse(singleRecStr);
 					} catch (ParseException e) {
 						addError("error.dateDDMMyyyy", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				} else if (dbdatatype == DataType.DATE_NS) {
 					try {
-						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
+						if (singleRecStr != null && !"".equals(singleRecStr))
 							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-									.parse(singlerec.getString(keystr));
+									.parse(singleRecStr);
 					} catch (ParseException e) {
 						addError("error.date_ns", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				} else if (dbdatatype == DataType.TIMESTAMP) {
 					try {
-						if (singlerec.getString(keystr) != null && !"".equals(singlerec.getString(keystr)))
+						if (singleRecStr != null && !"".equals(singleRecStr))
 							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-									.parse(singlerec.getString(keystr));
+									.parse(singleRecStr);
 					} catch (ParseException e) {
 						addError("error.timestamp", keystr, strLabel,
-								singlerec.getString(keystr));
+								singleRecStr);
 					}
 				}
 			} catch (DataTypeException e) {
 				logger.error("datatype undefined", e);
 				addError("error.datatypeundefined", keystr, strLabel,
-						singlerec.getString(keystr));
+						singleRecStr);
 			}
 			if (strmandatory != null
 					&& ("yes".equals(strmandatory) || "true"
 							.equals(strmandatory))) {
-				if (singlerec.getString(keystr).length() < 1) {
-					addError("error.mandatory", keystr,	strLabel, singlerec.getString(keystr));
+				if (singleRecStr.length() < 1) {
+					addError("error.mandatory", keystr,	strLabel, singleRecStr);
 				}
 			}
-			if (colsize != -1 && singlerec.getString(keystr).length() > colsize) {
-				addError("error.colsize", keystr, strLabel, singlerec.getString(keystr));
+			if (colsize != -1 && singleRecStr.length() > colsize) {
+				addError("error.colsize", keystr, strLabel, singleRecStr);
 			}
 		}//field not is not defined for this key like 'command' 
 		else{
@@ -242,9 +240,9 @@ public class FEValidator  implements LocaleProvider{
 					if (strdbcolsize != null && !"".equals(strdbcolsize)) {
 						colsize = Integer.parseInt(strdbcolsize);
 					}
-					JSONObject rules = new JSONObject();
-					JSONObject messages = new JSONObject();
-					JSONObject field = new JSONObject();
+					Map<String,Object> rules = new HashMap<String,Object>();
+					Map<String,Object> messages = new HashMap<String,Object>();
+					Map<String,Object> field = new HashMap<String,Object>();
 					
 					String fldRuleStr = "";
 					String fldMsgStr = "";

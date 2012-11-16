@@ -2,8 +2,7 @@ package com.ycs.fe.businesslogic;
 
 import java.io.Serializable;
 import java.util.HashMap;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.ycs.fe.dto.InputDTO;
@@ -22,5 +21,5 @@ HashMap preCrudListener(ActionInvocation invocation);
 HashMap postCrudListener(ActionInvocation invocation);
 HashMap preWorkflowListener(ActionInvocation invocation);
 HashMap postWorkflowListener(ActionInvocation invocation);
-ResultDTO executeCommand(String screenName, String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
+ResultDTO executeCommand(String screenName, String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
 }

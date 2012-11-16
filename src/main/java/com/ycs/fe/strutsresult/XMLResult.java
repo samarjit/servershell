@@ -9,23 +9,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 import org.apache.struts2.views.freemarker.FreemarkerManager;
-import org.apache.struts2.views.freemarker.FreemarkerResult;
 import org.apache.struts2.views.xslt.AdapterFactory;
 import org.apache.struts2.views.xslt.ServletURIResolver;
-import org.json.JSONObject;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
@@ -128,7 +123,7 @@ public class XMLResult extends StrutsResultSupport {
              result = stack.findValue(exposedValue);
          }
          PrintWriter writer = response.getWriter();
-         JSONObject jobj = new JSONObject(result);
+         String jobj = new Gson().toJson(result);
          System.out.println("XMLResult:jobj="+jobj.toString());
          Source xmlSource = getDOMSourceForStack(result);
          

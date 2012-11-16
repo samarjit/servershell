@@ -18,8 +18,6 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,10 +32,11 @@ import servershell.util.CompoundResource;
 import servershell.util.ResourceBundleReloader;
 import servershell.util.SendToBE;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.Validations;
-import com.ycs.oldfe.commandprocessor.AppCacheManager;
+import com.ycs.fe.cache.AppCacheManager;
 import com.ycs.oldfe.commandprocessor.Constants;
 
 @ParentPackage("default")
@@ -53,6 +52,7 @@ public class ScreenAction extends ActionSupport{
 	
 	public InputStream inputStream;
 	public String sqlstring;
+	private Gson gson = new Gson();
 	
 	@SuppressWarnings("deprecation")
 	@Action(value="brevengg")
@@ -122,13 +122,13 @@ public class ScreenAction extends ActionSupport{
 				fw.close();
 				
 				///saving config to BE//
-				JSONObject jobj = new JSONObject();
+				HashMap<String,Object> jobj = new HashMap<String,Object>();
 				jobj.put("filepath", bepagexmlpath);
 				jobj.put("filename", pagexmlfilename);
 				jobj.put("fefile", pagexml);
 				jobj.put("create", "true");
 				
-				message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
+				message = SendToBE.sendToBE(gson.toJson(jobj), "besyncxml.action");
 				///saving config to BE//
 				
 				AppCacheManager.removeCache("xmlcache");
@@ -159,7 +159,7 @@ public class ScreenAction extends ActionSupport{
 		logger.debug("loadding...");
 		
 		
-		JSONObject jres =new JSONObject();
+		HashMap<String,Object> jres =new HashMap<String,Object>();
 		File dir = new File(fescreenmappath);
 		if(dir.exists()){
 			File f = new File(dir,screenmapfilename);
@@ -207,13 +207,13 @@ public class ScreenAction extends ActionSupport{
 					fw.close();
 					
 					///saving config to BE//
-					JSONObject jobj = new JSONObject();
+					HashMap<String,Object> jobj = new HashMap<String,Object>();
 					jobj.put("filepath", bescreenmappath);
 					jobj.put("filename", screenmapfilename);
 					jobj.put("fefile", screenmapxml);
 					jobj.put("create", "false");
-					logger.debug("send to BE:"+jobj.toString());
-					message = SendToBE.sendToBE(jobj.toString(), "besyncxml.action");
+					logger.debug("send to BE:"+gson.toJson(jobj));
+					message = SendToBE.sendToBE(gson.toJson(jobj), "besyncxml.action");
 					///saving config to BE//
 					
 					AppCacheManager.removeCache("xmlcache");
@@ -244,7 +244,7 @@ public class ScreenAction extends ActionSupport{
 		logger.debug(filepath);
 		logger.debug(filename);
 		logger.debug("loadding...");
-		JSONObject jres =new JSONObject();
+		HashMap<String,Object> jres =new HashMap<String,Object>();
 		File dir = new File(filepath);
 		if(dir.exists()){
 			File f = new File(dir,filename);
@@ -387,23 +387,23 @@ public class ScreenAction extends ActionSupport{
 		logger.debug(filepath);
 		logger.debug(filename);
 		logger.debug("loadding...");
-		JSONObject jres =new JSONObject();
+		HashMap<String,Object> jres =new HashMap<String,Object>();
 		
 		try{
-			JSONObject jobj = new JSONObject();
+			HashMap<String,Object> jobj = new HashMap<String,Object>();
 			jobj.put("filepath", filepath);
 			jobj.put("filename", filename);
 			jobj.put("fefile", fefile);
 			
-			String jsonmsg = SendToBE.sendToBE(jobj.toString(), "beloadfile.action");
-			jres = JSONObject.fromObject(jsonmsg);
+			String jsonmsg = SendToBE.sendToBE(gson.toJson(jobj), "beloadfile.action");
+			jres = gson.fromJson(jsonmsg, HashMap.class);
 		}catch(Exception e){
 			logger.error(e.toString());
 			message = "File writing error "+e.toString();
 			jres.put("errors", message);
 		}
 		
-		inputStream = new ByteArrayInputStream(jres.toString().getBytes());
+		inputStream = new ByteArrayInputStream(gson.toJson(jres).toString().getBytes());
 		return SUCCESS;
 	}
 	
@@ -417,12 +417,12 @@ public class ScreenAction extends ActionSupport{
 		
 		 
 		try{
-			JSONObject jobj = new JSONObject();
+			HashMap<String,Object> jobj = new HashMap<String,Object>();
 			jobj.put("filepath", filepath);
 			jobj.put("filename", filename);
 			jobj.put("fefile", fefile);
 			
-			message = SendToBE.sendToBE(jobj.toString(), "besavefile.action");
+			message = SendToBE.sendToBE(gson.toJson(jobj), "besavefile.action");
 		}catch(Exception e){
 			logger.error(e.toString());
 			message = "exception while saving file in BE- "+e.toString();
@@ -436,10 +436,10 @@ public class ScreenAction extends ActionSupport{
 	public String bcreatefefile(){
 		String message= "Not processed!";
 		try {
-			JSONObject jobj = new JSONObject();
+			HashMap<String,Object> jobj = new HashMap<String,Object>();
 			jobj.put("filepath", filepath);
 			jobj.put("filename", filename);
-			message = SendToBE.sendToBE(jobj.toString(), "becreatefile.action");
+			message = SendToBE.sendToBE(gson.toJson(jobj), "becreatefile.action");
 		} catch (Exception e) {
 			message = "Backend caused exception "+e.toString();
 		}
@@ -576,8 +576,8 @@ public class ScreenAction extends ActionSupport{
 				prop.load(fis);
 				fis.close();
 				
-				JSONObject jsonres = new JSONObject();
-				JSONObject fieldValues = null;
+				HashMap<String,Object> jsonres = new HashMap<String,Object>();
+				HashMap<String,Object> fieldValues = null;
 				String keyLine = null;
 				String configName = null;
 				String filedName = null;
@@ -590,9 +590,9 @@ public class ScreenAction extends ActionSupport{
 							configName = keyLine.substring(keyLine.indexOf('_') + 1, keyLine.indexOf('#'));
 							filedName = keyLine.substring(keyLine.indexOf('#') + 1);
 							if (!jsonres.containsKey(configName)) {
-								fieldValues = new JSONObject();
+								fieldValues = new HashMap<String,Object>();
 							}else{
-								fieldValues = (JSONObject) jsonres.get(configName);
+								fieldValues = (HashMap<String,Object>) jsonres.get(configName);
 							}
 							fieldValues.put(filedName, prop.getProperty(keyLine));
 							jsonres.put(configName, fieldValues);
@@ -657,12 +657,12 @@ public class ScreenAction extends ActionSupport{
 	@Action(value="bdeletefile")
 	public String bdeletefile(){
 		String message= "Not processed!";
-		JSONObject jobj = new JSONObject();//.fromObject(data);
+		HashMap<String,Object> jobj = new HashMap<String,Object>();//.fromObject(data);
 		 jobj.put("filepath", filepath);
 		 jobj.put("filename", filename);
 		
 			try {
-				String res = SendToBE.sendToBE(jobj.toString(), "bedeletefile.action");
+				String res = SendToBE.sendToBE(gson.toJson(jobj), "bedeletefile.action");
 				message = res;
 			} catch (Exception e) {
 				logger.error(e.toString());

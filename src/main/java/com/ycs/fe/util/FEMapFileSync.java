@@ -25,8 +25,6 @@ import javax.xml.ws.Service;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPBinding;
 
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -36,7 +34,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.ycs.fe.util.Constants;
+import com.google.gson.Gson;
 //import com.sun.xml.internal.ws.developer.JAXWSProperties;
 
  
@@ -92,7 +90,7 @@ public class FEMapFileSync {
 	 * @return fileListToSync
 	 */
 	public ArrayList<String> compareFiles(String strRemoteFiles){
-		JSONObject jsonRemoteFiles = JSONObject.fromObject(strRemoteFiles);
+		Map<String,Object> jsonRemoteFiles = new Gson().fromJson(strRemoteFiles, Map.class );
 		ArrayList<String> fileListToSync = new ArrayList<String>();
 		HashMap<String, Long> hmLocalFiles = getTimestampsMapXML();
 //		if(hmLocalFiles.get("screenmap") != jsonRemoteFiles.getLong("screenmap"))
@@ -101,7 +99,7 @@ public class FEMapFileSync {
 		System.out.println(localMapp);
 		for (Entry<String, Long> entry : localMapp.entrySet()) {
 			try {
-					if(jsonRemoteFiles.get(entry.getKey())!= null && (jsonRemoteFiles.getLong(entry.getKey()) >= entry.getValue())){
+					if(jsonRemoteFiles.get(entry.getKey())!= null && ((Long)jsonRemoteFiles.get(entry.getKey()) >= entry.getValue())){
 						System.out.println("Same timestamp: " +entry.getKey());
 					}else{	 
 						String debugStr = "Local"+entry.getKey()+" "+new Date(entry.getValue());

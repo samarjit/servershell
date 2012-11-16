@@ -6,25 +6,22 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.ycs.be.dao.FETranslatorDAO;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.PaginationDTO;
 import com.ycs.be.dto.PagingFilterRule;
-import com.ycs.be.dto.PagingFilters;
 import com.ycs.be.dto.PrepstmtDTO;
+import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
-import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.exception.BackendException;
 import com.ycs.be.exception.DataTypeException;
 import com.ycs.be.exception.FrontendException;
@@ -32,12 +29,12 @@ import com.ycs.be.util.ScreenMapRepo;
 
 public class JsrpcPojo {
 private Logger logger = Logger.getLogger(getClass()); 
-	public ResultDTO selectData(String screenName, String panelname,  JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public ResultDTO selectData(String screenName, String panelname,   Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		logger.debug("calling first default(first) sqlselect query");
 		return selectData(screenName, panelname,"sqlselect", jsonObject, jsonInput, prevResultDTO);
 	}
 	
-	public ResultDTO selectData(String screenName, String panelname,String querynode, JSONObject jsonRecord, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public ResultDTO selectData(String screenName, String panelname,String querynode,  Map<String,Object> jsonRecord, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		 
 		 
 //			String tplpath = ServletActionContext.getServletContext().getRealPath("WEB-INF/classes/map");
@@ -101,18 +98,19 @@ private Logger logger = Logger.getLogger(getClass());
 					if(countquery != null){
 						
 						//if(reccount > 0){
-							JSONObject jobject = jsonInput.getData().getJSONObject("pagination");
+							Map<String,Object> jobject = (Map<String, Object>) jsonInput.getData().get("pagination"); //object
 							int pageno = 0;
 							PaginationDTO pageDTO= null; 
 							if(jobject.size()>0 ){
-								JSONObject	panel =  jobject.getJSONObject(outstack);
-//								pageDTO = new Gson().fromJson(panel.toString(), PaginationDTO.class);
-								
-								 Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
-								 classMap.put( "filters", PagingFilters.class );  
-								 classMap.put( "rules", PagingFilterRule.class );  
-								 classMap.put( "groups", PagingFilters.class );  
-								pageDTO = (PaginationDTO) JSONObject.toBean(panel, PaginationDTO.class,classMap);
+								Object	panel =  jobject.get(outstack); //object
+								String strPageDTO = new Gson().toJson(panel);
+								pageDTO = new Gson().fromJson(strPageDTO, PaginationDTO.class);
+//								pageDTO = (PaginationDTO)panel;
+//								 Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();  
+//								 classMap.put( "filters", PagingFilters.class );  
+//								 classMap.put( "rules", PagingFilterRule.class );  
+//								 classMap.put( "groups", PagingFilters.class );  
+//								pageDTO = (PaginationDTO) JSONObject.toBean(panel, PaginationDTO.class,classMap);
 								logger.debug("pagination :"+panel);
 								logger.debug("pagination pageDTO:"+pageDTO);
 								pageno =  pageDTO.getPage();// panel.getInt("currentpage");

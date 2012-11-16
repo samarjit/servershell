@@ -11,15 +11,12 @@ import java.util.ResourceBundle;
 
 import javax.xml.namespace.QName;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.ycs.fe.commandprocessor.BaseCommandProcessor;
 import com.ycs.fe.commandprocessor.CommandProcessorResolver;
@@ -42,7 +39,7 @@ import com.ycs.ws.beclient.QueryServiceService;
 public class SelectOnLoad {
 	private Logger logger = Logger.getLogger(this.getClass());
 	
-	public void selectOnLoad(String screenName1, JSONObject jsonsubmitdata ) throws FrontendException{
+	public void selectOnLoad(String screenName1, Map<String,Object> jsonsubmitdata ) throws FrontendException{
 		
 		if (Constants.APP_LAYER == Constants.FRONTEND) {
 			try {
@@ -76,9 +73,9 @@ public class SelectOnLoad {
 							}
 						}
 					}
-					if(jsonsubmitdata == null || jsonsubmitdata.isNullObject())jsonsubmitdata = new JSONObject();
-					logger.debug("output session data:"+JSONObject.fromObject(sessionMap));
-					jsonsubmitdata.put("sessionvars", JSONObject.fromObject(sessionMap));
+					if(jsonsubmitdata == null || jsonsubmitdata.isEmpty())jsonsubmitdata = new HashMap<String,Object>();
+					logger.debug("output session data:"+new Gson().toJson(sessionMap, Map.class));
+					jsonsubmitdata.put("sessionvars", new Gson().toJson(sessionMap,Map.class));
 				}
 
 			} catch (FrontendException e) {
@@ -93,7 +90,7 @@ public class SelectOnLoad {
 		
 	}
 	
-	public void localSelectOnLoad(String screenName1, JSONObject jsonsubmitdata ) throws FrontendException{
+	public void localSelectOnLoad(String screenName1, Map<String,Object> jsonsubmitdata ) throws FrontendException{
 		if(screenName1 != null && screenName1.length() >0)	{
 			try {
 //				String xmlconfigfile =  ScreenMapRepo.findMapXMLPath(screenName1);
@@ -145,6 +142,9 @@ public class SelectOnLoad {
 	    			String[] sqlcmd = opt.split("\\:"); //get Id of query 
 	    			String querynodeXpath =  sqlcmd[0]+"[@id='"+sqlcmd[1]+"']"; //Query node xpath
 	    			Element processorElm = (Element) root.selectSingleNode("/root/screen/*/"+querynodeXpath+" ");
+						if(processorElm ==null)
+					    	  throw new ProcessorNotFoundException("onload cmd resolution error /root/screen/*/" + querynodeXpath + " ");
+						
 	    			String strProcessor = processorElm.getParent().getName();
 	    			String outstack = processorElm.attributeValue("outstack");
 	    		    BaseCommandProcessor cmdProcessor =  CommandProcessorResolver.getCommandProcessor(strProcessor);
@@ -163,9 +163,9 @@ public class SelectOnLoad {
 
 				resultDTO.merge(resDTO);
 
-				ActionContext.getContext().getValueStack().set("resDTO",JSONSerializer.toJSON(resultDTO).toString());
-				System.out.println("SelectOnLoad::"+ JSONSerializer.toJSON(resultDTO).toString());
-				System.out.println("SelectOnLoad::adhocstackids"+ JSONSerializer.toJSON(resultDTO.getData().get("adhocstackids")).toString());
+				ActionContext.getContext().getValueStack().set("resDTO", new Gson().toJson(resultDTO).toString());
+				System.out.println("SelectOnLoad::"+ new Gson().toJson(resultDTO).toString());
+				System.out.println("SelectOnLoad::adhocstackids"+ new Gson().toJson(resultDTO.getData().get("adhocstackids")).toString());
 				/////end command onload ////
 				
 				/*
@@ -233,18 +233,17 @@ public class SelectOnLoad {
 		 QueryServiceService qss = new QueryServiceService(url, new QName("http://ws.ycs.com/", "QueryServiceService"));
 		 QueryService queryServicePort = qss.getQueryServicePort();
 		 String strResDTO = queryServicePort.selectOnLoad(screenName1, jsonsubmitdata);
-		 JSONObject resDTOjson = JSONObject.fromObject(strResDTO);
-		 JSONObject data = resDTOjson.getJSONObject("data");
+		 Map<String,Object> resDTOjson = new Gson().fromJson(strResDTO, Map.class);
+		 Map<String,Object> data = (Map<String, Object>) resDTOjson.get("data"); //object
 		 logger.debug("returned result from select on load:" + strResDTO);
 		 
-		 ResultDTO tempDTO = ResultDTO.fromJsonString(resDTOjson);
+		 ResultDTO tempDTO = ResultDTO.fromJsonString(strResDTO);
 		 
 		 ActionContext.getContext().getValueStack().getContext().put("resultDTO", tempDTO);
 		  
 		
 		 try {
-			 //Used for select query with adhoc stackids
-			JSONArray adhocstackids = data.getJSONArray("adhocstackids");
+			List<String> adhocstackids = (List<String>) data.get("adhocstackids"); //array
 			for (Iterator outstackItr = adhocstackids.iterator(); outstackItr.hasNext();) {
 				String outstackid = (String) outstackItr.next();
 				System.out.println("outstackid:" + outstackid);

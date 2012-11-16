@@ -5,14 +5,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.sql.rowset.CachedRowSet;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import oracle.jdbc.rowset.OracleCachedRowSet;
 
 import org.apache.log4j.Logger;
@@ -20,6 +19,8 @@ import org.apache.log4j.Logger;
 import servershell.be.dao.BackendException;
 import servershell.be.dao.DBConnector;
 import servershell.be.dto.ResultDTO;
+
+import com.google.gson.Gson;
 
 public class QueryExecutor  {
 	private static Logger logger = Logger.getLogger(QueryExecutor.class);
@@ -145,13 +146,13 @@ public class QueryExecutor  {
 		
 		CachedRowSet crs =  new OracleCachedRowSet();
 		crs.populate(rs);
-		JSONObject jr = null;
-		JSONArray jrs = new JSONArray();
-		JSONArray row = null;
+		HashMap<String,Object> jr = null;
+		List<HashMap<String,Object>> jrs = new ArrayList<HashMap<String,Object>>();
+		List row = null;
 		int count = 0;
 		while(crs.next()){
-			jr = new JSONObject();
-			row = new JSONArray();
+			jr = new HashMap<String,Object>();
+			row = new ArrayList();
 			for (int i = 0; i < rowCount; i++) {
 				jr.put(arcol.get(i), crs.getString(i+1));
 //				row.add(crs.getString(i+1));
@@ -162,7 +163,7 @@ public class QueryExecutor  {
 			count ++;
 		}
 		
-		System.out.println(jrs.toString(2));
+		System.out.println(new Gson().toJson(jrs).toString());
 		rs.close();
 		crs.close();
 		

@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Date;
-
-import net.sf.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -20,6 +20,7 @@ import servershell.util.AccessRights;
 import servershell.util.MergeErrors;
 import servershell.util.SendToBE;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
 
@@ -49,7 +50,7 @@ public class BEShellRelayAction extends ActionSupport {
 	public String belogpath;
 	public String pagesize;
 	public String expression;
-	public JSONObject jobj = new JSONObject();
+	public HashMap<String,Object> jobj = new HashMap<String,Object>();
 	
 	
 	public void validate(){
@@ -74,7 +75,7 @@ public class BEShellRelayAction extends ActionSupport {
 			String url = "prevpos="+prevpos+"&belogpath="+URLEncoder.encode(belogpath)+"&cmd="+cmd+"&pagesize="+pagesize;
 			logger.debug("url bescrolllog:"+url);
 			message = SendToBE.sendToBE("", "bescrolllog.action?"+url);
-				JSONObject bejson = JSONObject.fromObject(message);
+			Map<String,Object> bejson = new Gson().fromJson(message, Map.class);
 				/*jobj.put("time",new Date().toString());
 				jobj.put("prevpos",prevpos);
 				jobj.put("pos",pos);
@@ -108,7 +109,7 @@ public class BEShellRelayAction extends ActionSupport {
 			
 			
 			message = SendToBE.sendToBE(data, "becd.action");
-			JSONObject jsonMessage = new JSONObject();
+			HashMap<String,Object> jsonMessage = new HashMap<String,Object>();
 			jsonMessage.put("time",new Date().toString());
 			jsonMessage.put("rootPath",rootPath);
 			jsonMessage.put("pos",pos);
@@ -170,7 +171,7 @@ public class BEShellRelayAction extends ActionSupport {
 		String message = "ls not completed";
 		try {
 			logger.debug("bls() called with rootPath:"+rootPath+" relPath:"+relPath);
-			JSONObject jobj = new JSONObject();  
+			HashMap<String,Object> jobj = new HashMap<String,Object>();  
 			jobj.put("relPath", relPath);  
 			jobj.put("rootPath", rootPath);  
 			String data = jobj.toString();
@@ -195,7 +196,7 @@ public class BEShellRelayAction extends ActionSupport {
 		String message = "ls not completed";
 		try {
 //			logger.debug("flsjson() called with rootPath:"+rootPath+" relPath:"+relPath);
-			JSONObject jobj = new JSONObject();  
+			HashMap<String,Object> jobj = new HashMap<String,Object>();  
 			jobj.put("relPath", relPath);  
 			jobj.put("rootPath", rootPath);  
 			String data = jobj.toString();
@@ -225,7 +226,7 @@ public class BEShellRelayAction extends ActionSupport {
 		String message = "ls not completed";
 		try {
 //			logger.debug("blsjson() called with rootPath:"+rootPath+" relPath:"+relPath);
-			JSONObject jobj = new JSONObject();  
+			HashMap<String,Object> jobj = new HashMap<String,Object>();  
 			jobj.put("relPath", relPath);  
 			jobj.put("rootPath", rootPath);  
 			String data = jobj.toString();
@@ -257,7 +258,7 @@ public class BEShellRelayAction extends ActionSupport {
 		String  message = ""; 
 		
 		try {
-			JSONObject jobj = new JSONObject();
+			HashMap<String,Object> jobj = new HashMap<String,Object>();
 			jobj.put("expression", expression);
 			jobj.put("filename", filename); 
 			jobj.put("rootPath", rootPath);
@@ -331,11 +332,11 @@ public class BEShellRelayAction extends ActionSupport {
 		this.cmd = cmd;
 	}
 	
-	public JSONObject getJobj() {
+	public HashMap<String,Object> getJobj() {
 		return jobj;
 	}
 
-	public void setJobj(JSONObject jobj) {
+	public void setJobj(HashMap<String,Object> jobj) {
 		this.jobj = jobj;
 	}
 

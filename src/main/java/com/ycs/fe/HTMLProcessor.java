@@ -3,18 +3,17 @@ package com.ycs.fe;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionInvocation;
-
 import com.ycs.fe.crud.SelectOnLoad;
 import com.ycs.fe.exception.FrontendException;
 
@@ -48,7 +47,7 @@ public abstract class HTMLProcessor {
 	 
 		String screenName1 = (String) invocation.getInvocationContext().getValueStack().findValue("screenName",String.class);
 		String jsonsubmitStr = (String) invocation.getInvocationContext().getValueStack().findValue("submitdata",String.class);
-		JSONObject jsonsubmitdata = new JSONObject().getJSONObject(jsonsubmitStr);
+		Map<String,Object> jsonsubmitdata = new Gson().fromJson(jsonsubmitStr, Map.class);
 //		JSONObject jsonsubmitdata = (JSONObject) invocation.getInvocationContext().getValueStack().findValue("submitdata",JSONObject.class);
 		logger.debug("For screenName:"+screenName1);
 		 

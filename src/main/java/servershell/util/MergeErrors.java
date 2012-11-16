@@ -1,24 +1,24 @@
 package servershell.util;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class MergeErrors {
 
-	public static JSONObject mergeErrorsAndJsonStr(JSONObject jobj, String bejsonString){
-			JSONObject bejson = JSONObject.fromObject(bejsonString);
+	public static Map<String,Object> mergeErrorsAndJsonStr(Map<String,Object> jobj, String bejsonString){
+			Map<String,Object> bejson = new Gson().fromJson(bejsonString, Map.class);
 		return mergeErrorsAndJson(  jobj,   bejson);
 	}
 	
-	public static JSONObject mergeErrorsOnlyStr(JSONObject jobj, String bejsonString){
-		JSONObject bejson = JSONObject.fromObject(bejsonString);
+	public static Map<String,Object> mergeErrorsOnlyStr(Map<String,Object> jobj, String bejsonString){
+		Map<String,Object> bejson = new Gson().fromJson(bejsonString, Map.class);
 		return mergeErrorsAndJson(  jobj,   bejson);
 	}
 	
@@ -28,24 +28,24 @@ public class MergeErrors {
 	 * @return jobj - merged jobj with jsonFrom actionErrors, actionMessages, fieldErrors
 	 */
 	@SuppressWarnings("unchecked") 
-	public static JSONObject mergeErrorsAndJson(JSONObject jobj, JSONObject bejson){
+	public static Map<String,Object> mergeErrorsAndJson(Map<String,Object> jobj, Map<String,Object> bejson){
 		ActionSupport action = (ActionSupport) ActionContext.getContext().getActionInvocation().getAction();
 		if(bejson.containsKey("actionErrors")){
-			JSONArray actionErrors = bejson.getJSONArray("actionErrors");
+			List actionErrors = (List) bejson.get("actionErrors"); //array
 			for (
 			Iterator<String> itr = actionErrors.iterator(); itr.hasNext();) {
 				action.addActionError(itr.next());
 			}  
 		}
 		if(bejson.containsKey("actionMessages")){
-			JSONArray actionMessages = bejson.getJSONArray("actionMessages");
+			List actionMessages = (List) bejson.get("actionMessages"); //array
 			for (
 			Iterator<String> itr = actionMessages.iterator(); itr.hasNext();) {
 				action.addActionMessage(itr.next());
 			} 
 		}
 		if(bejson.containsKey("fieldErrors")){
-			JSONObject actionMessages = bejson.getJSONObject("fieldErrors");
+			Map<String,Object> actionMessages = (Map<String, Object>) bejson.get("fieldErrors"); //object
 			
 			for (Object entry : actionMessages.entrySet()) {
 				Entry<String,String> ent = (Entry<String, String>) entry;
@@ -59,8 +59,8 @@ public class MergeErrors {
 			String keyStr = ent.getKey();
 			if(!("actionErrors".equals(keyStr)|| "actionMessages".equals(keyStr)|| "fieldErrors".equals(keyStr) )){
 				if("jobj".equals(keyStr)){
-//					JSONObject jobjbe = JSONObject.fromObject(ent.getValue());
-					jobj.putAll((JSONObject)ent.getValue());
+//					Map<String,Object> jobjbe = Map<String,Object>.fromObject(ent.getValue());
+					jobj.putAll((Map<String,Object>)ent.getValue());
 				}else{
 					jobj.put(keyStr, ent.getValue()); 
 				}
@@ -72,24 +72,22 @@ public class MergeErrors {
 	
 	
 	@SuppressWarnings("unchecked") 
-	public static JSONObject mergeErrorsOnly(JSONObject jobj, JSONObject bejson){
+	public static Map<String,Object> mergeErrorsOnly(Map<String,Object> jobj, Map<String,Object> bejson){
 		ActionSupport action = (ActionSupport) ActionContext.getContext().getActionInvocation().getAction();
 		if(bejson.containsKey("actionErrors")){
-			JSONArray actionErrors = bejson.getJSONArray("actionErrors");
-			for (
-					Iterator<String> itr = actionErrors.iterator(); itr.hasNext();) {
+			List<String> actionErrors = (List<String>) bejson.get("actionErrors");
+			for (Iterator<String> itr = actionErrors.iterator(); itr.hasNext();) {
 				action.addActionError(itr.next());
 			}  
 		}
 		if(bejson.containsKey("actionMessages")){
-			JSONArray actionMessages = bejson.getJSONArray("actionMessages");
-			for (
-					Iterator<String> itr = actionMessages.iterator(); itr.hasNext();) {
+			List<String> actionMessages = (List<String>) bejson.get("actionMessages");
+			for (Iterator<String> itr = actionMessages.iterator(); itr.hasNext();) {
 				action.addActionMessage(itr.next());
 			} 
 		}
 		if(bejson.containsKey("fieldErrors")){
-			JSONObject actionMessages = bejson.getJSONObject("fieldErrors");
+			Map<String,Object> actionMessages = (Map<String, Object>) bejson.get("fieldErrors"); //object
 			
 			for (Object entry : actionMessages.entrySet()) {
 				Entry<String,String> ent = (Entry<String, String>) entry;

@@ -1,10 +1,10 @@
 package servershell.util;
 
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import ognl.Ognl;
 import ognl.OgnlException;
 
@@ -45,9 +45,9 @@ public class ParseSentenceOgnl {
 						String propval = "";
 						if(pval instanceof String ){
 							 propval = (String)pval;
-						}else if(pval instanceof JSONArray){
+						}else if(pval instanceof List){
 							propval = pval.toString();
-						}else if (pval instanceof JSONObject){
+						}else if (pval instanceof Map){
 							propval = pval.toString();
 						}
 						parsedresult += sentence.substring(prevend, m1.start());//

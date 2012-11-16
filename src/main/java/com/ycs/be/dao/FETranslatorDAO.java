@@ -10,20 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.sql.rowset.CachedRowSet;
-import javax.xml.stream.events.Characters;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.ycs.be.dto.PrepstmtDTO;
+import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
-import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.exception.BackendException;
 import com.ycs.be.exception.SentenceParseException;
 import com.ycs.be.util.ParseSentenceOgnl;
@@ -132,7 +127,7 @@ public class FETranslatorDAO {
 	}
 	
 	
-	public ResultDTO executecrud(String screenName, String sqlquery, String stackid,  JSONObject jsonObject, PrepstmtDTOArray prepar, String errorTemplate, String messageTemplate) {
+	public ResultDTO executecrud(String screenName, String sqlquery, String stackid,  Map<String,Object> jsonObject, PrepstmtDTOArray prepar, String errorTemplate, String messageTemplate) {
 		ValueStack stack = ActionContext.getContext().getValueStack();
 		DBConnector dbconn = new DBConnector();
 		String retval = "";

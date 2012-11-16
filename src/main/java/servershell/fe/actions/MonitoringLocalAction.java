@@ -25,9 +25,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
@@ -39,6 +36,7 @@ import servershell.be.dao.BackendException;
 import servershell.util.CmdRunner;
 import servershell.util.CompoundResource;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class MonitoringLocalAction extends ActionSupport implements SessionAware {
@@ -64,6 +62,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 	private String pageup;
 	private String pagedown;
 	private String getalluptoend;
+	private Gson gson = new Gson();
 	
 	@Action(value = "monitoring", results = { @Result(name = "success", type = "stream", params = { "contentType", "text/html", "inputName", "inputStream"}) })
 	public String execute() {
@@ -71,7 +70,7 @@ public class MonitoringLocalAction extends ActionSupport implements SessionAware
 		ResourceBundle rb = ResourceBundle.getBundle("config");
 		String message = "";
 		String jsonString = "";
-		JSONObject jobj = new JSONObject();
+		HashMap<String,Object> jobj = new HashMap<String,Object>();
 		
 		try {
 			if (cmd == null) {
@@ -440,11 +439,11 @@ String rootPath = (String) session.get("pwd");
 		if (getActionErrors().size() > 0) {
 			jsonString = getActionErrors().toString();
 		}else{
-			JSONArray jar = new JSONArray();
+			ArrayList jar = new ArrayList();
 			jar.addAll(getActionMessages());
 			jobj.put("actionMessages", jar);
 			jobj.put("message", message);
-			jsonString =  jobj.toString();
+			jsonString =  gson.toJson(jobj);
 		}
 		inputStream = new ByteArrayInputStream(jsonString.getBytes());
 		return SUCCESS;

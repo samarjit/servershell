@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 import com.ycs.fe.commandprocessor.CommandProcessor;
 import com.ycs.fe.commandprocessor.ReturnCommandProcessor;
@@ -47,7 +46,7 @@ public class CommonActionSupport extends ActionSupport {
 	public String commonExecute() throws Exception{
 		String resultHtml = "";
 		logger.debug("Start common action submitdata:"+submitdata);
-		JSONObject jsonRecord =   JSONObject.fromObject(submitdata);
+		Map<String,Object> jsonRecord =  new Gson().fromJson(submitdata, Map.class);
 		@SuppressWarnings("unused")
 		InputDTO inputDTO = populateInputDTO(jsonRecord);
 		ResultDTO resDTO = null;
@@ -61,7 +60,7 @@ public class CommonActionSupport extends ActionSupport {
 			
 			populateActionErrors(resDTO);
 				aresDTO  = resDTO;
-			JSONObject resjsonResult = JSONObject.fromObject(resDTO);
+			String resjsonResult =  new Gson().toJson(resDTO);
 			resultHtml = resjsonResult.toString();
 			}
 			
@@ -122,9 +121,9 @@ public class CommonActionSupport extends ActionSupport {
 	 * @param jsonRecord
 	 * @return
 	 */
-	protected InputDTO populateInputDTO(JSONObject jsonRecord) {
+	protected InputDTO populateInputDTO(Map<String,Object> jsonRecord) {
 		InputDTO inputDTO = new InputDTO();
-		inputDTO.setData((JSONObject) jsonRecord);
+		inputDTO.setData(jsonRecord);
 		return inputDTO;
 	}
 	
@@ -135,7 +134,7 @@ public class CommonActionSupport extends ActionSupport {
 	 * on top of validation resultDTO
 	 * @return resultDTO with error, message, pagination
 	 */
-	protected ResultDTO commandProcessor(JSONObject jsonRecord, ResultDTO validationResultDTO) {
+	protected ResultDTO commandProcessor(Map<String,Object> jsonRecord, ResultDTO validationResultDTO) {
 		if (validationResultDTO != null && validationResultDTO.getErrors() != null && validationResultDTO.getErrors().size() > 0 || validationResultDTO.getFieldErrors().size() >0) {
 			return validationResultDTO;
 		}
@@ -158,7 +157,7 @@ public class CommonActionSupport extends ActionSupport {
 	 * @throws FrontendException
 	 * @throws Exception
 	 */
-	protected PageReturnType setResult(String resultHtml, JSONObject jsonRecord, ResultDTO resDTO) throws FrontendException, Exception {
+	protected PageReturnType setResult(String resultHtml, Map<String,Object> jsonRecord, ResultDTO resDTO) throws FrontendException, Exception {
 		PageReturnType pg = null;
 		try{
 			pg = new ReturnCommandProcessor().getReturnType(screenName, jsonRecord, resDTO);
@@ -188,7 +187,7 @@ public class CommonActionSupport extends ActionSupport {
 	 * @return
 	 * @throws ValidationException
 	 */
-	protected ResultDTO validate(JSONObject jsonRecord) throws ValidationException {
+	protected ResultDTO validate(Map<String,Object> jsonRecord) throws ValidationException {
 		FEValidator validator = new FEValidator();
 		ResultDTO validatorDTO = validator.validate(screenName, jsonRecord);
 //		if (validatorDTO != null && validatorDTO.getErrors() != null && validatorDTO.getErrors().size() > 0) {

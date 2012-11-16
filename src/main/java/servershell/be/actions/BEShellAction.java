@@ -16,11 +16,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -35,9 +34,8 @@ import org.apache.struts2.convention.annotation.Results;
 import servershell.util.AccessRights;
 import servershell.util.CompoundResource;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.Validations;
 
 @ParentPackage("default")
 @Results(value={
@@ -62,7 +60,7 @@ public class BEShellAction extends ActionSupport {
 	private String data;
 	public String expression;
 	public String sendtobe;
-	public JSONObject jobj = new JSONObject();
+	public Map<String,Object> jobj = new HashMap<String,Object>();
 	
 	public void validate(){
 		
@@ -124,7 +122,7 @@ public class BEShellAction extends ActionSupport {
 	@Action(value="beuploadbe", results={@Result(type="stream")})
 	public String upload(){
 		String jsonString = "";
-		JSONObject jobj= new JSONObject() ;
+		Map<String,Object> jobj= new HashMap<String,Object>() ;
 		String message = "";
 		
 //		ResourceBundle rb = ResourceBundle.getBundle("config");
@@ -159,7 +157,7 @@ public class BEShellAction extends ActionSupport {
 		if (getActionErrors().size() > 0) {
 			jsonString = getActionErrors().toString();
 		}else{
-			JSONArray jar = new JSONArray();
+			List<Object> jar = new ArrayList<Object>();
 			jar.addAll(getActionMessages());
 			jobj.put("actionMessages", jar);
 			jobj.put("message", message);
@@ -176,7 +174,7 @@ public class BEShellAction extends ActionSupport {
 	public String berunlog(){
 		String res = "empty no response";
 		 
-		JSONObject jsonMessage = new JSONObject();
+		Map<String,Object> jsonMessage = new HashMap<String,Object>();
 		String message = "";
 		String endchar = "";
 		String lastline = "";
@@ -435,7 +433,7 @@ public class BEShellAction extends ActionSupport {
 				message += tempLine.trim() +"\r\n";
 			}
 			
-			JSONObject jsonMessage = new JSONObject();
+			Map<String,Object> jsonMessage = new HashMap<String,Object>();
 			jsonMessage.put("time",new Date().toString());
 			jsonMessage.put("prevpos",prevpos);
 			jsonMessage.put("pos",pos);
@@ -490,9 +488,9 @@ public class BEShellAction extends ActionSupport {
 	public String bels   (){
 		String message = "";
 		logger.debug("bels() called with"+data);
-		JSONObject jobj =  JSONObject.fromObject(data);
-		String rootPath  = jobj.getString("rootPath");
-		String relPath  = jobj.getString("relPath");
+		Map<String,String> jobj =  new Gson().fromJson(data, Map.class);
+		String rootPath  = jobj.get("rootPath");
+		String relPath  = jobj.get("relPath");
 		if("".equals(relPath))relPath ="*";
 		logger.debug("bels() rootPath :"+rootPath+"; relPath:"+relPath);
 		try{
@@ -550,9 +548,9 @@ public class BEShellAction extends ActionSupport {
 	public String belsjson (){
 		String message = "";
 //		logger.debug("belsjson() called with"+data);
-		JSONObject jobj =  JSONObject.fromObject(data);
-		String rootPath  = jobj.getString("rootPath");
-		String relPath  = jobj.getString("relPath");
+		Map<String,String> jobj =  new Gson().fromJson(data, Map.class);
+		String rootPath  = jobj.get("rootPath");
+		String relPath  = jobj.get("relPath");
 		if("".equals(relPath))relPath ="*";
 		String secondPart = null;
 //		logger.debug("belsjson() rootPath :"+rootPath+"; relPath:"+relPath);
@@ -631,10 +629,10 @@ public class BEShellAction extends ActionSupport {
 		String message = "";
 		LineIterator it = null;
 		try{
-		JSONObject jobj =  JSONObject.fromObject(data);
-		String rootPath  = jobj.getString("rootPath");
-		String filename  = jobj.getString("filename");
-		String expression  = jobj.getString("expression");
+		Map<String,String> jobj =  new Gson().fromJson(data, Map.class);
+		String rootPath  = jobj.get("rootPath");
+		String filename  = jobj.get("filename");
+		String expression  = jobj.get("expression");
 		logger.debug("grep:"+expression+" "+rootPath+"/"+filename);
 		File file = new File(rootPath+"/"+filename);
         	if(!file.exists())throw new Exception(" file not found "+file.getAbsolutePath());
@@ -791,11 +789,11 @@ public class BEShellAction extends ActionSupport {
 	
 	
 	
-	public JSONObject getJobj() {
+	public Map<String,Object> getJobj() {
 		return jobj;
 	}
 
-	public void setJobj(JSONObject jobj) {
+	public void setJobj(Map<String,Object> jobj) {
 		this.jobj = jobj;
 	}
 

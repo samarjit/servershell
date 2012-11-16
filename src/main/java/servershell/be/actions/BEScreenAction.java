@@ -8,9 +8,9 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -18,15 +18,13 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
-
 import servershell.util.CompoundResource;
 import servershell.util.ResourceBundleReloader;
 import servershell.util.ReverseEngineerXml;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
-
-
-import com.ycs.oldfe.commandprocessor.AppCacheManager;
+import com.ycs.fe.cache.AppCacheManager;
 import com.ycs.oldfe.commandprocessor.Constants;
 
 @Result(type="stream", name="success")
@@ -76,11 +74,11 @@ public class BEScreenAction extends ActionSupport{
 		String fefile;
 		String create;
 		logger.debug("besyncxml:"+data);
-		JSONObject jobj = JSONObject.fromObject(data);
-		filepath = jobj.getString("filepath");
-		filename = jobj.getString("filename");
-		fefile = jobj.getString("fefile");
-		create = jobj.getString("create");
+		Map<String, String> jobj = new Gson().fromJson(data, Map.class);
+		filepath = jobj.get("filepath");
+		filename = jobj.get("filename");
+		fefile = jobj.get("fefile");
+		create = jobj.get("create");
 		
 		logger.debug(filepath);
 		logger.debug(filename);
@@ -121,13 +119,13 @@ public class BEScreenAction extends ActionSupport{
 
 		String filepath;
 		String filename;
-		JSONObject jobj = JSONObject.fromObject(data);
-		filepath = jobj.getString("filepath");
-		filename = jobj.getString("filename");
+		Map<String, String> jobj = new Gson().fromJson(data, Map.class);
+		filepath = jobj.get("filepath");
+		filename = jobj.get("filename");
 		logger.debug(filepath);
 		logger.debug(filename);
 		logger.debug("loadding...");
-		JSONObject jres =new JSONObject();
+		Map<String,Object> jres =new HashMap<String,Object>();
 		File dir = new File(filepath);
 		if(dir.exists()){
 			File f = new File(dir,filename);
@@ -161,10 +159,10 @@ public class BEScreenAction extends ActionSupport{
 		String filepath;
 		String filename;
 		String fefile;
-		JSONObject jobj = JSONObject.fromObject(data);
-		filepath = jobj.getString("filepath");
-		filename = jobj.getString("filename");
-		fefile = jobj.getString("fefile");
+		Map<String, String> jobj = new Gson().fromJson(data, Map.class);
+		filepath = jobj.get("filepath");
+		filename = jobj.get("filename");
+		fefile = jobj.get("fefile");
 		
 		logger.debug(filepath);
 		logger.debug(filename);
@@ -203,9 +201,9 @@ public class BEScreenAction extends ActionSupport{
 		String message= "Not processed!";
 		String filepath;
 		String filename;
-		JSONObject jobj = JSONObject.fromObject(data);
-		filepath = jobj.getString("filepath");
-		filename = jobj.getString("filename");
+		Map<String, String> jobj = new Gson().fromJson(data, Map.class);
+		filepath = jobj.get("filepath");
+		filename = jobj.get("filename");
 		
 		File dir = new File(filepath);
 		if(dir.exists()){
@@ -237,9 +235,9 @@ public class BEScreenAction extends ActionSupport{
 		String message= "Not processed!";
 		String filepath;
 		String filename;
-		JSONObject jobj = JSONObject.fromObject(data);
-		filepath = jobj.getString("filepath");
-		filename = jobj.getString("filename");
+		Map<String, String> jobj = new Gson().fromJson(data, Map.class);
+		filepath = jobj.get("filepath");
+		filename = jobj.get("filename");
 		
 		File dir = new File(filepath);
 		if(dir.exists()){

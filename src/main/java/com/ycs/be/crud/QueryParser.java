@@ -2,13 +2,9 @@ package com.ycs.be.crud;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-
-import ognl.OgnlException;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -16,9 +12,9 @@ import org.dom4j.Element;
 import com.opensymphony.xwork2.ActionContext;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.PrepstmtDTO;
+import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.dto.PrepstmtDTOArray;
 import com.ycs.be.dto.ResultDTO;
-import com.ycs.be.dto.PrepstmtDTO.DataType;
 import com.ycs.be.exception.BackendException;
 import com.ycs.be.exception.DataTypeException;
 import com.ycs.be.exception.QueryParseException;
@@ -30,7 +26,7 @@ public class QueryParser{
 	 * @param nodeList List<org.dom4j.Element>[in]
 	 * @param hmfielddbtype [out]
 	 * @throws DataTypeException 
-	 * @throws JSONException
+	 * 
 	 * @throws Exception
 	 */
 	public  void populateFieldDBType(List<Element> nodeList, HashMap<String, DataType> hmfielddbtype) throws DataTypeException {
@@ -68,7 +64,7 @@ public class QueryParser{
 	 * @throws QueryParseException 
 	 * @throws Exception
 	 */
-	public  String parseQuery(String updatequery,String panelname,JSONObject jsonObject, PrepstmtDTOArray  arparam, HashMap<String, DataType> hmfielddbtype, InputDTO jsonInput, ResultDTO prevResultDTO) throws BackendException{
+	public  String parseQuery(String updatequery,String panelname,Map<String,Object> jsonObject, PrepstmtDTOArray  arparam, HashMap<String, DataType> hmfielddbtype, InputDTO jsonInput, ResultDTO prevResultDTO) throws BackendException{
 		//Where
 //		String updatewhere = crudnode.selectSingleNode("sqlwhere").getText();
 		String PATTERN = "\\#(inp|res|vs|ses)?\\.?([^,\\s\\|\\)]*)\\|?([^,\\s,\\|\\)]*)";//"\\:(\\w*)\\[?(\\d*)\\]?\\.?([^,\\s\\|]*)\\|?([^,\\s]*)";
@@ -177,9 +173,9 @@ public class QueryParser{
 	          }else{ //fill with present panel row object :formxparam
 	        	  logger.debug(" Processing without jsonRecord property="+m1.group(2));
 	        	  String propval;
-	        	  if(jsonObject!=null && jsonObject.has(m1.group(2)) ){
+	        	  if(jsonObject!=null && jsonObject.containsKey(m1.group(2)) ){
 	        		  String propname = m1.group(2);
-	        		  propval = jsonObject.getString(m1.group(2));
+	        		  propval = (String) jsonObject.get(m1.group(2)); //string
 	        		  parsedquery += updatequery.substring(end,m1.start());//
 	        		  logger.info("Ognl inp Expression result "+propname+" = "+propval);
 	        		  

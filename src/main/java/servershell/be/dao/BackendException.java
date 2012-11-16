@@ -5,8 +5,6 @@ import java.text.ParseException;
 
 import ognl.OgnlException;
 
-import com.ycs.oldfe.commandprocessor.QueryParseException;
-
 public class BackendException extends Exception {
 
 	public String message;
@@ -31,9 +29,9 @@ public class BackendException extends Exception {
 		message = string +" "+e.getMessage();
 	}
 
-	public BackendException(String string, QueryParseException e) {
-		message = string +" "+e.getMessage();
-	}
+//	public BackendException(String string, QueryParseException e) {
+//		message = string +" "+e.getMessage();
+//	}
 
 	public BackendException(String string, DataTypeException e) {
 		message = string +" "+e.getMessage();

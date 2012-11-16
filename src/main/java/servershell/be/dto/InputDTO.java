@@ -1,15 +1,17 @@
 package servershell.be.dto;
 
-import net.sf.json.JSONObject;
+import java.util.Map;
+
+
 
 public class InputDTO {
-	private JSONObject data;
+	private Map<String,Object> data;
 
-	public void setData(JSONObject data) {
+	public void setData(Map<String,Object> data) {
 		this.data = data;
 	}
 
-	public JSONObject getData() {
+	public Map<String,Object> getData() {
 		return data;
 	}
 }

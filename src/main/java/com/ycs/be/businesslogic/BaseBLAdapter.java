@@ -1,8 +1,7 @@
 package com.ycs.be.businesslogic;
 
 import java.util.HashMap;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.ycs.be.dto.InputDTO;
@@ -41,7 +40,7 @@ public abstract class BaseBLAdapter implements BaseBL {
 	}
 
 	@Override
-	public abstract ResultDTO executeCommand(String screenName, String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
+	public abstract ResultDTO executeCommand(String screenName, String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO);
 		
 
 

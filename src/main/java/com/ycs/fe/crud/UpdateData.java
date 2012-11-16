@@ -2,8 +2,7 @@ package com.ycs.fe.crud;
 
 import java.util.HashMap;
 import java.util.List;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -20,15 +19,15 @@ import com.ycs.fe.util.ScreenMapRepo;
 
 public class UpdateData {
 private Logger logger = Logger.getLogger(getClass()); 
-	public ResultDTO update(String screenName, String panelname, JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
+	public ResultDTO update(String screenName, String panelname, Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 		logger.debug("calling first default(first) sqlupdate query");
 	    return update(screenName, panelname,"sqlupdate", jsonObject, jsonInput, prevResultDTO);
 	}
-	public ResultDTO update(String screenName, String panelname,String querynode, JSONObject jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
-		    
+	public ResultDTO update(String screenName, String panelname,String querynode, Map<String,Object> jsonObject, InputDTO jsonInput, ResultDTO prevResultDTO) {
 			String parsedquery = "";
 			ResultDTO queryres = new ResultDTO();
 			try {
+				QueryParser queryParser = new QueryParser();
 				String pageconfigxml =  ScreenMapRepo.findMapXMLPath(screenName);
 				org.dom4j.Document document1 = new SAXReader().read( pageconfigxml);
 				org.dom4j.Element root = document1.getRootElement();
@@ -53,7 +52,7 @@ private Logger logger = Logger.getLogger(getClass());
 				List<Element> nodeList = crudnode.selectNodes("../fields/field/*");
 				logger.debug("fields size:"+nodeList.size());
 				HashMap<String, DataType> hmfielddbtype = new HashMap<String, PrepstmtDTO.DataType>();
-				QueryParser.populateFieldDBType(nodeList, hmfielddbtype);
+				queryParser.populateFieldDBType(nodeList, hmfielddbtype);
 				
 				/*Pattern pattern  = Pattern.compile(":(\\w*)",Pattern.DOTALL|Pattern.MULTILINE);
 				Matcher m = pattern.matcher(updatequery);
@@ -69,7 +68,7 @@ private Logger logger = Logger.getLogger(getClass());
 				List<Element> primarykeys = crudnode.selectNodes("../fields/field/*[@primarykey]");
 				
 				PrepstmtDTOArray  arparam = new PrepstmtDTOArray();
-				parsedquery = QueryParser.parseQuery(updatequery, panelname, jsonObject, arparam, hmfielddbtype, jsonInput, prevResultDTO);
+				parsedquery = queryParser.parseQuery(updatequery, panelname, jsonObject, arparam, hmfielddbtype, jsonInput, prevResultDTO);
 			       
 			       logger.debug("UPDATE query:"+parsedquery+"\n Expanded prep:"+arparam.toString(parsedquery));
 			       

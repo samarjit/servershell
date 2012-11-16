@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.sql.rowset.CachedRowSet;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
 import org.apache.log4j.Logger;
 
 import servershell.be.dto.PrepstmtDTO;
@@ -20,6 +17,7 @@ import servershell.be.dto.PrepstmtDTOArray;
 import servershell.be.dto.ResultDTO;
 import servershell.util.ParseSentenceOgnl;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 
@@ -127,7 +125,7 @@ public class FETranslatorDAO {
 	}
 	
 	
-	public ResultDTO executecrud(String screenName, String sqlquery, String stackid,  JSONObject jsonObject, PrepstmtDTOArray prepar, String errorTemplate, String messageTemplate) {
+	public ResultDTO executecrud(String screenName, String sqlquery, String stackid,  Map<String,Object> jsonObject, PrepstmtDTOArray prepar, String errorTemplate, String messageTemplate) {
 		ValueStack stack = ActionContext.getContext().getValueStack();
 		DBConnector dbconn = new DBConnector();
 		String retval = "";
@@ -219,7 +217,7 @@ public class FETranslatorDAO {
 			resultDTO.setData(hm);
 			
 			ResultDTO tempresDTO = (ResultDTO) stack.getContext().get("resultDTO");
-			logger.debug("previously set resultDTO in FEtranaltorDAO="+JSONSerializer.toJSON(tempresDTO));
+			logger.debug("previously set resultDTO in FEtranaltorDAO="+new Gson().toJson(tempresDTO));
 			if(tempresDTO != null){
 			  tempresDTO.merge(resultDTO);
 			  resultDTO = null;

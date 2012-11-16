@@ -3,14 +3,14 @@ package com.ycs.be.actions;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Iterator;
-
-import net.sf.json.JSONObject;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 import com.ycs.be.commandprocessor.CommandProcessor;
 import com.ycs.be.crud.SelectOnLoad;
@@ -33,25 +33,25 @@ public class CmdServiceAction extends ActionSupport{
 		System.out.println(">>>>incoming value : +++ "+ submitdataObj);
 		logger.debug(">>>>incoming value : +++ "+ submitdataObj);
 		String tmpResDTO = "Query Service Error in remoteCommandProcessor";
-		JSONObject submitdata =  JSONObject.fromObject(submitdataObj);
+		Map<String,Object> submitdata =  new Gson().fromJson(submitdataObj, Map.class);
 		InputDTO inpDTO = new InputDTO();
 		inpDTO.setData(submitdata);
 		ServletActionContext.getContext().getValueStack().getContext().put("inputDTO", inpDTO);
 //		 String propval = ServletActionContext.getContext().getValueStack().findString("#inputDTO.data.form1[0].CARD_NO");
 //		 System.out.println("@@@@@@@@@from value stack="+propval+"    --"+ActionContext.getContext().get("inputDTO"));
-		JSONObject sessionvars =   inpDTO.getData().getJSONObject("sessionvars");
+		Map<String, Object> sessionvars =   (Map<String,Object>) inpDTO.getData().get("sessionvars"); //object
 		System.out.println("InputDTO.getData() is "+inpDTO.getData().toString());
-		if(sessionvars!=null && !sessionvars.isNullObject())
-		for (Iterator iterator = sessionvars.keys(); iterator.hasNext();) {
+		if(sessionvars!=null && !sessionvars.isEmpty())
+		for (Iterator iterator = sessionvars.keySet().iterator(); iterator.hasNext();) {
 			String sessionkey = (String) iterator.next();
-			String sessionval =  sessionvars.getString(sessionkey);
+			String sessionval =  (String) sessionvars.get(sessionkey); //string
 			System.out.println("sessionvars getValue :"+sessionval);
 			ServletActionContext.getContext().getSession().put(sessionkey, sessionval);
 		}
 
 		CommandProcessor processor = new CommandProcessor();
 		ResultDTO resultDTO = processor.commandProcessor(submitdata, screenName);
-		tmpResDTO = JSONObject.fromObject(resultDTO).toString();
+		tmpResDTO = new Gson().toJson(resultDTO).toString();
 		logger.debug("<<<<Return value : +++ " + tmpResDTO);
 		System.out.println("<<<<Return value : +++ " + tmpResDTO);
 		inputStream = new ByteArrayInputStream(tmpResDTO.getBytes());
@@ -64,18 +64,18 @@ public class CmdServiceAction extends ActionSupport{
 		String tmpResDTO = "Query Service Error in selectOnLoad";
 		
 		SelectOnLoad sl = new SelectOnLoad();
-		JSONObject jsonsubmitdata1 = JSONObject.fromObject(jsonsubmitdata);
+		Map<String,Object> jsonsubmitdata1 = new Gson().fromJson(jsonsubmitdata, Map.class);
 
 		InputDTO inpDTO = new InputDTO();
 		inpDTO.setData(jsonsubmitdata1);
 		ServletActionContext.getContext().getValueStack().set("inputDTO", inpDTO);
-		JSONObject sessionvars = null;
-		if(!inpDTO.getData().isNullObject())sessionvars = inpDTO.getData().getJSONObject("sessionvars");
+		Map<String,Object> sessionvars = null;
+		if(!inpDTO.getData().isEmpty())sessionvars = (Map<String,Object>) inpDTO.getData().get("sessionvars"); //object
 		System.out.println(inpDTO.getData().toString());
-		if(sessionvars!=null && !sessionvars.isNullObject())
-		for (Iterator iterator = sessionvars.keys(); iterator.hasNext();) {
+		if(sessionvars!=null && !sessionvars.isEmpty())
+		for (Iterator iterator = sessionvars.keySet().iterator(); iterator.hasNext();) {
 			String sessionkey = (String) iterator.next();
-			String sessionval =  sessionvars.getString(sessionkey);
+			String sessionval =  (String) sessionvars.get(sessionkey); //string
 			System.out.println("sessionvars getValue :"+sessionval);
 			ServletActionContext.getContext().getSession().put(sessionkey, sessionval);
 		}

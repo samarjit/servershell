@@ -1,9 +1,8 @@
 package com.ycs.fe.commandprocessor;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -42,16 +41,16 @@ public class ReturnCommandProcessor {
 	 * &lt;result name="dispatcher">${resultPage} -> some_file.jsp &lt;/result>
 	 * @throws FrontendException
 	 */
-	public PageReturnType getReturnType(String screenName, JSONObject submitdataObj, ResultDTO resDTO) throws FrontendException{
+	public PageReturnType getReturnType(String screenName, Map<String,Object> submitdataObj, ResultDTO resDTO) throws FrontendException{
 		PageReturnType pgReturnType = new PageReturnType();
 		
 		Element rootXml = ScreenMapRepo.findMapXMLRoot(screenName);
 		@SuppressWarnings("unchecked")
-		Set<String>  itr =  ( (JSONObject) submitdataObj).keySet(); 
+		Set<String>  itr =  (submitdataObj).keySet(); 
 		pgReturnType.nextScreenName = screenName;
 		pgReturnType.resultPage = screenName;
 		
-		if(submitdataObj == null ||  submitdataObj.isNullObject()){ //onload assume return type is self- changed on nov 3
+		if(submitdataObj == null ||  submitdataObj.isEmpty()){ //onload assume return type is self- changed on nov 3
 //			pgReturnType.nextScreenName = screenName;
 //			pgReturnType.resultName = screenName;
 //			pgReturnType.resultPage = screenName;
@@ -66,7 +65,7 @@ public class ReturnCommandProcessor {
 	    		pgReturnType.nextScreenName = (strResultScrName != null && !strResultScrName.equals(""))?strResultScrName:screenName;
 				resolveResult(pgReturnType, resDTO.getResult());
 			}else if(submitdataObj.get("bulkcmd") !=null){
-				 String cmd =     submitdataObj.getString("bulkcmd");
+				 String cmd =     (String) submitdataObj.get("bulkcmd"); //String
 		    		Element elmCmd = (Element) rootXml.selectSingleNode("/root/screen/commands/bulkcmd[@name='"+cmd+"' ] ");
 		    		System.out.println("/root/screen/commands/bulkcmd[@name='"+cmd+"' ] ");
 		    		String strResult  = elmCmd.attributeValue("result");
@@ -79,9 +78,9 @@ public class ReturnCommandProcessor {
 	//		    	if( dataSetkey.equals("txnrec")   || dataSetkey.equals("sessionvars")||  dataSetkey.equals("pagination"))continue;
 					if(! dataSetkey.startsWith("form"))continue;
 					
-			    	JSONArray dataSetJobj = ((JSONObject) submitdataObj).getJSONArray(dataSetkey);
-			    	for (Object jsonRecord : dataSetJobj) { //rows in dataset a Good place to insert DB Transaction
-			    		String cmd = ((JSONObject) jsonRecord).getString("command");
+			    	List<Map<String,Object>> dataSetJobj = (List<Map<String, Object>>) ( submitdataObj).get(dataSetkey); //array
+		    	for (Map<String,Object> jsonRecord : dataSetJobj) { //rows in dataset a Good place to insert DB Transaction
+			    		String cmd =  (String) ( jsonRecord).get("command"); //string
 			    		if(cmd !=null && !"".equals(cmd)){
 				    		Element elmCmd = (Element) rootXml.selectSingleNode("/root/screen/commands/cmd[@name='"+cmd+"' ] ");
 				    		System.out.println("/root/screen/commands/cmd[@name='"+cmd+"' ] ");

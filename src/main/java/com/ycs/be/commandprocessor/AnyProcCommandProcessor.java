@@ -2,20 +2,20 @@ package com.ycs.be.commandprocessor;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.ws.WebServiceException;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
+import org.apache.struts2.json.JSONException;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import com.google.gson.Gson;
 import com.ycs.be.dto.InputDTO;
 import com.ycs.be.dto.ResultDTO;
 import com.ycs.be.exception.BackendException;
@@ -31,7 +31,7 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 	private static Logger logger = Logger.getLogger(AnyProcCommandProcessor.class);
 
 	@Override
-	public ResultDTO processCommand(String screenName, String querynodeXpath, JSONObject jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
+	public ResultDTO processCommand(String screenName, String querynodeXpath, Map<String,Object> jsonRecord, InputDTO inputDTO, ResultDTO resultDTO) {
 		logger.debug("Processing AnyProc call");
 		HashMap<String, Object>  data = new HashMap<String, Object>();
 		resultDTO = new ResultDTO();
@@ -49,7 +49,7 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 			String jsonFromConf = queryNode.getText();
 			System.out.println("JsonRecord in any proc call :"+jsonRecord);
 			String resultJsonConf = ParseSentenceOgnl.parse(jsonFromConf, jsonRecord);
-			JSONObject jsObj = JSONObject.fromObject(resultJsonConf);
+			Map<String,Object> jsObj = new Gson().fromJson(resultJsonConf, Map.class);
 
 			Document doc = DocumentFactory.getInstance().createDocument();
 			Element rootElement = doc.addElement("root");
@@ -59,18 +59,18 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 			Element inputele = procele.addElement("inputparam");
 			Element outputele = procele.addElement("outputparam");
 			String outstack = procele.attributeValue("outstack");
-			String procname = jsObj.getString("procname");
+			String procname = (String) jsObj.get("procname"); //string
 			pname.addText(procname.toUpperCase());
 
 			// JSON js = JSONSerializer.toJSON(json);
 			// System.out.println(js.isArray());
-			JSONArray inputarr = jsObj.optJSONArray("inputparam");
-			JSONObject inputObj = jsObj.optJSONObject("inputparam");
+			List inputarr = (List) jsObj.get("inputparam");
+			Map inputObj = (Map) jsObj.get("inputparam");
 
 			inputParamParser(doc, inputele, inputarr, inputObj);
 
-			JSONArray outputarr = jsObj.optJSONArray("outputparam");
-			String outputString = jsObj.optString("outputparam");
+			List outputarr = (List) jsObj.get("outputparam"); //array
+			String outputString = (String) jsObj.get("outputparam"); //string
 
 			outputParamParser(outputele, outputarr, outputString);
 
@@ -110,10 +110,10 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 		return resXML;
 	}
 
-	private void outputParamParser(Element outputele, JSONArray outputarr, String outputString) {
+	private void outputParamParser(Element outputele, List outputarr, String outputString) {
 		if (outputarr != null) {
 			for (int i = 0; i < outputarr.size(); i++) {
-				String output = outputarr.getString(i);
+				String output = (String) outputarr.get(i); //string
 				Element outparamele = outputele.addElement("parameter");
 				outparamele.addText(output);
 			}
@@ -123,11 +123,11 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 		}
 	}
 
-	private void inputParamParser(Document doc, Element inputele, JSONArray inputarr, JSONObject inputObj) {
+	private void inputParamParser(Document doc, Element inputele, List inputarr, Map inputObj) throws JSONException {
 		if (inputarr != null) {
 			for (int i = 0; i < inputarr.size(); i++) {
-				JSONArray paramarr = inputarr.optJSONArray(i);
-				JSONObject paramObj = inputarr.optJSONObject(i);
+				List paramarr = (List) inputarr.get(i); //array
+				Map paramObj = (Map) inputarr.get(i); //object
 				Element inparamele = inputele.addElement("parameter");
 				if (paramarr != null) {
 					arrayParamParser(doc, paramarr, inparamele);
@@ -141,31 +141,31 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 		}
 	}
 
-	private void objectParamParser(Document doc, JSONObject paramObj, Element paramele) throws JSONException {
+	private void objectParamParser(Document doc, Map paramObj, Element paramele) throws JSONException {
 		Set<String> dataSet = paramObj.keySet();
 		Iterator<String> it = dataSet.iterator();
 		if (dataSet.size() == 1) {
 			String key = it.next();
 			Element dataele = paramele.addElement("data1");
-			String val = paramObj.getString(key);
+			String val = (String) paramObj.get(key); //string
 			dataele.addText(val);
 		} else {
 			Element structele = paramele.addElement("STRUCT");
 			while (it.hasNext()) {
 				String key = it.next();
 				Element dataele = structele.addElement("data1");
-				String val = paramObj.getString(key);
+				String val = (String) paramObj.get(key); //string
 				dataele.addText(val);
 				dataele.addAttribute("name", key);
 			}
 		}
 	}
 
-	private void arrayParamParser(Document doc, JSONArray paramarr, Element paramele) throws JSONException {
+	private void arrayParamParser(Document doc, List paramarr, Element paramele) throws JSONException {
 		Element arrele = paramele.addElement("ARRAY");
 		for (int j = 0; j < paramarr.size(); j++) {
-			JSONObject dataObj = paramarr.optJSONObject(j);
-			String dataStr = paramarr.optString(j);
+			Map dataObj = (Map) paramarr.get(j); //object
+			String dataStr = (String) paramarr.get(j); //string
 			if (dataObj != null) {
 				Element structele = arrele.addElement("STRUCT");
 				Set<String> dataSet = dataObj.keySet();
@@ -174,7 +174,7 @@ public class AnyProcCommandProcessor implements BaseCommandProcessor {
 					String key = it.next();
 					Element dataele = structele.addElement("data1");
 					dataele.addAttribute("name", key);
-					String val = dataObj.getString(key);
+					String val = (String) dataObj.get(key); //string
 					dataele.addText(val);
 				}
 			} else {
