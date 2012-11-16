@@ -6,5 +6,5 @@
 <screen name="CardBlockRefund" mappingxml="map/jsptest/CardBlockRefund.xml" />
 <screen name="CardMaster" mappingxml="map/jsptest/CardMaster.xml" />
 <screen name="CustomerMaster" mappingxml="map/jsptest/CustomerMaster.xml" />
-<screen name="CardBlockRefund" mappingxml="map/jsptest/PoliceReportTest.xml" />
+<screen name="PoliceReportTest" mappingxml="map/jsptest/PoliceReportTest.xml" />
 </root>

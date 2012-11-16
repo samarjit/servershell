@@ -10,6 +10,21 @@
 <listener-class>com.ycs.fe.InitServershellFilter</listener-class>
 </listener>
  
+ <!-- struts2 osgi -->
+<!--  <context-param>
+	    <param-name>TemplatePath</param-name>
+	    <param-value>class://</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>struts.osgi.clearBundleCache</param-name>
+	    <param-value>false</param-value>
+	</context-param>
+	
+	<listener>
+        <listener-class>org.apache.struts2.osgi.StrutsOsgiListener</listener-class>
+    </listener> -->
+ <!-- struts2 osgi -->
+ 
   <filter>
     <filter-name>struts-execute</filter-name>
     <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
