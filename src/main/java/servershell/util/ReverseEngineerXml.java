@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +16,7 @@ import java.util.regex.Pattern;
 import servershell.be.dao.DBConnector;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ReverseEngineerXml {
 	private String globalSQL = "  SELECT PRODUCT_CODE ,  PRODUCT_NAME ,  PLASTIC_CODE,   PLASTIC_DESC    FROM PRODUCT_DETAILS ";
@@ -659,8 +661,17 @@ public class ReverseEngineerXml {
 	public static void main(String[] args) throws Exception {
 		
 		ReverseEngineerXml re = new ReverseEngineerXml();
-		 
-		re.getStringResult("select * from alert_queue ");
+		StringBuffer inputSql = new StringBuffer();//new BufferedReader(new InputStreamReader(System.in)).readLine();
+		int ch = -1;
+		System.out.println("Enter a query followed by ';' or simply enter ';' and press <enter>\r\n:");
+		String sql = "select * from alert_queue where 1=2";
+		while((ch = System.in.read())!= ';'){
+			inputSql.append((char)ch);
+		}
+		if(inputSql.length() >0){
+			sql= inputSql.toString();
+		} 
+		System.out.println(new GsonBuilder().setPrettyPrinting().create().toJsonTree(re.getStringResult(sql)));
 	}
 
 }
